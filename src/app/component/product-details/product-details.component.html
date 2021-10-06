@@ -1,0 +1,109 @@
+<style>
+    strong {}
+
+    ::ng-deep .k-numerictextbox .k-numeric-wrap {
+        background: none;
+    }
+
+    .prev,
+    .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        padding: 16px;
+        margin-top: -22px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+    }
+
+    /* Position the "next button" to the right */
+    .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+    }
+
+    /* On hover, add a black background color with a little bit see-through */
+    .prev:hover,
+    .next:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+</style>
+<div>
+    <div class="row" style="margin-bottom: 20px;">
+        <div class="col-md-5" style="border-color: 2px solid #dee2e6">
+            <img src="{{infoProduct.image}}" width="100%" height="550px" />
+        </div>
+        <div class="col-md-7">
+            <div>
+                <p
+                    style="border-bottom: 2px solid #dee2e6;margin: 0px;padding-bottom: 15px;font-size: 25px;font-weight: 600;">
+                    {{infoProduct.name}}
+                </p>
+                <p style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;">{{infoProduct.price}} VNĐ
+                </p>
+                <div innerHTML="{{infoProduct.description}}"></div>
+                <p>Màu sắc: <strong>{{infoProduct.price}}</strong></p>
+                <p>Size: <strong>{{infoProduct.price}}</strong></p>
+            </div>
+            <div class="row" style="margin: 20px 0px;">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6" *ngFor="let typeSize of listTypeSize" style="padding: 0;">
+                            <label class="k-label">{{typeSize.name}}</label>&nbsp;
+                            <input type="radio" name="name" value="{{typeSize.id}}" kendoRadioButton
+                                (change)="changeType($event)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="k-label">Chọn size</label>&nbsp;
+                    <kendo-dropdownlist [data]="listSize" textField="name" valueField="id" [disabled]="disabled"
+                        [defaultItem]="defaultItem">
+                    </kendo-dropdownlist>
+                </div>
+            </div>
+            <div>
+                <kendo-numerictextbox format="0" [min]="0" [max]="100">
+                </kendo-numerictextbox>
+                <button kendoButton iconClass="fa fa-cart-plus"
+                    style="background: #ffc045;color: white;font-size: 20px;margin: 0px 15px;">
+                    Thêm vào giỏ hàng
+                </button>
+            </div>
+        </div>
+    </div>
+    <kendo-tabstrip>
+        <kendo-tabstrip-tab title="Mô tả" [selected]="true">
+            <ng-template kendoTabContent>
+                <div class="content" innerHTML="{{infoProduct.descriptionDetail}}">
+                </div>
+            </ng-template>
+        </kendo-tabstrip-tab>
+        <kendo-tabstrip-tab title="Điểm nổi bật">
+            <ng-template kendoTabContent>
+                <div class="content">
+                    <p style="font-size: 25px;font-weight: 600;">Sản phẩm cùng loại</p>
+                    <div class="row" *ngFor="let product of listProductByCategory">
+                        <div class="col-md-5">
+                            <img src="{{product.image}}" width="100%" height="300px"
+                                style="border-radius: 10px 10px 0px 0px;" />
+                            <div style="padding: 15px;">
+                                <a href="/list-product/info/{{product.id}}"
+                                    style="font-size: 18px;font-weight: 500;text-decoration: none;color: #3f3e3e">{{product.name}}</a>
+                                <p style="color: #ffc045;margin: 0;padding-top: 10px;">{{product.price}} VNĐ
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="prev" (click)="plusSlides(-1)">&#10094;</a>
+                    <a class="next" (click)="plusSlides(1)">&#10095;</a>
+                </div>
+            </ng-template>
+        </kendo-tabstrip-tab>
+    </kendo-tabstrip>
+</div>

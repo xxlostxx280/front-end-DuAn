@@ -1,0 +1,58 @@
+<style>
+    h2 {
+        padding: 25px 0px;
+        color: #F2F3F5;
+    }
+
+    fa-icon {
+        font-size: 20px;
+        padding-right: 15px;
+        color: #ff6358;
+    }
+
+    p {
+        color: #F2F3F5;
+    }
+    kendo-svg-icon{
+        font-size: 20px;
+        color: #ff6358;
+    }
+    @media only screen and (max-width: 800px) {
+        #footer {
+            padding-bottom: 40px;
+        }
+    }
+</style>
+<div style="height: auto;background-color: #595352 ;margin-top: 15px;" id="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4  col-xs-12">
+                <h2>About us</h2>
+                <p>
+                    <fa-icon [icon]="faPhone"></fa-icon>32 Võ Văn Dũng, Đống Đa, Hà Nội
+                </p>
+                <p>
+                    <fa-icon [icon]="faMapPin"></fa-icon>(04) 7308 6680
+                </p>
+                <p>
+                    <fa-icon [icon]="faEnvelope"></fa-icon>web.nhanhoa@gmail.com
+                </p>
+            </div>
+            <div class="col-md-4  col-xs-12">
+                <h2>News</h2>
+                <div style="margin-bottom: 15px;">
+                    <a href="" style="text-decoration: none;color: white"><fa-icon [icon]="faUsers"></fa-icon>Tuyển dụng</a>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <a href="" style="text-decoration: none;color: white"><fa-icon [icon]="faPhone"></fa-icon>Liên hệ</a>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <h2>Contact us</h2>
+                <a style="padding: 15px;border: 1px solid #ff6358; text-decoration: none;" href="https://www.facebook.com/">
+                    <kendo-svg-icon [icon]="icons.facebookIcon" ></kendo-svg-icon>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

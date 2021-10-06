@@ -1,0 +1,114 @@
+<style>
+    .k-button:hover {
+        color: #ff6358;
+    }
+
+    .k-icon {
+        font-size: 25px;
+    }
+
+    .content {
+        list-style: none;
+        padding: 10px;
+        text-align: right;
+    }
+
+    li a {
+        text-decoration: none;
+        color: black;
+    }
+
+    li a:hover {
+        color: #ff6358;
+    }
+
+    #menu {
+        display: block;
+    }
+
+    #menu_reponseive {
+        display: none;
+    }
+
+    @media only screen and (max-width: 800px) {
+        #menu {
+            display: none;
+        }
+
+        #menu_reponseive {
+            display: block;
+        }
+    }
+</style>
+<header>
+    <div style="background-color: #F2F3F5;padding: 20px 0px;">
+        <div class="container-lg" id="menu">
+            <div class="row">
+                <div class="col-md-1">
+                    Logo
+                </div>
+                <div class="col-md-6">
+                    <kendo-menu [kendoMenuFlatBinding]="items"
+                    idField="id"
+                    parentIdField="category.id"
+                    textField="name">
+                </kendo-menu>
+                </div>
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-8" style="text-align: right;">
+                            <kendo-textbox placeholder="Search..." [clearButton]="true">
+                                <ng-template kendoTextBoxPrefixTemplate>
+                                    <button kendoButton look="clear" icon="search"></button>
+                                    <kendo-textbox-separator></kendo-textbox-separator>
+                                </ng-template>
+                            </kendo-textbox>
+                        </div>
+                        <div class="col-md-2" style="text-align: center;">
+                            <button kendoButton icon="cart" look="clear"></button>
+                        </div>
+                        <div class="col-md-2" style="text-align: center;">
+                            <button kendoButton icon="user" look="clear" (click)="handlePopup()" #anchor></button>
+                            <button kendoButton style="border: 1px solid #ff6358;color: #ff6358;box-shadow: none"
+                                *ngIf="showLogin">
+                                Đăng nhập
+                            </button>
+                            <kendo-popup [anchor]="{ nativeElement: anchor }" [anchorAlign]="anchorAlign"
+                                [popupAlign]="popupAlign" *ngIf="showPopup">
+                                <div class="content">
+                                    <li style="border-bottom: 1px solid #DADDE1;"><a href="">Thông tin tài khoản</a>
+                                    </li>
+                                    <li><a href="">Đăng xuất</a></li>
+                                </div>
+                            </kendo-popup>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid" id="menu_reponseive">
+            <div class="panelbar-wrapper">
+                <kendo-panelbar>
+                    <kendo-panelbar-item title="My Web Site" icon="folder" [expanded]="true">
+                        <kendo-panelbar-item title="images" icon="folder" [expanded]="true">
+                            <kendo-panelbar-item title="logo.png" icon="image"></kendo-panelbar-item>
+                            <kendo-panelbar-item title="body-back.png" icon="image"></kendo-panelbar-item>
+                            <kendo-panelbar-item title="my-photo.png" icon="image"></kendo-panelbar-item>
+                        </kendo-panelbar-item>
+                        <kendo-panelbar-item title="resources" icon="folder" [expanded]="true">
+                            <kendo-panelbar-item title="pdf" icon="folder">
+                                <kendo-panelbar-item title="prices.pdf" icon="pdf"></kendo-panelbar-item>
+                                <kendo-panelbar-item title="brochure.pdf" icon="pdf"></kendo-panelbar-item>
+                            </kendo-panelbar-item>
+                            <kendo-panelbar-item title="zip" icon="folder"></kendo-panelbar-item>
+                        </kendo-panelbar-item>
+                        <kendo-panelbar-item title="about.html" icon="file"></kendo-panelbar-item>
+                        <kendo-panelbar-item title="contacts.html" icon="file"></kendo-panelbar-item>
+                        <kendo-panelbar-item title="index.html" icon="file"></kendo-panelbar-item>
+                        <kendo-panelbar-item title="portfolio.html" icon="file"></kendo-panelbar-item>
+                    </kendo-panelbar-item>
+                </kendo-panelbar>
+            </div>
+        </div>
+    </div>
+</header>
