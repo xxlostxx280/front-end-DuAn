@@ -18,6 +18,9 @@ import { ProductDetailsComponent } from "src/app/component/product-details/produ
 import { ListProductComponent } from "src/app/component/list-product/list-product.component";
 import { ListProductByCategoryComponent } from "src/app/component/list-product-by-category/list-product-by-category.component";
 import { DropDownsModule } from "@progress/kendo-angular-dropdowns";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SwiperModule } from "swiper/angular";
+import { NotificationModule } from "@progress/kendo-angular-notification";
 
 @NgModule({
     declarations: [
@@ -27,6 +30,7 @@ import { DropDownsModule } from "@progress/kendo-angular-dropdowns";
         ProductDetailsComponent
     ],
     imports: [
+        NotificationModule,
         ScrollViewModule,
         MenusModule,
         PagerModule,
@@ -43,6 +47,8 @@ import { DropDownsModule } from "@progress/kendo-angular-dropdowns";
         ReactiveFormsModule,
         HttpClientModule,
         HttpClientJsonpModule,
+        SwiperModule,
+        BrowserAnimationsModule,
         //Routing module
         shareModule
     ],

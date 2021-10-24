@@ -1,42 +1,21 @@
-<style>
-    strong {}
-
-    ::ng-deep .k-numerictextbox .k-numeric-wrap {
-        background: none;
-    }
-
-    .prev,
-    .next {
-        cursor: pointer;
-        position: absolute;
-        top: 50%;
-        width: auto;
-        padding: 16px;
-        margin-top: -22px;
-        color: white;
-        font-weight: bold;
-        font-size: 18px;
-        transition: 0.6s ease;
-        border-radius: 0 3px 3px 0;
-        user-select: none;
-    }
-
-    /* Position the "next button" to the right */
-    .next {
-        right: 0;
-        border-radius: 3px 0 0 3px;
-    }
-
-    /* On hover, add a black background color with a little bit see-through */
-    .prev:hover,
-    .next:hover {
-        background-color: rgba(0, 0, 0, 0.8);
-    }
-</style>
+<link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
 <div>
     <div class="row" style="margin-bottom: 20px;">
         <div class="col-md-5" style="border-color: 2px solid #dee2e6">
-            <img src="{{infoProduct.image}}" width="100%" height="550px" />
+            <swiper style="--swiper-navigation-color: #fff;--swiper-pagination-color: #fff;height: 500px;"
+                [spaceBetween]="10" [navigation]="true" [thumbs]="{ swiper: thumbsSwiper }" class="mySwiper2">
+                <ng-template swiperSlide><img src="{{infoProduct.image}}" width="100%" height="500px" /></ng-template>
+                <ng-template swiperSlide *ngFor="let image of listImageProduct">
+                    <img src="{{image.file}}" width="100%" height="550px" />
+                </ng-template>
+            </swiper>
+            <swiper (swiper)="thumbsSwiper = $event" [spaceBetween]="5" [slidesPerView]="4" [freeMode]="true"
+                style="height: 100px;margin: 10px 0px" [watchSlidesProgress]="true" class="mySwiper">
+                <ng-template swiperSlide><img src="{{infoProduct.image}}" width="100%" height="120px" /></ng-template>
+                <ng-template swiperSlide *ngFor="let image of listImageProduct">
+                    <img src="{{image.file}}" width="100%" height="120px" />
+                </ng-template>
+            </swiper>
         </div>
         <div class="col-md-7">
             <div>
@@ -47,30 +26,33 @@
                 <p style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;">{{infoProduct.price}} VNĐ
                 </p>
                 <div innerHTML="{{infoProduct.description}}"></div>
-                <p>Màu sắc: <strong>{{infoProduct.price}}</strong></p>
-                <p>Size: <strong>{{infoProduct.price}}</strong></p>
-            </div>
-            <div class="row" style="margin: 20px 0px;">
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-6" *ngFor="let typeSize of listTypeSize" style="padding: 0;">
-                            <label class="k-label">{{typeSize.name}}</label>&nbsp;
-                            <input type="radio" name="name" value="{{typeSize.id}}" kendoRadioButton
-                                (change)="changeType($event)" />
+                <div class="row" style="background: #F2F3F5;margin: 15px 0px;padding-top: 5px;border-radius: 10px;">
+                    <span class="col-md-2 col-sm-2">Màu sắc</span>
+                    <form [formGroup]="formGroup" class="row col-md-10">
+                        <div *ngFor="let color of listProperty" class="col-md-3 col-sm-2">
+                            <input type="radio" name="property" value="{{color.idproperty}}" #{{color.idproperty}}
+                                formControlName="property" kendoRadioButton (change)="changeProperty(color)" />&nbsp;
+                            <label class="k-label" [for]="color.name">{{color.name}}</label>
                         </div>
+                    </form>
+                </div>
+            </div>
+            <form [formGroup]="formGroup" style="margin: 20px 0px;">
+                <div class="row">
+                    <label class="col-md-2 k-label">Chọn size</label>
+                    <div class="col-md-10">
+                        <kendo-dropdownlist [data]="listSize" textField="name" valueField="id" formControlName="size"
+                            name="size" (valueChange)="changeSize($event)" [defaultItem]="defaultItem"
+                            [filterable]="true">
+                        </kendo-dropdownlist>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <label class="k-label">Chọn size</label>&nbsp;
-                    <kendo-dropdownlist [data]="listSize" textField="name" valueField="id" [disabled]="disabled"
-                        [defaultItem]="defaultItem">
-                    </kendo-dropdownlist>
-                </div>
-            </div>
+            </form>
             <div>
-                <kendo-numerictextbox format="0" [min]="0" [max]="100">
+                <kendo-numerictextbox format="0" [min]="1" [max]="100" (valueChange)="changeQuantity($event)"
+                    [value]="1">
                 </kendo-numerictextbox>
-                <button kendoButton iconClass="fa fa-cart-plus"
+                <button kendoButton iconClass="fa fa-cart-plus" (click)="addSoppingCart()"
                     style="background: #ffc045;color: white;font-size: 20px;margin: 0px 15px;">
                     Thêm vào giỏ hàng
                 </button>
@@ -86,24 +68,19 @@
         </kendo-tabstrip-tab>
         <kendo-tabstrip-tab title="Điểm nổi bật">
             <ng-template kendoTabContent>
-                <div class="content">
-                    <p style="font-size: 25px;font-weight: 600;">Sản phẩm cùng loại</p>
-                    <div class="row" *ngFor="let product of listProductByCategory">
-                        <div class="col-md-5">
-                            <img src="{{product.image}}" width="100%" height="300px"
-                                style="border-radius: 10px 10px 0px 0px;" />
-                            <div style="padding: 15px;">
-                                <a href="/list-product/info/{{product.id}}"
-                                    style="font-size: 18px;font-weight: 500;text-decoration: none;color: #3f3e3e">{{product.name}}</a>
-                                <p style="color: #ffc045;margin: 0;padding-top: 10px;">{{product.price}} VNĐ
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <a class="prev" (click)="plusSlides(-1)">&#10094;</a>
-                    <a class="next" (click)="plusSlides(1)">&#10095;</a>
-                </div>
             </ng-template>
         </kendo-tabstrip-tab>
     </kendo-tabstrip>
+    <h3 style="margin-top: 0;color: #333;font-weight: bold;line-height: 1.42857;">Sản phẩm cùng loại</h3>
+    <swiper [config]="config" class="mySwiper" id="mySwiper">
+        <ng-template swiperSlide *ngFor="let product of listProductByCategory">
+            <img src="{{product.image}}" width="100%" height="300px" />
+            <div style="padding: 15px;">
+                <a href="/list-product/info/{{product.id}}" class="title"
+                    style="font-weight: normal;font-size: 1.2857em;text-decoration: none;color: #3f3e3e">{{product.name}}</a>
+                <p style="color: #ffc045;margin: 0;padding-top: 10px;">{{product.price}} VNĐ
+                </p>
+            </div>
+        </ng-template>
+    </swiper>
 </div>

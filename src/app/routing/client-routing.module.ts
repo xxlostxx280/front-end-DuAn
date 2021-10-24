@@ -15,18 +15,24 @@ const routes: Routes = [
                 path: '',
                 component: ListProductComponent
             },
-            // {
-            //     path: ':id',
-            //     component: ListProductByCategoryComponent,
-            //     children: [{
-            //         path: ':id',
-            //         component: ListProductComponent
-            //     }]
-            // },
+            {
+                path: 'collection/:id/:id',
+                component: ListProductByCategoryComponent,
+            },
             {
                 path: 'info/:id',
                 component: ProductDetailsComponent
             },
+        ]
+    },
+    {
+        path: 'collection',
+        component: DefaultComponent,
+        children: [
+            {
+                path: ':id',
+                component: ListProductByCategoryComponent
+            }
         ]
     }
 ];

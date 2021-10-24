@@ -1,6 +1,6 @@
 <style>
     .k-button:hover {
-        color: #ff6358;
+        color: #ff787f;
     }
 
     .k-icon {
@@ -13,13 +13,17 @@
         text-align: right;
     }
 
+    li {
+        list-style: none;
+    }
+
     li a {
         text-decoration: none;
         color: black;
     }
 
     li a:hover {
-        color: #ff6358;
+        color: #ff787f;
     }
 
     #menu {
@@ -28,6 +32,15 @@
 
     #menu_reponseive {
         display: none;
+    }
+
+    .fa.fa-user.fa-fw.ng-star-inserted {
+        margin: 5px 0px;
+        font-size: 25px;
+    }
+
+    ::ng-deep .popover-body {
+        width: 200px;
     }
 
     @media only screen and (max-width: 800px) {
@@ -41,20 +54,19 @@
     }
 </style>
 <header>
-    <div style="background-color: #F2F3F5;padding: 20px 0px;">
+    <div style="background-color: white;padding: 10px 0px;">
         <div class="container-lg" id="menu">
             <div class="row">
-                <div class="col-md-1">
-                    Logo
+                <div class="col-md-2">
+                    <a class="logo" href="">
+                        <img src="https://mebe-04.web4s.vn/uploads/plugin/setting/3/balo-amp-tui-xach-evevon-footer-logo.png"
+                            alt="Logo" width="100%" height="100%">
+                    </a>
                 </div>
-                <div class="col-md-6">
-                    <kendo-menu [kendoMenuFlatBinding]="items"
-                    idField="id"
-                    parentIdField="category.id"
-                    textField="name">
-                </kendo-menu>
+                <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;">
+                    <kendo-menu [items]="items" (select)="onSelect($event)"></kendo-menu>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;">
                     <div class="row">
                         <div class="col-md-8" style="text-align: right;">
                             <kendo-textbox placeholder="Search..." [clearButton]="true">
@@ -65,28 +77,40 @@
                             </kendo-textbox>
                         </div>
                         <div class="col-md-2" style="text-align: center;">
-                            <button kendoButton icon="cart" look="clear"></button>
+                            <a href="/my-cart" style="text-decoration: none;color: rgb(10, 10, 10);">
+                                <button kendoButton icon="cart" look="clear" style="margin-top: 10px;padding: 0px;">
+                                    <kendo-badge style="background: #f1c969;border-color: #f1c969">
+                                        {{badge}}
+                                    </kendo-badge>
+                                </button>
+                            </a>
                         </div>
                         <div class="col-md-2" style="text-align: center;">
-                            <button kendoButton icon="user" look="clear" (click)="handlePopup()" #anchor></button>
+                            <button type="button" class="btn btn-outline-secondary mr-2" look="clear" placement="bottom"
+                                kendoButton iconClass="fa fa-user fa-fw" [ngbPopover]="popContent" *ngIf="showAvatar"
+                                style="padding: 0px;"></button>
                             <button kendoButton style="border: 1px solid #ff6358;color: #ff6358;box-shadow: none"
-                                *ngIf="showLogin">
+                                *ngIf="showLogin" (click)="openLogin()">
                                 Đăng nhập
                             </button>
-                            <kendo-popup [anchor]="{ nativeElement: anchor }" [anchorAlign]="anchorAlign"
-                                [popupAlign]="popupAlign" *ngIf="showPopup">
-                                <div class="content">
-                                    <li style="border-bottom: 1px solid #DADDE1;"><a href="">Thông tin tài khoản</a>
-                                    </li>
-                                    <li><a href="">Đăng xuất</a></li>
-                                </div>
-                            </kendo-popup>
+                            <ng-template #popContent>
+                                <li style="border-bottom: 1px solid #DADDE1;padding-bottom: 10px;font-size: 15px;">
+                                    <a href="/account">Thông tin tài khoản</a>
+                                </li>
+                                <li>
+                                    <button kendoButton (click)="signOut()" look="clear" style="font-size: 13px;
+                                    padding: 0;margin-top: 10px;">Đăng xuất</button>
+                                </li>
+                            </ng-template>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="container-fluid" id="menu_reponseive">
+        <div class="container-fluid" style="background: #f6f6f6;margin: 15px 0px 0px 0px;">
+            <kendo-breadcrumb [items]="breadcrumb" style="background: #f6f6f6;"></kendo-breadcrumb>
+        </div>
+        <!-- <div class="container-fluid" id="menu_reponseive">
             <div class="panelbar-wrapper">
                 <kendo-panelbar>
                     <kendo-panelbar-item title="My Web Site" icon="folder" [expanded]="true">
@@ -109,6 +133,6 @@
                     </kendo-panelbar-item>
                 </kendo-panelbar>
             </div>
-        </div>
+        </div> -->
     </div>
 </header>

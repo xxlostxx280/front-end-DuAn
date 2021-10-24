@@ -1,0 +1,95 @@
+<style>
+    kendo-textbox {
+        width: 100%;
+        margin-bottom: 25px;
+    }
+</style>
+<app-header></app-header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-7" style="margin: 20px 0px;">
+            <h3 style="color: #ef2b2b;font-weight: bold;text-align: center;font-size: 30px;padding: 10px 0px;">
+                Địa chỉ giao hàng
+            </h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <kendo-textbox placeholder="Họ và tên"></kendo-textbox>
+                    <kendo-textbox placeholder="Email"></kendo-textbox>
+                    <kendo-textbox placeholder="Quận Huyện"></kendo-textbox>
+                </div>
+                <div class="col-md-6">
+                    <kendo-textbox placeholder="Số điện thoại"></kendo-textbox>
+                    <kendo-textbox placeholder="Tỉnh thành"></kendo-textbox>
+                    <kendo-textbox placeholder="Phường xã"></kendo-textbox>
+                </div>
+            </div>
+            <kendo-textbox placeholder="Địa chỉ"></kendo-textbox><br />
+            <kendo-textbox placeholder="Ghi chú"></kendo-textbox>
+            <div style="float: right;background: #ef2b2b;border-radius: 5px;">
+                <button kendoButton iconClass="fa fa-check" look="clear" (click)="buyProduct()"
+                    style="background-color: #ef2b2b;color: white;font-size: 20px;">
+                    Thanh toán đơn hàng
+                </button>
+            </div>
+        </div>
+        <div class="col-md-5" style="margin: 20px 0px;">
+            <kendo-listview [data]="dataSource" [height]="600">
+                <ng-template kendoListViewHeaderTemplate>
+                    <h3 class="header-title"
+                        style="text-align: center;font-weight: 600;padding: 10px 0px;color: #ef2b2b">Thông tin đơn hàng
+                    </h3>
+                </ng-template>
+                <ng-template kendoListViewItemTemplate let-card="dataItem" let-index="index">
+                    <kendo-card-header class="k-hbox">
+                        <div class="col-md-3">
+                            <img src="{{card.Product.image}}" width="80px" height="100px">
+                        </div>
+                        <div class="col-md-6">
+                            <p
+                                style="line-height: 24px;margin-right: 10px;padding: 0 !important;font-size: 1.2857em;font-weight: bold;margin-bottom: 0;color: #ffc045;">
+                                {{card.Product.price}}
+                            </p>
+                            <a href=""
+                                style="font-size: 1.2857em;color: #333;display: block;text-decoration: none;font-weight: 600;">
+                                {{card.Product.name}}
+                            </a>
+                            <div class="form-group row">
+                                <label class="col-md-4 col-form-label">Số lượng</label>
+                                <div class="col-md-8">
+                                    <kendo-numerictextbox format="0" [min]="0" [max]="100" style="width: 100%;"
+                                        [value]="card.Quantity">
+                                    </kendo-numerictextbox>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" style="display: flex;justify-content: center;align-items: center;">
+                            <button kendoButton iconClass="fa fa-info-circle fa-fw" look="clear"
+                                style="color: #5ec232;font-size: 20px;"
+                                (click)="infoCardItem($event,card.Id,index)"></button><br />
+                            <button kendoButton iconClass="fa fa-trash fa-fw" look="clear"
+                                (click)="removeCardItem($event,card.Id,index)"
+                                style="color: #ef2b2b;font-size: 20px;"></button>
+                        </div>
+                    </kendo-card-header>
+                </ng-template>
+                <ng-template kendoListViewFooterTemplate>
+                    <div style="padding: 12px 16px;">
+                        <strong style="font-weight: 400;line-height: 1.68;color: #888;">Tổng cộng :</strong>
+                        <strong
+                            style="float: right;font-size: 1.2857em;font-weight: bold;margin-bottom: 0;color: #ffc045;">
+                            {{total}} VND
+                        </strong>
+                    </div>
+                    <div style="padding: 12px 16px;">
+                        <strong style="font-weight: 400;line-height: 1.68;color: #888;">Thành tiền: </strong>
+                        <strong
+                            style="float: right;font-size: 1.2857em;font-weight: bold;margin-bottom: 0;color: #ffc045;">
+                        </strong>
+                    </div>
+                </ng-template>
+            </kendo-listview>
+        </div>
+    </div>
+    <div kendoDialogContainer></div>
+</div>
+<app-footer></app-footer>

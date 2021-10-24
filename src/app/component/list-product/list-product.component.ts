@@ -10,7 +10,7 @@ import { PageChangeEvent, PagerSettings } from "@progress/kendo-angular-listview
 export class ListProductComponent implements OnInit {
   public listProduct: Array<any> = [];
   public dataSource: any = [];
-  public pageSize = 9;
+  public pageSize = 12;
   public skip = 0;
   public pagedDestinations = [];
   public total = 0;

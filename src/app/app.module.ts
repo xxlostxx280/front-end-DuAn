@@ -18,6 +18,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ClienRoutingModule } from './routing/client-routing.module';
 import { ListViewModule } from '@progress/kendo-angular-listview';
 import { InputsModule } from '@progress/kendo-angular-inputs';
+import { CarouselModule } from 'ngx-owl-carousel-o';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { DialogsModule } from '@progress/kendo-angular-dialog';
+import { NotificationModule } from '@progress/kendo-angular-notification';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NavigationModule } from '@progress/kendo-angular-navigation';
+
+
 
 
 
@@ -42,7 +50,12 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
     DefaultModule,
     ListViewModule,
     InputsModule,
-
+    CarouselModule,
+    IndicatorsModule,
+    DialogsModule,
+    NotificationModule,
+    NgbModule,
+    NavigationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

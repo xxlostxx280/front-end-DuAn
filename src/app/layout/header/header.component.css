@@ -1,0 +1,30 @@
+::ng-deep .k-item.k-menu-item.ng-star-inserted{
+    color: rgb(49, 48, 48);
+    font-size: 15px;
+}
+::ng-deep .k-icon.k-menu-expand-arrow.k-i-arrow-60-down{
+    display: none;
+}
+::ng-deep .k-link.k-menu-link{
+    color: rgba(0, 0, 0, 0.87);
+}
+::ng-deep .k-menu:not(.k-context-menu) > .k-item {
+    color: rgba(0, 0, 0, 0.87);
+}
+::ng-deep .k-menu:not(.k-context-menu) > .k-item > .k-state-active{
+    border-bottom: 1px solid;
+}
+::ng-deep .k-menu-group .k-item, .k-menu-group .k-item.k-state-hover,
+.k-menu.k-context-menu .k-item,
+.k-menu.k-context-menu .k-item.k-state-hover {
+    color: rgba(0, 0, 0, 0.87);
+    background-color: rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+    padding: 5px 0px;
+}
+::ng-deep .k-menu-group .k-item :hover, .k-menu-group .k-item.k-state-hover,
+.k-menu.k-context-menu .k-item :hover,
+.k-menu.k-context-menu .k-item.k-state-hover {
+    color: #ff787f;
+}
