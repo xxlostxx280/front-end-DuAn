@@ -1,6 +1,39 @@
+::ng-deep .card {
+    border: 0;
+    margin-bottom: 30px;
+    margin-top: 30px;
+    border-radius: 6px;
+    color: #333;
+    background: #fff;
+    width: 100%;
+    box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(244 67 54 / 40%);
+}
+
+::ng-deep .card [class*=card-header-]:not(.card-header-icon):not(.card-header-text):not(.card-header-image) {
+    border-radius: 5px;
+    padding: 15px;
+    margin: -20px 15px 0px 15px;
+}
+
+::ng-deep .card .card-header-danger:not(.card-header-icon):not(.card-header-text) {
+    box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(244 67 54 / 40%);
+}
+
+::ng-deep .card-header-danger:not(.card-header-icon):not(.card-header-text) {
+    background: linear-gradient(60deg, #ef5350, #e53935);
+}
+::ng-deep .fa.fa-user.fa-fw{
+    font-size: 20px;
+}
+::ng-deep .fa.fa-bell{
+    font-size: 20px;
+}
 ::ng-deep .k-notification-group{
-    margin-top: 80px;
-    margin-right: 15px;
+    top: 50;
+    right: 30;
+}
+::ng-deep .notification-show{
+    z-index: 999999;
 }
 ::ng-deep .k-loading-panel {
     display: flex;
@@ -35,6 +68,14 @@
 ::ng-deep .popover.fade.ng-star-inserted.show.bs-popover-bottom .arrow{
     left: 90%;
 }
+::ng-deep .k-drawer-wrapper{
+    position: fixed;
+}
 ::ng-deep ngb-popover-window#ngb-popover-0.popover.fade.ng-star-inserted.show.bs-popover-bottom{
     left: -80px !important;
 }
+::ng-deep kendo-drawer-container {
+    width: 100%;
+    height: 100%;
+}
+

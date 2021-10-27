@@ -24,7 +24,11 @@ import { DialogsModule } from '@progress/kendo-angular-dialog';
 import { NotificationModule } from '@progress/kendo-angular-notification';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavigationModule } from '@progress/kendo-angular-navigation';
-
+import { ManagerRoutingModule } from './routing/manager-routing.module';
+import { DefaultManagerModule } from './layout/default-manager/default-manager.module';
+import { UploadsModule } from '@progress/kendo-angular-upload';
+import { EditorModule } from '@progress/kendo-angular-editor';
+import { ToolBarModule } from '@progress/kendo-angular-toolbar';
 
 
 
@@ -45,9 +49,6 @@ import { NavigationModule } from '@progress/kendo-angular-navigation';
     PagerModule,
     MenuModule,
     ScrollViewModule,
-    AppRoutingModule,
-    ClienRoutingModule,
-    DefaultModule,
     ListViewModule,
     InputsModule,
     CarouselModule,
@@ -55,7 +56,17 @@ import { NavigationModule } from '@progress/kendo-angular-navigation';
     DialogsModule,
     NotificationModule,
     NgbModule,
-    NavigationModule
+    NavigationModule,
+    /////////////////////Share layout Default Module/////////
+    DefaultModule,
+    DefaultManagerModule,
+    /////////////////////Module Routing/////////////////////
+    AppRoutingModule,
+    ClienRoutingModule,
+    ManagerRoutingModule,
+    UploadsModule,
+    EditorModule,
+    ToolBarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

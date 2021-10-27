@@ -52,6 +52,10 @@ export class HeaderComponent implements OnInit {
     this.message.receivedMessage().subscribe((rs) => {
       this.badge = rs;
     })
+    this.message.receivedTokenAccount().subscribe((rs)=>{
+      this.showAvatar = true;
+      this.showLogin = false;
+    })
     this.api.getApi('listCategory').subscribe((res) => {
       this.itemsParent = res;
     });

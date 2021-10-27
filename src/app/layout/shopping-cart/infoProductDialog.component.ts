@@ -59,6 +59,7 @@ export class DialogInfoProductComponent implements OnInit {
     @Input() public listSize: Array<any> = [];
     @Input() public listProperty: Array<any> = [];
     @Input() public quantity: any;
+    @Input() public dialog: any;
     public QuantityObj: QuanityModel = new QuanityModel();
     public str: string | undefined;
     public defaultItem: any = {

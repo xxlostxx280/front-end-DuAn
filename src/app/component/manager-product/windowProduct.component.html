@@ -1,0 +1,44 @@
+<style>
+    .row {
+        margin: 15px 0px;
+    }
+</style>
+<form [formGroup]="formGroup">
+    <kendo-toolbar>
+        <kendo-toolbar-button text="Save" (click)="saveHandler($event)"></kendo-toolbar-button>
+    </kendo-toolbar>
+    <div class="row">
+        <div class="row col-md-6" style="padding: 0;">
+            <label class="col-md-3">Tên sản phẩm</label>
+            <div class="col-md-9">
+                <input type="text" kendoTextBox style="width: 100%" formControlName="name" name="name"
+                    [(ngModel)]="dataItem.name" />
+            </div>
+        </div>
+        <div class="row col-md-6" style="padding: 0;">
+            <label class="col-md-3">Giá sản phẩm</label>
+            <div class="col-md-9">
+                <input type="text" kendoTextBox style="width: 100%" formControlName="price"
+                    [(ngModel)]="dataItem.price" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="row col-md-6" style="padding: 0;">
+            <label class="col-md-3">Mô tả</label>
+            <div class="col-md-9">
+                <kendo-editor [iframe]="false" style="height: 300px;" name="description" formControlName="description"
+                    value="{{dataItem.description}}">
+                </kendo-editor>
+            </div>
+        </div>
+        <div class="row col-md-6" style="padding: 0;">
+            <label class="col-md-3">Mô tả chi tiết</label>
+            <div class="col-md-9">
+                <kendo-editor [iframe]="false" style="height: 300px;" name="descriptionDetail" formControlName="descriptionDetail"
+                 value="{{dataItem.descriptionDetail}}">
+                </kendo-editor>
+            </div>
+        </div>
+    </div>
+</form>

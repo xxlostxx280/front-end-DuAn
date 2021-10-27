@@ -35,6 +35,7 @@ import { RegisterComponent } from './register/register.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NavigationModule } from "@progress/kendo-angular-navigation";
+import { ToolBarModule } from "@progress/kendo-angular-toolbar";
 
 @NgModule({
     declarations:[
@@ -47,7 +48,7 @@ import { NavigationModule } from "@progress/kendo-angular-navigation";
         DialogInfoProductComponent,
         DialogLoginComponent,
         RegisterComponent,
-        ChangePasswordComponent
+        ChangePasswordComponent,
     ],
     imports:[
         NgbModule,
@@ -77,6 +78,7 @@ import { NavigationModule } from "@progress/kendo-angular-navigation";
         LayoutModule,
         CarouselModule,
         NavigationModule,
+        ToolBarModule,
     ],
     entryComponents: [DialogInfoProductComponent,DialogLoginComponent],
     exports:[

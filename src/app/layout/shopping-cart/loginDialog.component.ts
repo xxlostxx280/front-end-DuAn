@@ -1,5 +1,6 @@
-import { Component, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, Input, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { DialogService } from "@progress/kendo-angular-dialog";
 import { NotificationService } from "@progress/kendo-angular-notification";
 import { ApiService } from "src/app/shared/api.service";
 import { MessageService } from "src/app/shared/message.service";
@@ -61,6 +62,7 @@ import { MessageService } from "src/app/shared/message.service";
 export class DialogLoginComponent {
     @ViewChild("appendTo", { read: ViewContainerRef })
     public appendTo: ViewContainerRef | undefined;
+    @Input() public dialog: any;
     public userForm: FormGroup = new FormGroup({
         email: new FormControl("", Validators.required),
         password: new FormControl("", Validators.required),
@@ -69,7 +71,8 @@ export class DialogLoginComponent {
         username: '',
         password: ''
     };
-    constructor(private api: ApiService, public notificationService: NotificationService,private messgae: MessageService) { }
+    constructor(private api: ApiService, public notificationService: NotificationService,private messgae: MessageService,
+        private dialogService: DialogService) { }
     login(): void {
         this.accountModel.username = this.userForm.value.email;
         this.accountModel.password = this.userForm.value.password;
@@ -77,6 +80,9 @@ export class DialogLoginComponent {
             if (res.status == true) {
                 sessionStorage.setItem('USERNAME', res.data.username);
                 sessionStorage.setItem('TOKEN', res.data.token);
+                sessionStorage.setItem('ROLE',res.data.roles);
+                this.dialog.close();
+                this.messgae.SendTokenAccount(res.status);
             } else {
                 if (res.message == "Mật khẩu sai"){
                     this.notificationService.show({

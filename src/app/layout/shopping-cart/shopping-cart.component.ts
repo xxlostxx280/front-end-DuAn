@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { WindowCloseResult, WindowRef, WindowService } from '@progress/kendo-angular-dialog';
+import { DialogCloseResult, WindowCloseResult, WindowRef, WindowService } from '@progress/kendo-angular-dialog';
 import { DialogService } from "@progress/kendo-angular-dialog";
 
 import { QuanityModel } from 'src/app/component/product-details/quantity.model';
@@ -23,6 +23,7 @@ export class ShoppingCartComponent implements OnInit {
   public key = Object.keys(localStorage);
   public badge = localStorage.length;
   public infoProduct: any;
+  private dialog: any;
 
   public listImageProduct: Array<any> = [];
   public listTypeSize: Array<any> = [];
@@ -51,27 +52,27 @@ export class ShoppingCartComponent implements OnInit {
     this.dataSource.map((x) => {
       this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
     })
-    this.message.receivedStorageCart().subscribe((res)=>{
+    this.message.receivedStorageCart().subscribe((res) => {
       this.dataSource = [];
       this.key.map((x: any) => {
         let data: any = localStorage.getItem(x);
         let value = JSON.parse(data);
         this.dataSource.push(value);
-      })    
-      let same_cart = this.dataSource.filter((x:any)=> {
-        if( x.Product.id == res.Product.id && 
-          x.Property.idproperty == res.Property.idproperty && 
-          x.Size.id == res.Size.id){
+      })
+      let same_cart = this.dataSource.filter((x: any) => {
+        if (x.Product.id == res.Product.id &&
+          x.Property.idproperty == res.Property.idproperty &&
+          x.Size.id == res.Size.id) {
           return res;
-        }else{
+        } else {
           return null;
         }
       });
-      if(same_cart.length == 2){
+      if (same_cart.length == 2) {
         this.total = this.total - Number(parseInt(this.dataSource[0].Product.price) * parseInt(this.dataSource[0].Quantity));
         localStorage.removeItem(this.dataSource[0].Id);
         this.message.SendBadgeCart(localStorage.length);
-        this.dataSource.splice(this.dataSource.indexOf(this.dataSource[0]),1);
+        this.dataSource.splice(this.dataSource.indexOf(this.dataSource[0]), 1);
         this.notificationService.show({
           appendTo: this.appendTo,
           content: "Chúng tôi đã xóa 1 sản phẩm trong giỏ hàng của bạn vì bạn đã sửa sản phẩm trùng với sản phẩm đã có trong giỏ hàng",
@@ -79,7 +80,7 @@ export class ShoppingCartComponent implements OnInit {
           position: { horizontal: "right", vertical: "top" },
           type: { style: "success", icon: true },
         });
-      }else{
+      } else {
         this.total = 0;
         this.dataSource.map((x) => {
           this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
@@ -89,12 +90,16 @@ export class ShoppingCartComponent implements OnInit {
   }
   buyProduct(): void {
     if (sessionStorage.getItem('TOKEN') == null) {
-      const dialogRef = this.dialogService.open({
+      this.dialog = this.dialogService.open({
         title: "Đăng nhập",
         content: DialogLoginComponent,
         width: 600,
         height: 400,
       });
+      const getInfoWindow = this.dialog.content.instance;
+      getInfoWindow.dialog = this.dialog;
+    } else {
+    
     }
   }
   removeCardItem(e: any, data: any, index: any): void {
@@ -117,13 +122,13 @@ export class ShoppingCartComponent implements OnInit {
     this.listProperty = [];
     let info = localStorage.getItem(data);
     this.infoProduct = JSON.parse(String(info));
-    const dialogRef = this.dialogService.open({
+    this.dialog = this.dialogService.open({
       title: "Thông tin sản phẩm",
       content: DialogInfoProductComponent,
       width: 750,
       height: 500,
     });
-    const getInfoWindow = dialogRef.content.instance;
+    const getInfoWindow = this.dialog.content.instance;
     getInfoWindow.infoProduct = this.infoProduct;
     this.api.getApi('getProperty-and-size/' + this.infoProduct.Product.id).subscribe((res) => {
       this.listProductByQuantity = res.data;
