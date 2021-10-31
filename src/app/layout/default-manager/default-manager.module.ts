@@ -25,6 +25,7 @@ import { NotificationModule } from "@progress/kendo-angular-notification";
 import { PopupModule } from "@progress/kendo-angular-popup";
 import { ScrollViewModule } from "@progress/kendo-angular-scrollview";
 import { ToolBarModule } from "@progress/kendo-angular-toolbar";
+import { UploadsModule } from "@progress/kendo-angular-upload";
 import { CarouselModule } from "ngx-owl-carousel-o";
 import { DashboardComponent } from "src/app/component/dashboard/dashboard.component";
 import { ManagerProductComponent } from "src/app/component/manager-product/manager-product.component";
@@ -67,6 +68,7 @@ import { DefaultManagerComponent } from "./default-manager.component";
         BrowserAnimationsModule,
         EditorModule,
         ToolBarModule,
+        UploadsModule,
         //Routing module
         shareManagerModule
     ],

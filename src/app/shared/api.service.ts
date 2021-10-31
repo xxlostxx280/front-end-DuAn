@@ -4,18 +4,17 @@ import { map, catchError } from 'rxjs/operators';
 import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { MessageService } from './message.service';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
-const CREATE_ACTION = "create";
-const UPDATE_ACTION = "update";
-const REMOVE_ACTION = "destroy";
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
   public Controller: String | undefined;
-  public isNew = true;
+  public formGroup !: FormGroup;
+  public status: String | undefined;
   constructor(private http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
-    private notificationService: NotificationService,private message: MessageService) {
+    private notificationService: NotificationService,private message: MessageService,private formBuilder: FormBuilder) {
 
   }
 
@@ -36,9 +35,12 @@ export class ApiService {
     title: '',
     Width: 1200,
     Height: 650,
-    top: -50,
+    top: -70,
     left: -120,
-    WindowData: function (component: any,data: any) {
+    After: function(getInfoWindow: any){
+      return getInfoWindow;
+    },
+    Execute: function (component: any,data: any,status: any) {
       let windowRef = this._.windowService.open({
         title: this.title,
         content: component,
@@ -48,7 +50,14 @@ export class ApiService {
         left: this.left
       })
       const getInfoWindow = windowRef.content.instance;
-      getInfoWindow.dataItem = data;
+      if(data.dataItem != undefined){
+        getInfoWindow.dataSource = data.dataItem;
+      }else{
+        getInfoWindow.dataSource = this._.formGroup.value;
+      }
+      getInfoWindow.formGroup = this._.formGroup;
+      getInfoWindow.status = status;
+      this.After(getInfoWindow);
     },
   }
   public Notification = {
@@ -65,7 +74,7 @@ export class ApiService {
       }else{
         this._.notificationService.show({
           cssClass: 'notification-show',
-          content: '',
+          content: data.message,
           animation: { type: "fade", duration: 800 },
           type: { style: 'error', icon: true },
           position: { horizontal: 'right', vertical: 'top'}
@@ -75,43 +84,68 @@ export class ApiService {
   }
   public Edit = {
     _: this,
-    Default: function(component: any,data: any){
-      this._.OpenWindow.WindowData(component,data);
+    Default: function(row:any){
+      return row;
+    },
+    Execute: function(component: any,data: any){
+      this._.status = "EDIT";
+      let arr = Object.keys(data.dataItem);
+      this._.formGroup = this._.formBuilder.group({});
+      for (let key of arr) {
+        this._.formGroup.addControl(key,new FormControl());
+        this._.formGroup.controls[key].setValue(data.dataItem[key]);
+      }
+      this.Default(this._.formGroup.controls)
+      this._.OpenWindow.Execute(component, data,"EDIT");
+      return;
     }
   }
   public Create = {
-    _: this,    
-    Default: function (component: any,data: any) {
-      this._.OpenWindow.WindowData(component,data);
+    _: this, 
+    Default: function(row: any){
+      return row;
+    },   
+    Execute: function (component: any,data: any) {
+      this._.status = "CREATE";
+      let arr = Object.keys(data);
+      this._.formGroup = this._.formBuilder.group({});
+      for (let key of arr) {
+        this._.formGroup.addControl(key,new FormControl());
+        this._.formGroup.controls[key].setValue('');
+      }
+      this._.OpenWindow.Execute(component,data,"CREATE");
+      return;
     },
   }
   public Read = {
     _: this,
-    ReadData: function (url: any) {
+    Execute: function (url: any) {
       return this._.http.get('http://localhost:8080/' + url)
         .pipe(map((res: any) => {
           return res;
         }))
     },
-    ReadAfter: function () { },
+    After: function () { },
   }
   public Update = {
     _: this,
     UpdateDataGrid: function (url: any, data: any) {
-      url = "/" + this._.Controller + "/saveAndFlush"; 
-      return this._.http.post('http://localhost:8080' + url, JSON.stringify(data)).pipe(map((res: any) => {
+      url = "http://localhost:8080/" + this._.Controller + "/saveAndFlush"; 
+      return this._.http.post(url, JSON.stringify(data)).pipe(map((res: any) => {
         return res;
       }))
     },
     UpdateDataWindow: function (url: any, data: any){
-      url = "/" + this._.Controller + "/saveAndFlush"; 
-      return this._.http.post('http://localhost:8080' + url, data).pipe(map((res: any) => {
-        this._.Notification.notificationData(res);
-        this._.message.SendDataAfterUpdate(res);
+      url = "http://localhost:8080/" + this._.Controller + "/saveAndFlush"; 
+      return this._.http.post(url, data).pipe(map((res: any) => {
+        if(res.status){
+          res.type = this._.status;
+          this._.Notification.notificationData(res);
+          this._.message.SendDataAfterUpdate(res);
+        }else{
+          this._.Notification.notificationData(res);
+        }
         return res;
-      },(err: any)=>{
-        this._.Notification.notificationData(err);
-        return err;
       }))
     }
   }
@@ -119,8 +153,12 @@ export class ApiService {
     _: this,
     Destroy: function (data: any, url: any) {
       return this._.http.post('http://localhost:8080/' + url, data).pipe(map((res: any) => {
+        
         return res;
       }))
     }
+  }
+  RunBase(){
+    let ui = this;
   }
 }

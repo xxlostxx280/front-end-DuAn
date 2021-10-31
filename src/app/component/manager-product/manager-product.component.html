@@ -5,7 +5,7 @@
     </div>
     <div class="card-body">
         <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="20" [pageable]="true"
-            [sortable]="true" [height]="500" [columnMenu]="{ filter: true }" (edit)="editHandler($event)" (add)="addHanler($event)"
+            [sortable]="true" [height]="450" [columnMenu]="{ filter: true }" (edit)="editHandler($event)" (add)="addHanler($event)"
             (save)="saveHandler($event)" (remove)="removeHandler($event)">
             <ng-template kendoGridToolbarTemplate>
                 <button kendoGridAddCommand>Add new</button>
