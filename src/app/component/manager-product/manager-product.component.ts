@@ -16,36 +16,21 @@ export class ManagerProductComponent implements OnInit {
   // @ViewChild('datalist',{read: ElementRef}) public datalist !: ElementRef;
 
   public gridData: Array<any> = [];
-  public productForm!: FormGroup;
-  private editService!: EditService;
-  editedRowIndex: any;
-
+  public method: any;
   constructor(private api: ApiService, private message: MessageService, private formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
-    this.api.Controller = "ProductController";
+    this.api.isManager = true;
+    this.api.Controller = "ProductManagerController";
     this.api.OpenWindow.Width = 1200;
-    this.api.Read.Execute('list-product').subscribe((rs) => {
+    this.api.Read.Execute().subscribe((rs) => {
+      this.api.dataSource = rs.data;
       this.gridData = rs.data;
     })
     this.message.receivedDataAfterUpadte().subscribe((res) => {
       if (res.status) {
-        if (res.type == "CREATE") {
-          this.gridData = this.gridData.concat(res.data);
-        } else if(res.type == "EDIT"){
-          const index = this.gridData.findIndex(x => x.id === res.data.id);
-          let newState = this.gridData.map((value, idx) => {
-            return idx === index ? res.data : value;
-          });
-          this.gridData = newState;
-        }else if(res.type == "DELETE"){
-          const index = this.gridData.findIndex(x => x.id === res.data.id);
-          let newState = this.gridData.filter((value, idx) => {
-            return idx !== index;
-          });
-          this.gridData = newState;
-        }
+        this.gridData = this.api.dataSource;
       }
     })
   }

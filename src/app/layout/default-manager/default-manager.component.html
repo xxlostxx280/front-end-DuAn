@@ -6,7 +6,7 @@
                 alt="Logo" width="100%" height="100%" style="padding: 10px;">
         </ng-template>
         <ng-template kendoDrawerItemTemplate let-item>
-            <div style="width: 100%;padding: 10px 20px;">
+            <div style="width: 100%;padding: 10px 20px;margin: 5px 0px">
                 <i class="{{item.icon}}" aria-hidden="true" style="padding-right: 15px;font-size: 25px;"></i>
                 <span style="padding: 0px 10px;">{{item.text }}</span>
                 <span *ngIf="item.expanded && item.hasOwnProperty('children')" class="k-icon k-i-arrow-chevron-down"

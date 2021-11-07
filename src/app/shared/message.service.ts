@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 @Injectable({
     providedIn: "root"
@@ -9,6 +9,7 @@ export class MessageService {
     private subjectStorage = new Subject<any>();
     private subjectTokenAccount = new Subject<any>();
     private subjectDataAfterUpdate = new Subject<any>();
+    private behaviorSubjectData = new BehaviorSubject<any[]>([]);
     constructor() { }
 
     SendBadgeCart(message: any) {
@@ -37,5 +38,13 @@ export class MessageService {
     }
     receivedDataAfterUpadte():Observable<any>{
         return this.subjectDataAfterUpdate.asObservable();
+    }
+    
+    ///// Thay đổi data sau khi sửa data trên grid ///////
+    SendDataBehavior(message: any){
+        this.behaviorSubjectData.next(message);
+    }
+    receivedDataBehavior(): Observable<any>{
+        return this.behaviorSubjectData.asObservable();
     }
 }

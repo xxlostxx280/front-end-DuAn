@@ -28,8 +28,12 @@ import { ToolBarModule } from "@progress/kendo-angular-toolbar";
 import { UploadsModule } from "@progress/kendo-angular-upload";
 import { CarouselModule } from "ngx-owl-carousel-o";
 import { DashboardComponent } from "src/app/component/dashboard/dashboard.component";
+import { ManagerCategoryComponent } from "src/app/component/manager-category/manager-category.component";
 import { ManagerProductComponent } from "src/app/component/manager-product/manager-product.component";
 import { WindowProductComponent } from "src/app/component/manager-product/windowProduct.component";
+import { ManagerPropertyComponent } from "src/app/component/manager-property/manager-property.component";
+import { ManagerQuantityComponent } from "src/app/component/manager-quantity/manager-quantity.component";
+import { ManagerSizeComponent } from "src/app/component/manager-size/manager-size.component";
 import { SwiperModule } from "swiper/angular";
 import { shareManagerModule } from "../shareManager.module";
 import { DefaultManagerComponent } from "./default-manager.component";
@@ -39,6 +43,11 @@ import { DefaultManagerComponent } from "./default-manager.component";
         DefaultManagerComponent,
         ManagerProductComponent,
         DashboardComponent,
+        ManagerSizeComponent,
+        ManagerCategoryComponent,
+        ManagerQuantityComponent,
+        ManagerPropertyComponent,
+        ///////Popup của component cha//////
         WindowProductComponent,
     ],
     imports:[

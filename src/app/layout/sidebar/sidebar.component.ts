@@ -1,7 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
 import { PanelBarExpandMode, PanelBarItemModel } from "@progress/kendo-angular-layout";
+import { NotificationService } from '@progress/kendo-angular-notification';
 import { ApiService } from 'src/app/shared/api.service';
+import { MessageService } from 'src/app/shared/message.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -16,16 +21,21 @@ export class SidebarComponent implements OnInit {
   public router: Router;
   public selectedId = "";
 
-  constructor(private api: ApiService, router: Router) {
+  constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+    private notificationService: NotificationService, private formBuilder: FormBuilder, router: Router) {
     this.router = router;
+  }
+  public api: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public api_2: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+
+  ngOnInit(): void {
+    this.api.Controller = 'CategoryController';
+    this.api_2.Controller = 'CategoryDetailController';
     this.queryItems();
   }
 
-  ngOnInit(): void {
-
-  }
   private queryItems(): void {
-    this.api.getApi('listCategory')
+    this.api.Read.Execute()
       .subscribe(res => {
         this.categoriesView = res.map((item: any) => {
           const data = <PanelBarItemModel><unknown>{
@@ -42,7 +52,7 @@ export class SidebarComponent implements OnInit {
       });
   }
   private queryChildItems(data: any): void {
-    this.api.getApi('list-categoryDetail')
+    this.api_2.Read.Execute()
       .subscribe((res) => {
         const arr = res.filter((x: any) => x.category.id == data.id)
         data.children = arr.map((result: any) => {
@@ -72,6 +82,7 @@ export class SidebarComponent implements OnInit {
     }
     return false;
   }
+  
   removeVietnameseTones(str:any,data: any):void {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g,"a"); 
     str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g,"e"); 

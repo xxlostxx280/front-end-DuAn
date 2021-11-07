@@ -28,6 +28,7 @@ export class WindowProductComponent implements OnInit {
     constructor(private message: MessageService, private formBuilder: FormBuilder, private api: ApiService) { }
 
     ngOnInit(): void {
+        this.api.typeData = "popup";
         this.formGroup.addControl('category', new FormControl());
         if (this.status == "EDIT") {
             this.formGroup.controls.description.setValue(decodeURIComponent(this.dataSource.description.replace(/\+/g, " ")));
@@ -41,10 +42,10 @@ export class WindowProductComponent implements OnInit {
     }
 
     getCategory(): void {
-        this.api.Read.Execute('listCategory').subscribe((rs) => {
+        this.api.Read.Execute().subscribe((rs) => {
             this.category = rs;
         })
-        this.api.Read.Execute('list-categoryDetail').subscribe((rs) => {
+        this.api.Read.Execute().subscribe((rs) => {
             this.categoryDetail = rs;
         })
     }
@@ -59,7 +60,7 @@ export class WindowProductComponent implements OnInit {
             else{
                 this.formGroup.value.description = encodeURIComponent(this.formGroup.value.description).replace(/'/g, "%27");
                 this.formGroup.value.descriptionDetail = encodeURIComponent(this.formGroup.value.descriptionDetail).replace(/'/g, "%27");
-                this.api.Update.UpdateDataWindow('saveProduct', this.formGroup.value).subscribe((res) => { });
+                this.api.Update.Execute(this.formGroup.value);
             }
         } else {
             this.addImage();
@@ -72,9 +73,7 @@ export class WindowProductComponent implements OnInit {
             this.formGroup.value.description = encodeURIComponent(this.formGroup.value.description).replace(/'/g, "%27");
             this.formGroup.value.descriptionDetail = encodeURIComponent(this.formGroup.value.descriptionDetail).replace(/'/g, "%27");
             if (rs.status) {
-                this.api.Update.UpdateDataWindow('saveProduct', this.formGroup.value).subscribe((res) => {
-                    console.log(res);
-                });
+                this.api.Update.Execute(this.formGroup.value);
             }
         });
     }

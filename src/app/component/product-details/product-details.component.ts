@@ -1,5 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, AfterContentInit, DoCheck } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, FormBuilder, } from "@angular/forms";
+import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
+import { NotificationService } from '@progress/kendo-angular-notification';
 import { ApiService } from 'src/app/shared/api.service';
 import { MessageService } from 'src/app/shared/message.service';
 import SwiperCore, { Pagination, SwiperOptions, Autoplay, Navigation, Thumbs } from "swiper";
@@ -24,6 +27,11 @@ export class ProductDetailsComponent implements OnInit {
   public listProperty: Array<any> = [];
   public badge = 0;
   public dataSource: Array<any> = [];
+  public QuantityObj: QuanityModel = new QuanityModel();
+  public formGroup = new FormGroup({
+    property: new FormControl(),
+    size: new FormControl(),
+  });
 
   public defaultItem: any = {
     name: "Choose...",
@@ -59,18 +67,29 @@ export class ProductDetailsComponent implements OnInit {
   };
   public thumbsSwiper: any;
 
-  public QuantityObj: QuanityModel = new QuanityModel();
-  public formGroup = new FormGroup({
-    property: new FormControl(),
-    size: new FormControl(),
-  });
-  constructor(private api: ApiService, private messageService: MessageService) { }
+  constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+    private notificationService: NotificationService, private formBuilder: FormBuilder) {
+  }
+  public Product: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public TypeSize: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Size: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Quantity: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Property: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Image: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
 
   ngOnInit(): void {
     let url = window.location.href;
     let id = url.replace('http://localhost:4200/list-product/info/', '');
     this.QuantityObj.Quantity = 1;
-    this.api.getApi('list-product/info/' + id).subscribe((res) => {
+
+    this.Product.Controller = "ProductController";
+    this.TypeSize.Controller = "TypeSizeController";
+    this.Size.Controller = "SizeController";
+    this.Quantity.Controller = "QuantityController";
+    this.Property.Controller = "PropertyController";
+    this.Image.Controller = "ImageController";
+
+    this.Product.getApi('Customer/' + this.Product.Controller + '/findProductById/' + id).subscribe((res) => {
       let description = res.data.description;
       let descriptionDetail = res.data.descriptionDetail;
       this.infoProduct = res.data;
@@ -78,15 +97,17 @@ export class ProductDetailsComponent implements OnInit {
       this.infoProduct.descriptionDetail = decodeURIComponent(descriptionDetail.replace(/\+/g, " "));
       this.QuantityObj.Product = res.data;
     })
-    this.api.getApi('list-type-size').subscribe((res) => {
-      this.listTypeSize = res.data;
-    }, (err: any) => {
-
+    this.Product.getApi('Customer/' + this.Product.Controller +'/GetProductByCategory/' + id).subscribe((res) => {
+      this.listProductByCategory = res.data;
     })
-    this.api.getApi('getProperty-and-size/' + id).subscribe((res) => {
+
+    this.TypeSize.Read.Execute().subscribe((res) => {
+      this.listTypeSize = res.data;
+    });
+    this.Quantity.getApi('Customer/' + this.Quantity.Controller +'/findQuantityByProduct/' + id).subscribe((res) => {
       this.listProductByQuantity = res.data;
       if (res.status) {
-        this.api.getApi('list-property').subscribe((rs) => {
+        this.Property.Read.Execute().subscribe((rs) => {
           this.listProductByQuantity.map((val: any, idx: any) => {
             let data = rs.data.filter((x: any) => x.idproperty == val.property.idproperty);
             if (data.length > 0) {
@@ -108,7 +129,7 @@ export class ProductDetailsComponent implements OnInit {
           this.QuantityObj.Property = this.listProperty[0];
           this.formGroup.controls.property.setValue(String(this.listProperty[0].idproperty));
         })
-        this.api.getApi('list-size').subscribe((rs) => {
+        this.Size.Read.Execute().subscribe((rs) => {
           this.listProductByQuantity.map((val: any, idx: any) => {
             let data = rs.data.filter((x: any) => x.id == val.size.id);
             if (data.length > 0) {
@@ -132,11 +153,8 @@ export class ProductDetailsComponent implements OnInit {
         })
       }
     })
-    this.api.getApi('list-image/' + id).subscribe((res) => {
+    this.Image.getApi('Customer/' + this.Image.Controller + '/findByProduct/' + id).subscribe((res) => {
       this.listImageProduct = res.data;
-    })
-    this.api.getApi('GetProductByCategory/' + id).subscribe((res) => {
-      this.listProductByCategory = res.data;
     })
   }
   changeProperty(e: any): void {
@@ -165,22 +183,22 @@ export class ProductDetailsComponent implements OnInit {
       this.QuantityObj.Id = random1;
       localStorage.setItem(random1, JSON.stringify(this.QuantityObj))
       this.badge = localStorage.length;
-      this.messageService.SendBadgeCart(this.badge);
+      this.message.SendBadgeCart(this.badge);
     } else {
-      let same_cart = anotherProduct.filter((x)=> {
-        if( x.Product.id == this.QuantityObj.Product.id && 
-          x.Property.idproperty == this.QuantityObj.Property.idproperty && 
-          x.Size.id == this.QuantityObj.Size.id){
+      let same_cart = anotherProduct.filter((x) => {
+        if (x.Product.id == this.QuantityObj.Product.id &&
+          x.Property.idproperty == this.QuantityObj.Property.idproperty &&
+          x.Size.id == this.QuantityObj.Size.id) {
           return this.QuantityObj;
-        }else{
+        } else {
           return null;
         }
       });
-      if(same_cart.length == 0){
+      if (same_cart.length == 0) {
         this.QuantityObj.Id = random1;
         localStorage.setItem(random1, JSON.stringify(this.QuantityObj));
         this.badge = localStorage.length;
-        this.messageService.SendBadgeCart(this.badge);
+        this.message.SendBadgeCart(this.badge);
       }
     }
   }

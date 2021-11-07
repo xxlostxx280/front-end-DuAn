@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DialogCloseResult, WindowCloseResult, WindowRef, WindowService } from '@progress/kendo-angular-dialog';
 import { DialogService } from "@progress/kendo-angular-dialog";
 
@@ -9,6 +9,7 @@ import { MessageService } from 'src/app/shared/message.service';
 import { DialogInfoProductComponent } from 'src/app/layout/shopping-cart/infoProductDialog.component'
 import { DialogLoginComponent } from './loginDialog.component';
 import { NotificationService } from '@progress/kendo-angular-notification';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-shopping-cart',
   templateUrl: './shopping-cart.component.html',
@@ -40,10 +41,17 @@ export class ShoppingCartComponent implements OnInit {
     property: new FormControl(),
     size: new FormControl(),
   });
-  constructor(private api: ApiService, private message: MessageService, private dialogService: DialogService,
-    private notificationService: NotificationService) { }
+  constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+    private notificationService: NotificationService, private formBuilder: FormBuilder) { }
+
+  public Quantity: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Property: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Size: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
 
   ngOnInit(): void {
+    this.Quantity.Controller = "QuantityController";
+    this.Property.Controller = "PropertyController";
+    this.Size.Controller = "SizeController";
     this.key.map((x: any) => {
       let data: any = localStorage.getItem(x);
       let value = JSON.parse(data);
@@ -99,7 +107,7 @@ export class ShoppingCartComponent implements OnInit {
       const getInfoWindow = this.dialog.content.instance;
       getInfoWindow.dialog = this.dialog;
     } else {
-    
+
     }
   }
   removeCardItem(e: any, data: any, index: any): void {
@@ -130,10 +138,10 @@ export class ShoppingCartComponent implements OnInit {
     });
     const getInfoWindow = this.dialog.content.instance;
     getInfoWindow.infoProduct = this.infoProduct;
-    this.api.getApi('getProperty-and-size/' + this.infoProduct.Product.id).subscribe((res) => {
+    this.Quantity.getApi('Customer/' + this.Quantity.Controller + '/findQuantityByProduct/' + this.infoProduct.Product.id).subscribe((res) => {
       this.listProductByQuantity = res.data;
       if (res.status) {
-        this.api.getApi('list-property').subscribe((rs) => {
+        this.Property.Read.Execute().subscribe((rs) => {
           this.listProductByQuantity.map((val: any, idx: any) => {
             let data = rs.data.filter((x: any) => x.idproperty == val.property.idproperty);
             if (data.length > 0) {
@@ -156,7 +164,7 @@ export class ShoppingCartComponent implements OnInit {
           getInfoWindow.formGroup.controls.property.setValue(String(this.infoProduct.Property.idproperty))
           this.formGroup.controls.property.setValue(String(this.listProperty[0].idproperty));
         })
-        this.api.getApi('list-size').subscribe((rs) => {
+        this.Size.Read.Execute().subscribe((rs) => {
           this.listProductByQuantity.map((val: any, idx: any) => {
             let data = rs.data.filter((x: any) => x.id == val.size.id);
             if (data.length > 0) {

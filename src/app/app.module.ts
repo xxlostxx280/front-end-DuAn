@@ -30,9 +30,6 @@ import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EditorModule } from '@progress/kendo-angular-editor';
 import { ToolBarModule } from '@progress/kendo-angular-toolbar';
 
-
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,6 +54,9 @@ import { ToolBarModule } from '@progress/kendo-angular-toolbar';
     NotificationModule,
     NgbModule,
     NavigationModule,
+    UploadsModule,
+    EditorModule,
+    ToolBarModule,
     /////////////////////Share layout Default Module/////////
     DefaultModule,
     DefaultManagerModule,
@@ -64,9 +64,6 @@ import { ToolBarModule } from '@progress/kendo-angular-toolbar';
     AppRoutingModule,
     ClienRoutingModule,
     ManagerRoutingModule,
-    UploadsModule,
-    EditorModule,
-    ToolBarModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

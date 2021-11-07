@@ -21,7 +21,8 @@ export class ListProductByCategoryComponent implements OnInit {
   ngOnInit(): void {
     let url = window.location.href;
     let name = url.replace('http://localhost:4200/collection/', '');
-    this.api.getApi('list-categoryDetail')
+    this.api.Controller = "CategoryDetailController"
+    this.api.Read.Execute()
       .subscribe((res) => {
         for (let i = 0; i < res.length; i++) {
           this.removeVietnameseTones(res[i].name);
@@ -35,7 +36,7 @@ export class ListProductByCategoryComponent implements OnInit {
       })
   }
   getProduct(id: any): void {
-    this.api.getApi('collection/' + id).subscribe((res) => {
+    this.api.getApi('Customer/ProductController/collection/' + id).subscribe((res) => {
       this.listProduct = res.data;
       this.total = res.data.length;
       this.pageData();

@@ -18,7 +18,7 @@ export class HomePageComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   ngOnInit(): void {
-    this.api.getApi("home").subscribe((res)=>{
+    this.api.getApi("Customer/ProductController/home").subscribe((res)=>{
       this.listProduct = res.data.slice(0,8);
     })
   }

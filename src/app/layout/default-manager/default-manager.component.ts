@@ -16,10 +16,24 @@ export class DefaultManagerComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit(): void {
+    let itemSelected = null;
     let url = window.location.href;
     let str = url.replace('http://localhost:4200/manager/','');
-    let itemSelected = this.drawItems.find((x:any)=> x.path == str);
-    itemSelected.selected = true;
+    itemSelected = this.drawItems.find((x:any)=> x.path == str);
+    if(itemSelected == null){
+      let getChildren: any[] = [];
+      let arr = this.drawItems.filter((x:any)=> x.hasOwnProperty('children') == true);
+      arr.map((x)=>{
+        let data = x.children;
+        for(let i = 0; i < data.length;i++){
+          getChildren.push(data[i]);
+        }
+      })
+      itemSelected = getChildren.find((x:any) => x.path == str);
+      itemSelected.selected = true;
+    }else{
+      itemSelected.selected = true;
+    }
   }
 
   signOut(): void {
@@ -30,9 +44,6 @@ export class DefaultManagerComponent implements OnInit {
     if (!event.item.hasOwnProperty('children')) {
       window.location.href = "/manager/" + event.item.path
     } else {
-      if(event.item.expanded){
-        event.item.expanded = true;
-      }
       const text = event.item.text;
       const newItems = this.resetItems();
       const index = newItems.findIndex((i) => i.text === text);
