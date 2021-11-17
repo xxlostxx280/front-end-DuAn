@@ -1,5 +1,5 @@
 import { ErrorHandler, Injectable } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
 import { NotificationService } from '@progress/kendo-angular-notification';
@@ -21,22 +21,43 @@ export class ApiService {
   public updatedItems: any[] = [];
   public deletedItems: any[] = [];
   public isManager = false;
+  public loaderVisible = false;
 
   constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder) {
   }
 
+  getHeader() {
+    let token = sessionStorage.getItem("TOKEN");
+    return token ? new HttpHeaders().set('Authorization', 'Bearer ' + token) : null;
+  }
   getApi(url: any) {
-    return this.http.get('http://localhost:8080/' + url)
-      .pipe(map((res: any) => {
-        return res;
-      }))
+    let getHeader = this.getHeader();
+    if (getHeader instanceof HttpHeaders){
+      return this.http.get('http://localhost:8080/' + url, { headers: getHeader})
+        .pipe(map((res: any) => {
+          return res;
+        }))
+    }else{
+      return this.http.get('http://localhost:8080/' + url)
+        .pipe(map((res: any) => {
+          return res;
+        }))
+    }
   }
   postApi(url: any, data: any) {
-    return this.http.post('http://localhost:8080/' + url, data)
+    let getHeader = this.getHeader();
+    if (getHeader instanceof HttpHeaders){
+      return this.http.post('http://localhost:8080/' + url, data,{headers: getHeader})
       .pipe(map((res: any) => {
         return res;
       }))
+    }else{
+      return this.http.post('http://localhost:8080/' + url, data)
+      .pipe(map((res: any) => {
+        return res;
+      }))
+    }
   }
   public OpenWindow = {
     _: this,
@@ -70,10 +91,9 @@ export class ApiService {
   }
   public Notification = {
     _: this,
-    notificationData: function (data: any) {
+    notificationExecute: function (data: any) {
       if (data.status) {
         this._.notificationService.show({
-          cssClass: 'notification-show',
           content: data.message,
           animation: { type: "fade", duration: 800 },
           type: { style: 'success', icon: true },
@@ -81,13 +101,20 @@ export class ApiService {
         })
       } else {
         this._.notificationService.show({
-          cssClass: 'notification-show',
           content: data.message,
           animation: { type: "fade", duration: 800 },
           type: { style: 'error', icon: true },
           position: { horizontal: 'right', vertical: 'top' }
         })
       }
+    },
+    notificationDefault: function (content: any) {
+      this._.notificationService.show({
+        content: content,
+        animation: { type: "fade", duration: 800 },
+        type: { style: 'warning', icon: true },
+        position: { horizontal: 'right', vertical: 'top' }
+      })
     }
   }
   public Grid = {
@@ -280,10 +307,10 @@ export class ApiService {
       let url = "http://localhost:8080/Manager/" + this._.Controller + "/updateInline";
       return this._.http.post(url, formData).pipe(map((res: any) => {
         if (res.status) {
-          this._.Notification.notificationData(res);
+          this._.Notification.notificationExecute(res);
           this._.message.SendDataAfterUpdate(res);
         } else {
-          this._.Notification.notificationData(res);
+          this._.Notification.notificationExecute(res);
         }
         this.UpdateAfterGrid(res);
         return res;
@@ -291,12 +318,15 @@ export class ApiService {
     },
     UpdateDataWindow: function (data: any) {
       let url = "http://localhost:8080/Manager/" + this._.Controller + "/saveAndFlush";
+      this._.loaderVisible = true;
+      this._.message.SendLoadingVisible(this._.loaderVisible)
       return this._.http.post(url, data).pipe(map((res: any) => {
+        this._.loaderVisible = false;
         if (res.status) {
           res.type = this._.status;
-          this._.Notification.notificationData(res);
+          this._.Notification.notificationExecute(res);
         } else {
-          this._.Notification.notificationData(res);
+          this._.Notification.notificationExecute(res);
         }
         this.UpdateAfterWindow(res);
         return res;
@@ -318,6 +348,7 @@ export class ApiService {
         });
         this._.dataSource = newState;
       }
+      this._.message.SendLoadingVisible(this._.loaderVisible)
       this._.message.SendDataAfterUpdate(res);
       return res;
     },
@@ -334,10 +365,10 @@ export class ApiService {
       return this._.http.post('http://localhost:8080/Manager/' + this._.Controller + '/delete', data).pipe(map((res: any) => {
         if (res.status) {
           res.type = this._.status;
-          this._.Notification.notificationData(res);
+          this._.Notification.notificationExecute(res);
           this._.message.SendDataAfterUpdate(res);
         } else {
-          this._.Notification.notificationData(res);
+          this._.Notification.notificationExecute(res);
         }
         return res;
       }))

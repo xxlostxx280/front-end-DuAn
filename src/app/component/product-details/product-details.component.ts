@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, AfterContentInit, DoCheck } from '@angular/core';
+import { Component, OnInit, AfterContentInit, DoCheck, ViewChild, TemplateRef } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormControl, FormGroup, FormBuilder, } from "@angular/forms";
 import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
 import { NotificationService } from '@progress/kendo-angular-notification';
@@ -18,6 +18,8 @@ SwiperCore.use([Navigation, Thumbs]);
   styleUrls: ['./product-details.component.css']
 })
 export class ProductDetailsComponent implements OnInit {
+  @ViewChild("template", { read: TemplateRef })
+  public notificationTemplate: TemplateRef<any> | undefined;
   public infoProduct: any;
   public listImageProduct: Array<any> = [];
   public listTypeSize: Array<any> = [];
@@ -28,15 +30,17 @@ export class ProductDetailsComponent implements OnInit {
   public badge = 0;
   public dataSource: Array<any> = [];
   public QuantityObj: QuanityModel = new QuanityModel();
+  public isDiscount = false;
+  public newPrice = 0;
   public formGroup = new FormGroup({
     property: new FormControl(),
     size: new FormControl(),
   });
-
   public defaultItem: any = {
     name: "Choose...",
     id: null,
   };
+  
   public config: SwiperOptions = {
     freeMode: true,
     pagination: { clickable: true },
@@ -67,7 +71,7 @@ export class ProductDetailsComponent implements OnInit {
   };
   public thumbsSwiper: any;
 
-  constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+  constructor(private api: ApiService,private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) {
   }
   public Product: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
@@ -90,21 +94,33 @@ export class ProductDetailsComponent implements OnInit {
     this.Image.Controller = "ImageController";
 
     this.Product.getApi('Customer/' + this.Product.Controller + '/findProductById/' + id).subscribe((res) => {
+      if(res.data.discount != null){
+        this.isDiscount = true;
+        this.newPrice = Number(res.data.price * (100 - res.data.discount))/100;
+        this.QuantityObj.newPrice = this.newPrice;
+      }
       let description = res.data.description;
       let descriptionDetail = res.data.descriptionDetail;
       this.infoProduct = res.data;
-      this.infoProduct.description = decodeURIComponent(description.replace(/\+/g, ""));
-      this.infoProduct.descriptionDetail = decodeURIComponent(descriptionDetail.replace(/\+/g, " "));
+      if(this.infoProduct.description != null){
+        this.infoProduct.description = decodeURIComponent(description.replace(/\+/g, ""));
+      }else if(this.infoProduct.descriptionDetail != null){
+        this.infoProduct.descriptionDetail = decodeURIComponent(descriptionDetail.replace(/\+/g, " "));
+      }
       this.QuantityObj.Product = res.data;
     })
-    this.Product.getApi('Customer/' + this.Product.Controller +'/GetProductByCategory/' + id).subscribe((res) => {
+    this.Product.getApi('Customer/' + this.Product.Controller + '/GetProductByCategory/' + id).subscribe((res) => {
       this.listProductByCategory = res.data;
     })
 
     this.TypeSize.Read.Execute().subscribe((res) => {
       this.listTypeSize = res.data;
     });
-    this.Quantity.getApi('Customer/' + this.Quantity.Controller +'/findQuantityByProduct/' + id).subscribe((res) => {
+
+    this.Quantity.Read.Execute().subscribe((rs) => {
+      this.Quantity.dataSource = rs.data;
+    })
+    this.Quantity.getApi('Customer/' + this.Quantity.Controller + '/findQuantityByProduct/' + id).subscribe((res) => {
       this.listProductByQuantity = res.data;
       if (res.status) {
         this.Property.Read.Execute().subscribe((rs) => {
@@ -180,10 +196,18 @@ export class ProductDetailsComponent implements OnInit {
     });
     let anotherProduct = this.dataSource.filter((x) => x.Product.id == this.QuantityObj.Product.id);
     if (localStorage.length == 0 || anotherProduct.length == 0) {
-      this.QuantityObj.Id = random1;
-      localStorage.setItem(random1, JSON.stringify(this.QuantityObj))
-      this.badge = localStorage.length;
-      this.message.SendBadgeCart(this.badge);
+      let getIdQuantity = this.listProductByQuantity.find(x => x.idProduct == this.QuantityObj.Product.id &&
+        x.property.idproperty == this.QuantityObj.Property.idproperty &&
+        x.size.id == this.QuantityObj.Size.id);
+      if (getIdQuantity != undefined) {
+        this.QuantityObj.Id = random1;
+        this.QuantityObj.IdQuantity = getIdQuantity.id;
+        localStorage.setItem(random1, JSON.stringify(this.QuantityObj));
+        this.badge = localStorage.length;
+        this.message.SendBadgeCart(this.badge);
+      }else{
+        this.api.Notification.notificationDefault(this.notificationTemplate);
+      }
     } else {
       let same_cart = anotherProduct.filter((x) => {
         if (x.Product.id == this.QuantityObj.Product.id &&
@@ -195,10 +219,20 @@ export class ProductDetailsComponent implements OnInit {
         }
       });
       if (same_cart.length == 0) {
-        this.QuantityObj.Id = random1;
-        localStorage.setItem(random1, JSON.stringify(this.QuantityObj));
-        this.badge = localStorage.length;
-        this.message.SendBadgeCart(this.badge);
+        let getIdQuantity = this.listProductByQuantity.find((x) => x.idProduct == this.QuantityObj.Product.id &&
+          x.property.idproperty == this.QuantityObj.Property.idproperty &&
+          x.size.id == this.QuantityObj.Size.id);
+        if (getIdQuantity != undefined) {
+          this.QuantityObj.Id = random1;
+          this.QuantityObj.IdQuantity = getIdQuantity.id;
+          localStorage.setItem(random1, JSON.stringify(this.QuantityObj));
+          this.badge = localStorage.length;
+          this.message.SendBadgeCart(this.badge);
+        } else {
+          this.api.Notification.notificationDefault(this.notificationTemplate);
+        }
+      }else{
+        this.api.Notification.notificationDefault('Đã có sản phẩm này trong giỏ hàng của bạn')
       }
     }
   }

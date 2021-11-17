@@ -1,11 +1,14 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { DashboardComponent } from "../component/dashboard/dashboard.component";
+import { ManagerAccountComponent } from "../component/manager-account/manager-account.component";
+import { ManagerBillComponent } from "../component/manager-bill/manager-bill.component";
 import { ManagerCategoryComponent } from "../component/manager-category/manager-category.component";
 import { ManagerProductComponent } from "../component/manager-product/manager-product.component";
 import { ManagerPropertyComponent } from "../component/manager-property/manager-property.component";
 import { ManagerQuantityComponent } from "../component/manager-quantity/manager-quantity.component";
 import { ManagerSizeComponent } from "../component/manager-size/manager-size.component";
+import { ManagerVoucherComponent } from "../component/manager-voucher/manager-voucher.component";
 import { DefaultManagerComponent } from "../layout/default-manager/default-manager.component";
 
 const routes: Routes = [
@@ -26,7 +29,7 @@ const routes: Routes = [
                 component: ManagerSizeComponent
             },
             {   
-                path: 'quan-ly-danh-muc',
+                path: 'quan-ly-danh-muc-san-pham',
                 component: ManagerCategoryComponent
             },
             {   
@@ -36,6 +39,18 @@ const routes: Routes = [
             {   
                 path: 'quan-ly-so-luong',
                 component: ManagerQuantityComponent
+            },
+            {   
+                path: 'danh-sach-tai-khoan',
+                component: ManagerAccountComponent
+            },
+            {   
+                path: 'quan-ly-don-hang',
+                component: ManagerBillComponent,
+            },
+            {   
+                path: 'quan-ly-voucher',
+                component: ManagerVoucherComponent,
             },
         ]
     }

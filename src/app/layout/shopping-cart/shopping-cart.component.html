@@ -3,28 +3,82 @@
         width: 100%;
         margin-bottom: 25px;
     }
+
+    i {
+        font-size: 25px;
+        color: #ddd;
+        padding-right: 5px;
+    }
 </style>
 <app-header></app-header>
 <div class="container">
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <kendo-stepper [steps]="steps" stepType="full" [(currentStep)]="current" [style.width.px]="570"
+            (activate)="activate($event)">
+        </kendo-stepper>
+    </div>
     <div class="row">
         <div class="col-md-7" style="margin: 20px 0px;">
-            <h3 style="color: #ef2b2b;font-weight: bold;text-align: center;font-size: 30px;padding: 10px 0px;">
-                Địa chỉ giao hàng
-            </h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <kendo-textbox placeholder="Họ và tên"></kendo-textbox>
-                    <kendo-textbox placeholder="Email"></kendo-textbox>
-                    <kendo-textbox placeholder="Quận Huyện"></kendo-textbox>
-                </div>
-                <div class="col-md-6">
-                    <kendo-textbox placeholder="Số điện thoại"></kendo-textbox>
-                    <kendo-textbox placeholder="Tỉnh thành"></kendo-textbox>
-                    <kendo-textbox placeholder="Phường xã"></kendo-textbox>
+            <div *ngIf="step_1">
+                <h3 style="color: #ef2b2b;font-weight: bold;text-align: center;font-size: 30px;padding: 10px 0px;">
+                    Địa chỉ giao hàng
+                </h3>
+                <form [formGroup]="InfomationCustomer" class="row">
+                    <div class="col-md-6">
+                        <kendo-textbox placeholder="Họ và tên" formControlName="FullName"></kendo-textbox>
+                    </div>
+                    <div class="col-md-6">
+                        <kendo-textbox placeholder="Số điện thoại" formControlName="PhoneNumber"></kendo-textbox>
+                    </div>
+                    <div class="col-md-12">
+                        <kendo-textbox placeholder="Địa chỉ" formControlName="Address"></kendo-textbox><br />
+                    </div>
+                    <div class="col-md-12">
+                        <kendo-textbox placeholder="Ghi chú" formControlName="Note"></kendo-textbox>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="step_2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 style="color: #ef2b2b;font-weight: bold;font-size: 30px;padding: 10px 0px;">
+                            Địa chỉ giao hàng
+                        </h3>
+                        <p><i class="fa fa-user" aria-hidden="true"
+                                style="width: 25px;margin-right: 15px;"></i>{{BillObj.fullname}}</p>
+                        <p><i class="fa fa-mobile" aria-hidden="true"
+                                style="width: 25px;margin-right: 15px;"></i>{{BillObj.sdt}}</p>
+                        <p><i class="fa fa-map" aria-hidden="true"
+                                style="width: 25px;margin-right: 15px;"></i>{{BillObj.address}}</p>
+                    </div>
+                    <div class="col-md-12">
+                        <h3 style="color: #ef2b2b;font-weight: bold;font-size: 30px;padding: 10px 0px;">
+                            Chọn phương thức thanh toán
+                        </h3>
+                        <form [formGroup]="Payment">
+                            <div style="font-size: 30px;margin: 20px 0px;">
+                                <input type="radio" name="payment" value="truck" #male formControlName="payment"
+                                    kendoRadioButton />
+                                <label style="padding: 0px 20px;">
+                                    <i class="fa fa-truck" aria-hidden="true"></i>
+                                    Vận chuyển toàn quốc
+                                </label>
+                            </div>
+                            <div style="font-size: 30px;margin: 20px 0px;">
+                                <input type="radio" name="payment" value="card" #female formControlName="payment"
+                                    kendoRadioButton />
+                                <label style="padding: 0px 20px;">
+                                    <i class="fa fa-credit-card" aria-hidden="true"></i>
+                                    Thanh toán qua ví
+                                </label>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <kendo-textbox placeholder="Địa chỉ"></kendo-textbox><br />
-            <kendo-textbox placeholder="Ghi chú"></kendo-textbox>
+            <div *ngIf="step_3">
+
+            </div>
             <div style="float: right;background: #ef2b2b;border-radius: 5px;">
                 <button kendoButton iconClass="fa fa-check" look="clear" (click)="buyProduct()"
                     style="background-color: #ef2b2b;color: white;font-size: 20px;">
@@ -44,11 +98,22 @@
                         <div class="col-md-3">
                             <img src="{{card.Product.image}}" width="80px" height="100px">
                         </div>
-                        <div class="col-md-6">
-                            <p
-                                style="line-height: 24px;margin-right: 10px;padding: 0 !important;font-size: 1.2857em;font-weight: bold;margin-bottom: 0;color: #ffc045;">
-                                {{card.Product.price}}
-                            </p>
+                        <div class="col-md-6" style="padding: 0px;">
+                            <div *ngIf="card.newPrice != 0">
+                                <span style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;"
+                                    *ngIf="card.newPrice != 0">
+                                    {{card.newPrice}} VNĐ
+                                </span>
+                                <small
+                                    style="text-decoration-line: line-through;padding: 0px 15px;color: #ddd;">{{card.Product.price}}
+                                    VNĐ</small>
+                            </div>
+                            <div *ngIf="card.newPrice == 0">
+                                <span style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;"
+                                    *ngIf="card.newPrice == 0">
+                                    {{card.Product.price}} VNĐ
+                                </span>
+                            </div>
                             <a href=""
                                 style="font-size: 1.2857em;color: #333;display: block;text-decoration: none;font-weight: 600;">
                                 {{card.Product.name}}
@@ -73,6 +138,16 @@
                     </kendo-card-header>
                 </ng-template>
                 <ng-template kendoListViewFooterTemplate>
+                    <div class="row" style="padding: 12px 16px;">
+                        <strong style="font-weight: 400;line-height: 1.68;color: #888;" class="col-md-3">Chọn voucher:
+                        </strong>
+                        <div class="col-md-9">
+                            <kendo-dropdownlist [data]="listVoucher" textField="name" valueField="id"
+                                [disabled]="!isPayment" style="float: right;width: 100%;"
+                                [defaultItem]="defaultVoucher" (valueChange)="selectVoucher($event)">
+                            </kendo-dropdownlist>
+                        </div>
+                    </div>
                     <div style="padding: 12px 16px;">
                         <strong style="font-weight: 400;line-height: 1.68;color: #888;">Tổng cộng :</strong>
                         <strong
@@ -84,6 +159,7 @@
                         <strong style="font-weight: 400;line-height: 1.68;color: #888;">Thành tiền: </strong>
                         <strong
                             style="float: right;font-size: 1.2857em;font-weight: bold;margin-bottom: 0;color: #ffc045;">
+                            {{toMoney}} VND
                         </strong>
                     </div>
                 </ng-template>

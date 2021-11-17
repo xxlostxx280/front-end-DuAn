@@ -1,6 +1,9 @@
+import { HttpClient } from "@angular/common/http";
 import { AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup } from "@angular/forms";
 import { EventManager } from "@angular/platform-browser";
+import { DialogService, WindowService } from "@progress/kendo-angular-dialog";
+import { NotificationService } from "@progress/kendo-angular-notification";
 import { SelectEvent } from "@progress/kendo-angular-upload";
 import { ApiService } from "src/app/shared/api.service";
 import { MessageService } from "src/app/shared/message.service";
@@ -25,14 +28,25 @@ export class WindowProductComponent implements OnInit {
     };
     public disabled = false;
     public imagePreview: any[] = [];
-    constructor(private message: MessageService, private formBuilder: FormBuilder, private api: ApiService) { }
+    constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+        private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, private api: ApiService) { }
+
+    public Category: ApiService = new ApiService(this.http,this.windowService,this.dialogService,this.notificationService,this.message,this.formBuilder);
+    public CategoryDetail: ApiService = new ApiService(this.http,this.windowService,this.dialogService,this.notificationService,this.message,this.formBuilder);
 
     ngOnInit(): void {
+        this.Category.Controller = "CategoryManagerController";
+        this.CategoryDetail.Controller = "CategoryDetailManagerController";
+        this.Category.isManager = true;
+        this.CategoryDetail.isManager = true;
         this.api.typeData = "popup";
         this.formGroup.addControl('category', new FormControl());
         if (this.status == "EDIT") {
-            this.formGroup.controls.description.setValue(decodeURIComponent(this.dataSource.description.replace(/\+/g, " ")));
-            this.formGroup.controls.descriptionDetail.setValue(decodeURIComponent(this.dataSource.descriptionDetail.replace(/\+/g, " ")));
+            if(this.formGroup.value.description != null){
+                this.formGroup.controls.description.setValue(decodeURIComponent(this.dataSource.description.replace(/\+/g, " ")));
+            }else if(this.formGroup.value.descriptionDetail != null){
+                this.formGroup.controls.descriptionDetail.setValue(decodeURIComponent(this.dataSource.descriptionDetail.replace(/\+/g, " ")));
+            }
         } else {
             this.disabled = true;
             this.dataSource.categorydetail = this.defaultItem;
@@ -42,11 +56,11 @@ export class WindowProductComponent implements OnInit {
     }
 
     getCategory(): void {
-        this.api.Read.Execute().subscribe((rs) => {
-            this.category = rs;
+        this.Category.Read.Execute().subscribe((rs) => {
+            this.category = rs.data;
         })
-        this.api.Read.Execute().subscribe((rs) => {
-            this.categoryDetail = rs;
+        this.CategoryDetail.Read.Execute().subscribe((rs) => {
+            this.categoryDetail = rs.data;
         })
     }
 
@@ -69,7 +83,7 @@ export class WindowProductComponent implements OnInit {
     addImage(): void {
         const imageData = new FormData();
         imageData.append("file", this.imagePreview[0].rawFile);
-        this.api.postApi("uploads", imageData).subscribe((rs) => {
+        this.api.postApi("Manager/ProductManagerController/uploads", imageData).subscribe((rs) => {
             this.formGroup.value.description = encodeURIComponent(this.formGroup.value.description).replace(/'/g, "%27");
             this.formGroup.value.descriptionDetail = encodeURIComponent(this.formGroup.value.descriptionDetail).replace(/'/g, "%27");
             if (rs.status) {

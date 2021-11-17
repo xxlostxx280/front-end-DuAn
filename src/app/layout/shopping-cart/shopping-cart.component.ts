@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DialogCloseResult, WindowCloseResult, WindowRef, WindowService } from '@progress/kendo-angular-dialog';
 import { DialogService } from "@progress/kendo-angular-dialog";
-
 import { QuanityModel } from 'src/app/component/product-details/quantity.model';
 import { ApiService } from 'src/app/shared/api.service';
 import { MessageService } from 'src/app/shared/message.service';
@@ -10,6 +9,7 @@ import { DialogInfoProductComponent } from 'src/app/layout/shopping-cart/infoPro
 import { DialogLoginComponent } from './loginDialog.component';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { HttpClient } from '@angular/common/http';
+import { BillModel } from './bill.model';
 @Component({
   selector: 'app-shopping-cart',
   templateUrl: './shopping-cart.component.html',
@@ -19,12 +19,27 @@ export class ShoppingCartComponent implements OnInit {
   @ViewChild("appendTo", { read: ViewContainerRef })
   public appendTo: ViewContainerRef | undefined;
   public dataSource: Array<any> = [];
-  public total: number = 0;
   public loading = false;
   public key = Object.keys(localStorage);
   public badge = localStorage.length;
   public infoProduct: any;
   private dialog: any;
+  public total: number = 0;
+  public toMoney: number = 0;
+  public newPrice: number = 0;
+  public isDiscount = false;
+  public isPayment = false;
+
+  public steps = [
+    { label: "First step", index: 0 },
+    { label: "Second step", index: 1, disabled: true},
+    { label: "Third step", index: 2, disabled: true },
+  ];
+  public current = 0;
+  public stepType = 'full';
+  public step_1: boolean = true;
+  public step_2: boolean = true;
+  public step_3: boolean = true;
 
   public listImageProduct: Array<any> = [];
   public listTypeSize: Array<any> = [];
@@ -32,26 +47,53 @@ export class ShoppingCartComponent implements OnInit {
   public listProductByCategory: Array<any> = [];
   public listProductByQuantity: Array<any> = [];
   public listProperty: Array<any> = [];
-  public defaultItem: any = {
+  public listVoucher: Array<any> = [];
+  public defaultVoucher: any = {
     name: "Choose...",
     id: null,
   };
+
   public QuantityObj: QuanityModel = new QuanityModel();
+  public BillObj: BillModel = new BillModel();
+
   public formGroup = new FormGroup({
     property: new FormControl(),
     size: new FormControl(),
   });
-  constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+  public InfomationCustomer = new FormGroup({
+    FullName: new FormControl('', Validators.required),
+    PhoneNumber: new FormControl('', Validators.required),
+    Address: new FormControl('', Validators.required),
+    Note: new FormControl(),
+  })
+  public Payment = new FormGroup({
+    payment: new FormControl(),
+  })
+
+  constructor(private api: ApiService,private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
 
   public Quantity: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
   public Property: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
   public Size: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Voucher: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
 
   ngOnInit(): void {
+    this.step_2 = false;
+    this.step_3 = false;
     this.Quantity.Controller = "QuantityController";
     this.Property.Controller = "PropertyController";
     this.Size.Controller = "SizeController";
+    this.Voucher.Controller = "VoucherController";
+    this.Quantity.Read.Execute().subscribe((rs) => {
+      this.Quantity.dataSource = rs.data;
+    })
+    this.Voucher.getApi('Customer/' + this.Voucher.Controller + '/findVoucherByAmount').subscribe((rs) => {
+      this.listVoucher = rs.data;
+    })
+    this.api.getApi('api/test/getAuth').subscribe((rs)=>{
+      let x = rs;
+    });
     this.key.map((x: any) => {
       let data: any = localStorage.getItem(x);
       let value = JSON.parse(data);
@@ -59,6 +101,11 @@ export class ShoppingCartComponent implements OnInit {
     })
     this.dataSource.map((x) => {
       this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
+      if(x.Product.discount != null){
+        this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity);
+      }else{
+        this.toMoney = this.toMoney + Number(x.Product.price * x.Quantity);
+      }
     })
     this.message.receivedStorageCart().subscribe((res) => {
       this.dataSource = [];
@@ -77,7 +124,12 @@ export class ShoppingCartComponent implements OnInit {
         }
       });
       if (same_cart.length == 2) {
-        this.total = this.total - Number(parseInt(this.dataSource[0].Product.price) * parseInt(this.dataSource[0].Quantity));
+        this.total = this.total - Number(parseInt(same_cart[0].Product.price) * parseInt(same_cart[0].Quantity));
+        if(same_cart[0].Product.discount != null){
+          this.toMoney = this.toMoney - Number(parseInt(same_cart[0].newPrice) * parseInt(same_cart[0].Quantity));
+        }else{
+          this.toMoney = this.toMoney - Number(parseInt(same_cart[0].Product.price) * parseInt(same_cart[0].Quantity));
+        }
         localStorage.removeItem(this.dataSource[0].Id);
         this.message.SendBadgeCart(localStorage.length);
         this.dataSource.splice(this.dataSource.indexOf(this.dataSource[0]), 1);
@@ -90,11 +142,26 @@ export class ShoppingCartComponent implements OnInit {
         });
       } else {
         this.total = 0;
+        this.toMoney = 0;
         this.dataSource.map((x) => {
           this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
+          if(x.Product.discount != null){
+            this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity)
+          }else{
+            this.toMoney = this.toMoney + Number(x.Product.price * x.Quantity)
+          }
         })
       }
     })
+  }
+  activate(event:any): void{
+    if(event.index == 0){
+      this.step_1 = true;
+      this.step_2 = false
+      this.step_3 = false;
+      this.steps[1].disabled = true;
+      this.steps[2].disabled = true;
+    }
   }
   buyProduct(): void {
     if (sessionStorage.getItem('TOKEN') == null) {
@@ -106,13 +173,58 @@ export class ShoppingCartComponent implements OnInit {
       });
       const getInfoWindow = this.dialog.content.instance;
       getInfoWindow.dialog = this.dialog;
-    } else {
-
+    } else if (this.step_1) {
+      if (!this.InfomationCustomer.invalid) {
+        this.step_1 = false;
+        this.step_2 = true;
+        this.BillObj.fullname = this.InfomationCustomer.value.FullName;
+        this.BillObj.sdt = this.InfomationCustomer.value.PhoneNumber;
+        this.BillObj.address = this.InfomationCustomer.value.Address;
+        this.BillObj.note = this.InfomationCustomer.value.Note;
+        this.current += 1;
+        this.steps.map((x)=>{
+          if(x.index == this.current){
+            x.disabled = false;
+          }
+        })
+      }
+    } else if (this.step_2) {
+      this.BillObj.statusshipping = "Đang xử lý";
+      this.BillObj.username = String(sessionStorage.getItem('USERNAME'));
+      if (this.Payment.value.payment == "truck") {
+        this.isPayment = false;
+        this.BillObj.payment = false;
+        this.BillObj.transportFee = 30000;
+        this.BillObj.total = this.total;
+        this.BillObj.downtotal = this.toMoney;
+        this.dataSource.map((x)=>{
+          let sendRequest = {
+            id_quantity: x.IdQuantity,
+            bill_quantity: x.Quantity
+          }
+          this.BillObj.list_quantity.push(sendRequest);
+        })
+      } else {
+        this.isPayment = true;
+        this.BillObj.payment = true;
+      }
+      this.api.postApi('api/bill/creat',this.BillObj).subscribe((rs)=>{
+        this.dataSource.map((x)=>{
+          localStorage.removeItem(x.Id);
+        })
+        this.current += 1;
+      })
     }
   }
+
   removeCardItem(e: any, data: any, index: any): void {
     let removeItem = JSON.parse(String(localStorage.getItem(data)));
     this.total = this.total - Number(parseInt(removeItem.Product.price) * parseInt(removeItem.Quantity));
+    if(removeItem.Product.discount != null){
+      this.toMoney = this.toMoney - Number(parseInt(removeItem.newPrice) * parseInt(removeItem.Quantity))
+    }else{
+      this.toMoney = this.toMoney - Number(parseInt(removeItem.Product.price) * parseInt(removeItem.Quantity))
+    }
     localStorage.removeItem(data);
     this.badge = localStorage.length;
     this.message.SendBadgeCart(this.badge);
@@ -125,6 +237,7 @@ export class ShoppingCartComponent implements OnInit {
       type: { style: "success", icon: true },
     });
   }
+
   infoCardItem(e: any, data: any, index: any): void {
     this.listSize = [];
     this.listProperty = [];
@@ -190,7 +303,28 @@ export class ShoppingCartComponent implements OnInit {
       }
     })
   }
+
   changeQuantity(value: any): void {
     this.QuantityObj.Quantity = value;
+  }
+  selectVoucher(event: any): void {
+    if(event.discount == undefined){
+      this.toMoney = 0;
+      this.total = 0;
+      this.BillObj.voucher_id = '';
+      this.BillObj.discount = '';
+      this.dataSource.map((x) => {
+        this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
+        if(x.Product.discount != null){
+          this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity)
+        }else{
+          this.toMoney = this.toMoney + Number(x.Product.price * x.Quantity)
+        }
+      })
+    }else{
+      this.BillObj.voucher_id = event.id;
+      this.BillObj.discount = event.discount;
+      this.toMoney = Number(this.toMoney * (100 - event.discount))/100;
+    }
   }
 }

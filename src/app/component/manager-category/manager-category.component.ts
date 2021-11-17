@@ -36,10 +36,10 @@ export class ManagerCategoryComponent implements OnInit {
     this.api_2.Controller = "CategoryDetailManagerController";
     this.api_2.Grid.isGroup = true;
     this.api.Read.Execute().subscribe((res) => {
-      this.gridData = res;
+      this.gridData = res.data;
     })
     this.api_2.Read.Execute().subscribe((res) => {
-      this.gridData_2 = res;
+      this.gridData_2 = res.data;
     })
     this.message.receivedDataAfterUpadte().subscribe((rs) => {
       if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {

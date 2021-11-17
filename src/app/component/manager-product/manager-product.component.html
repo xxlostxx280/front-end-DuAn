@@ -5,8 +5,15 @@
     </div>
     <div class="card-body">
         <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="20" [pageable]="true"
-            [sortable]="true" [height]="450" [columnMenu]="{ filter: true }" (edit)="editHandler($event)" (add)="addHanler($event)"
-            (save)="saveHandler($event)" (remove)="removeHandler($event)">
+            [sortable]="true" [height]="450" [columnMenu]="{ filter: true }" (edit)="editHandler($event)"
+            (add)="addHanler($event)" (remove)="removeHandler($event)" [group]="groups">
+            <div class="k-loading-panel" *ngIf="loaderVisible">
+                <div class="k-loading-panel-mask"></div>
+                <div class="k-loading-panel-wrapper">
+                    <kendo-loader type="infinite-spinner" themeColor="primary" size="large">
+                    </kendo-loader>
+                </div>
+            </div>
             <ng-template kendoGridToolbarTemplate>
                 <button kendoGridAddCommand>Add new</button>
             </ng-template>
@@ -16,7 +23,15 @@
             </kendo-grid-column>
             <kendo-grid-column field="price" title="Giá" [width]="100">
             </kendo-grid-column>
+            <kendo-grid-column field="categorydetail.category.name" title="Category" *ngIf="isHidden('categorydetail.category.name')">
+                <ng-template kendoGridGroupHeaderTemplate let-value="value">
+                    {{ value }}
+                </ng-template>
+            </kendo-grid-column>
             <kendo-grid-column field="categorydetail.name" title="Danh mục sản phẩm" [width]="250">
+                <ng-template kendoGridGroupHeaderTemplate let-value="value">
+                    {{ value }}
+                </ng-template>
             </kendo-grid-column>
             <kendo-grid-column field="status" title="Trạng thái" [width]="100">
             </kendo-grid-column>

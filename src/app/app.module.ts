@@ -29,10 +29,12 @@ import { DefaultManagerModule } from './layout/default-manager/default-manager.m
 import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EditorModule } from '@progress/kendo-angular-editor';
 import { ToolBarModule } from '@progress/kendo-angular-toolbar';
+import { ManagerPermiseAccountComponent } from './component/manager-permise-account/manager-permise-account.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    ManagerPermiseAccountComponent,
   ],
   imports: [
     FontAwesomeModule,

@@ -9,6 +9,7 @@ export class MessageService {
     private subjectStorage = new Subject<any>();
     private subjectTokenAccount = new Subject<any>();
     private subjectDataAfterUpdate = new Subject<any>();
+    private subjectLoadingVisible = new Subject<any>();
     private behaviorSubjectData = new BehaviorSubject<any[]>([]);
     constructor() { }
 
@@ -39,7 +40,13 @@ export class MessageService {
     receivedDataAfterUpadte():Observable<any>{
         return this.subjectDataAfterUpdate.asObservable();
     }
-    
+    ///// Send loading ///////
+    SendLoadingVisible(message: any){
+        this.subjectLoadingVisible.next(message);
+    }
+    receviedLoadingVisible(): Observable<any>{
+        return this.subjectLoadingVisible.asObservable();
+    }
     ///// Thay đổi data sau khi sửa data trên grid ///////
     SendDataBehavior(message: any){
         this.behaviorSubjectData.next(message);

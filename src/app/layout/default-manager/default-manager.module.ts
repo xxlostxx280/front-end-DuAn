@@ -28,12 +28,17 @@ import { ToolBarModule } from "@progress/kendo-angular-toolbar";
 import { UploadsModule } from "@progress/kendo-angular-upload";
 import { CarouselModule } from "ngx-owl-carousel-o";
 import { DashboardComponent } from "src/app/component/dashboard/dashboard.component";
+import { ManagerAccountComponent } from "src/app/component/manager-account/manager-account.component";
+import { ManagerBillComponent } from "src/app/component/manager-bill/manager-bill.component";
+import { WindowBillComponent } from "src/app/component/manager-bill/windowBill.component";
 import { ManagerCategoryComponent } from "src/app/component/manager-category/manager-category.component";
 import { ManagerProductComponent } from "src/app/component/manager-product/manager-product.component";
 import { WindowProductComponent } from "src/app/component/manager-product/windowProduct.component";
 import { ManagerPropertyComponent } from "src/app/component/manager-property/manager-property.component";
 import { ManagerQuantityComponent } from "src/app/component/manager-quantity/manager-quantity.component";
+import { WindowQuantityComponent } from "src/app/component/manager-quantity/windowQuantity.component";
 import { ManagerSizeComponent } from "src/app/component/manager-size/manager-size.component";
+import { ManagerVoucherComponent } from "src/app/component/manager-voucher/manager-voucher.component";
 import { SwiperModule } from "swiper/angular";
 import { shareManagerModule } from "../shareManager.module";
 import { DefaultManagerComponent } from "./default-manager.component";
@@ -47,8 +52,13 @@ import { DefaultManagerComponent } from "./default-manager.component";
         ManagerCategoryComponent,
         ManagerQuantityComponent,
         ManagerPropertyComponent,
+        ManagerAccountComponent,
+        ManagerVoucherComponent,
+        ManagerBillComponent,
         ///////Popup của component cha//////
         WindowProductComponent,
+        WindowQuantityComponent,
+        WindowBillComponent
     ],
     imports:[
         NgbModule,
@@ -82,7 +92,9 @@ import { DefaultManagerComponent } from "./default-manager.component";
         shareManagerModule
     ],
     entryComponents: [
-        WindowProductComponent
+        WindowProductComponent,
+        WindowQuantityComponent,
+        WindowBillComponent
     ],
     bootstrap: [DefaultManagerComponent]
 })

@@ -1,1 +1,35 @@
-<p>manager-quantity works!</p>
+<div class="card">
+    <div class="card-header card-header-danger">
+        <h4 class="card-title ">Simple Table</h4>
+        <p class="card-category"> Here is a subtitle for this table</p>
+    </div>
+    <div class="card-body">
+        <kendo-grid [group]="groups" [data]="gridData" kendoGridSelectBy="id" [pageSize]="20"
+            [pageable]="true" [sortable]="true" [height]="450" [columnMenu]="{ filter: true }"
+            (edit)="editHandler($event)" (add)="addHanler($event)" (remove)="removeHandler($event)"
+            (groupChange)="groupChange($event)">
+            <ng-template kendoGridToolbarTemplate>
+                <button kendoGridAddCommand>Add new</button>
+            </ng-template>
+            <kendo-grid-column field="id" title="ID" [width]="100">
+            </kendo-grid-column>
+            <kendo-grid-column field="quantity" title="Số lượng" [width]="150">
+            </kendo-grid-column>
+            <kendo-grid-column field="idProduct" title="Mã sản phẩm" [width]="100">
+            </kendo-grid-column>
+            <kendo-grid-column field="product.name" title="Tên sản phẩm" [width]="300">
+            </kendo-grid-column>
+            <kendo-grid-column field="property.name" title="Thuộc tính" [width]="120">
+            </kendo-grid-column>
+            <kendo-grid-column field="size.name" title="Size" [width]="120">
+            </kendo-grid-column>
+            <kendo-grid-command-column title="Command" [width]="220">
+                <ng-template kendoGridCellTemplate>
+                    <button kendoGridEditCommand [primary]="true">Edit</button>
+                    <button kendoGridRemoveCommand>Remove</button>
+                </ng-template>
+            </kendo-grid-command-column>
+        </kendo-grid>
+        <div kendoWindowContainer></div>
+    </div>
+</div>
