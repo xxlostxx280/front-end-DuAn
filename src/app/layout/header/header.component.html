@@ -54,6 +54,9 @@
     }
 </style>
 <header>
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
     <div style="background-color: white;padding: 10px 0px;">
         <div class="container-lg" id="menu">
             <div class="row">
@@ -68,14 +71,23 @@
                 </div>
                 <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;">
                     <div class="row">
-                        <div class="col-md-8" style="text-align: right;">
+                        <!-- <div class="col-md-8" style="text-align: right;">
                             <kendo-textbox placeholder="Search..." [clearButton]="true">
                                 <ng-template kendoTextBoxPrefixTemplate>
                                     <button kendoButton look="clear" icon="search"></button>
                                     <kendo-textbox-separator></kendo-textbox-separator>
                                 </ng-template>
                             </kendo-textbox>
+                        </div> -->
+                        <div class="col-md-8" style="text-align: right;">
+                            <div class="input-group no-border">
+                                <input type="text" value="" class="form-control" placeholder="Search...">
+                                <button type="submit" class="btn btn-white " id="dat">
+                                    <i class="material-icons">search</i>
+                                </button>
+                            </div>
                         </div>
+                        <!--  -->
                         <div class="col-md-2" style="text-align: center;">
                             <a href="/my-cart" style="text-decoration: none;color: rgb(10, 10, 10);">
                                 <button kendoButton icon="cart" look="clear" style="margin-top: 10px;padding: 0px;">
@@ -89,10 +101,11 @@
                             <button type="button" class="btn btn-outline-secondary mr-2" look="clear" placement="bottom"
                                 kendoButton iconClass="fa fa-user fa-fw" [ngbPopover]="popContent" *ngIf="showAvatar"
                                 style="padding: 0px;"></button>
-                            <button kendoButton style="border: 1px solid #ff6358;color: #ff6358;box-shadow: none"
-                                *ngIf="showLogin" (click)="openLogin()">
-                                Đăng nhập
-                            </button>
+                            <div class="container">                              
+                                <button class="button type1" *ngIf="showLogin" (click)="openLogin()">
+                                    <div class="dn"> Đăng nhập</div>
+                                </button>
+                            </div>
                             <ng-template #popContent>
                                 <li style="border-bottom: 1px solid #DADDE1;padding: 10px 0px;font-size: 15px;">
                                     <a href="/account">Thông tin tài khoản</a>
