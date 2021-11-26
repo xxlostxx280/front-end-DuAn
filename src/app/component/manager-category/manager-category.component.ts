@@ -42,6 +42,7 @@ export class ManagerCategoryComponent implements OnInit {
     this.api_2.Grid.isGrouping = true;
     this.api.Read.Execute().subscribe((res) => {
       this.gridData = res.data;
+      this.api.dataSource = res.data;
     })
     this.api_2.Read.Execute().subscribe((res) => {
       this.api_2.dataSource = res.data;
@@ -49,6 +50,7 @@ export class ManagerCategoryComponent implements OnInit {
     this.message.receivedDataAfterUpadte().subscribe((rs) => {
       if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
         this.gridData = rs.data;
+        this.api.dataSource = rs.data;
       } else {
         this.api_2.dataSource = rs.data;
       }
@@ -57,7 +59,7 @@ export class ManagerCategoryComponent implements OnInit {
       if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
         this.gridData = rs;
       } else {
-        this.api_2.dataSource = rs.data;
+        this.api_2.dataSource = rs;
       }
     })
   }
@@ -81,10 +83,11 @@ export class ManagerCategoryComponent implements OnInit {
   addHandler(event: any): void {
     if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {
       this.api.Create.Execute(null, event.sender.data.data);
+      event.sender.addRow(this.api.formGroup);
     } else {
-      this.api_2.Create.Execute(null, event.sender.data.data);
+      this.api_2.Create.Execute(null, event.sender.data.data[0].items);
+      event.sender.addRow(this.api_2.formGroup);
     }
-    event.sender.addRow(this.api.formGroup);
   }
   saveHandler(event: any) {
     if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {

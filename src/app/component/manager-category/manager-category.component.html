@@ -55,7 +55,7 @@
                                 {{ Category(dataItem.category.id)?.name }}
                             </ng-template>
                             <ng-template kendoGridEditTemplate let-dataItem="dataItem">
-                                <kendo-dropdownlist [data]="gridData" textField="name" valueField="id"
+                                <kendo-dropdownlist [data]="api.dataSource" textField="name" valueField="id"
                                     [valuePrimitive]="true" (valueChange)="onCategoryChange($event)">
                                 </kendo-dropdownlist>
                             </ng-template>

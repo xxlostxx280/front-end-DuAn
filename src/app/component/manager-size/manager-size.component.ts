@@ -39,21 +39,22 @@ export class ManagerSizeComponent implements OnInit {
     this.api_2.Controller = "SizeManagerController";
     this.api_2.Grid.isGrouping = true; // Xem dữ liệu có đc group ko ??
     this.api.Read.Execute().subscribe((res) => {
+      this.gridData = res.data;
       this.api.dataSource = res.data;
     })
     this.api_2.Read.Execute().subscribe((res) => {
       this.api_2.dataSource = res.data
     })
     this.message.receivedDataAfterUpadte().subscribe((rs) => {
-      if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.api.dataSource)) {
-        this.api.dataSource = rs.data;
+      if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
+        this.gridData = rs.data;
       } else {
         this.api_2.dataSource  = rs.data;
       }
     })
     this.message.receivedDataBehavior().subscribe((rs) => {
-      if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.api.dataSource)) {
-        this.api.dataSource = rs;
+      if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
+        this.gridData = rs;
       } else {
         this.api_2.dataSource  = rs;
       }
@@ -61,15 +62,15 @@ export class ManagerSizeComponent implements OnInit {
   }
 
   TypeSize(id: number): any {
-    return this.api.dataSource.find(x => x.id === id);
+    return this.gridData.find(x => x.id === id);
   }
   onTypeSizeChange(event: any): void{
     this.api_2.formGroup.markAsDirty({onlySelf: true});
-    this.api_2.formGroup.value.typesize = this.api.dataSource.find((x)=> x.id == event);
+    this.api_2.formGroup.value.typesize = this.gridData.find((x)=> x.id == event);
   }
 
   Update(grid: any): void {
-    if (JSON.stringify(grid.data.data) == JSON.stringify(this.api.dataSource)) {
+    if (JSON.stringify(grid.data.data) == JSON.stringify(this.gridData)) {
       this.api.Update.Execute(grid);
     } else {
       this.api_2.Update.Execute(grid);
@@ -77,8 +78,8 @@ export class ManagerSizeComponent implements OnInit {
   }
 
   addHandler(event: any): void {
-    if (JSON.stringify(event.sender.data) == JSON.stringify(this.api.dataSource)) {
-      this.api.Create.Execute(null, event.sender.data);
+    if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {
+      this.api.Create.Execute(null, event.sender.data.data);
       event.sender.addRow(this.api.formGroup);
     } else {
       this.api_2.Create.Execute(null, event.sender.data.data[0].items);
@@ -86,7 +87,7 @@ export class ManagerSizeComponent implements OnInit {
     }
   }
   saveHandler(event: any) {
-    if (JSON.stringify(event.sender.data) == JSON.stringify(this.api.dataSource)) {
+    if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {
       this.api.Grid.saveHandler(event);
     } else {
       this.api_2.Grid.saveHandler(event);
@@ -95,14 +96,14 @@ export class ManagerSizeComponent implements OnInit {
   }
 
   cellClickHandler(event: any): void {
-    if (JSON.stringify(event.sender.data) == JSON.stringify(this.api.dataSource)) {
+    if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {
       this.api.Grid.cellClickHandler(event);
     } else {
       this.api_2.Grid.cellClickHandler(event);
     }
   }
   cellCloseHandler(event: any): void {
-    if (JSON.stringify(event.sender.data) == JSON.stringify(this.api.dataSource)) {
+    if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {
       this.api.Grid.cellCloseHandler(event);
     } else {
       this.api_2.Grid.cellCloseHandler(event);
@@ -110,7 +111,7 @@ export class ManagerSizeComponent implements OnInit {
   }
 
   removeHandler(event: any): void {
-    if (JSON.stringify(event.sender.data) == JSON.stringify(this.api.dataSource)) {
+    if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {
       this.api.Grid.removeHandler(event);
     } else {
       this.api_2.Grid.removeHandler(event);
