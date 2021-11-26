@@ -9,22 +9,18 @@ import { ApiService } from "src/app/shared/api.service";
 import { MessageService } from "src/app/shared/message.service";
 @Component({
     selector: "window-info",
-    templateUrl: './windowBill.component.html',
+    templateUrl: './windowHistory.component.html',
     encapsulation: ViewEncapsulation.None,
 })
-export class WindowBillComponent implements OnInit {
+export class WindowHistoryComponent implements OnInit {
     @Input() public dataSource: any;
     @Input() public formGroup !: FormGroup;
     @Input() public status: String | undefined;
 
     public listOrderDetail: Array<any> = [];
     public listStatus: Array<any> = [];
-    public isCancel = true;
-    public isConfirm = true;
-    public isShip = true;
-    public isReceived = true;
-    public isRefund = true;
-    public isToolbar = true;
+    public isCancel = false;
+    public isRefund = false;
 
     constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
         private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, private api: ApiService) { }
@@ -49,71 +45,25 @@ export class WindowBillComponent implements OnInit {
         let value = new Date(getDate);
         return value;
     }
+    changeButton(): void{
+        if(this.formGroup.value.status == "HUY"){
+            this.isCancel = false;
+        }else{
+            this.isCancel = true;
+        }
+        if(this.formGroup.value.status == "KHACH_DA_NHAN_HANG"){
+            this.isRefund = true;
+        }
+    }
+
     cancel(): void{
         this.api.getApi('Manager/BillManagerController/cancel/' + this.formGroup.value.id).subscribe((rs)=>{
             if(rs.status){
                 this.message.SendDataAfterUpdate(rs.data);
-                this.api.Notification.notificationExecute(rs);
-            }
-        })
-    }
-    confirm(): void{
-        this.api.getApi('Manager/BillManagerController/confirm/' + this.formGroup.value.id).subscribe((rs)=>{
-            if(rs.status){
-                this.message.SendDataAfterUpdate(rs.data);
-                this.api.Notification.notificationExecute(rs);
-            }
-        })
-    }
-    ship(): void{
-        this.api.getApi('Manager/BillManagerController/ship/' + this.formGroup.value.id).subscribe((rs)=>{
-            if(rs.status){
-                this.message.SendDataAfterUpdate(rs.data);
-                this.api.Notification.notificationExecute(rs);
-            }
-        })
-    }
-    received(): void{
-        this.api.getApi('Manager/BillManagerController/received/' + this.formGroup.value.id).subscribe((rs)=>{
-            if(rs.status){
-                this.message.SendDataAfterUpdate(rs.data);
-                this.api.Notification.notificationExecute(rs);
             }
         })
     }
     refund(): void{
-        this.api.getApi('Manager/BillManagerController/refund/' + this.formGroup.value.id).subscribe((rs)=>{
-            if(rs.status){
-                this.message.SendDataAfterUpdate(rs.data);
-                this.api.Notification.notificationExecute(rs);
-            }
-        })
-    }
-    changeButton(): void{
-        if(this.formGroup.value.status == "HUY"){
-            this.isToolbar = false;
-        }
-        if(this.formGroup.value.status == "CHUA_XAC_NHAN"){
-            this.isReceived = false;
-            this.isShip = false;
-            this.isRefund = false;
-        }
-        if(this.formGroup.value.status == "DA_XAC_NHAN"){
-            this.isConfirm = false;
-            this.isReceived = false;
-            this.isRefund = false;
-        }
-        if(this.formGroup.value.status == "DA_GIAO_BEN_VAN_CHUYEN"){
-            this.isShip = false;
-            this.isCancel = false;
-            this.isConfirm = false;
-            this.isRefund = false;
-        }
-        if(this.formGroup.value.status == "KHACH_DA_NHAN_HANG"){
-            this.isReceived = false;
-            this.isShip = false;
-            this.isCancel = false;
-            this.isConfirm = false;
-        }
+
     }
 }

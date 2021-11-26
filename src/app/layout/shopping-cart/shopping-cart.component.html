@@ -76,10 +76,12 @@
                     </div>
                 </div>
             </div>
-            <div *ngIf="step_3">
-
+            <div *ngIf="step_3"
+                style="border-bottom: 1px solid #ddd;display: flex;flex-direction: column;justify-items: center;align-items: center;padding: 100px;border-top: 1px solid #ddd;margin: 15px">
+                <i class="fa fa-check-circle" aria-hidden="true" style="color: limegreen;font-size: 80px;"></i>
+                <h3 style="margin: 15px 0px;font-weight: 600;">Bạn đã đặt hàng thành công</h3>
             </div>
-            <div style="float: right;background: #ef2b2b;border-radius: 5px;">
+            <div style="float: right;background: #ef2b2b;border-radius: 5px;" *ngIf="!step_3">
                 <button kendoButton iconClass="fa fa-check" look="clear" (click)="buyProduct()"
                     style="background-color: #ef2b2b;color: white;font-size: 20px;">
                     Thanh toán đơn hàng
@@ -143,8 +145,8 @@
                         </strong>
                         <div class="col-md-9">
                             <kendo-dropdownlist [data]="listVoucher" textField="name" valueField="id"
-                                [disabled]="!isPayment" style="float: right;width: 100%;"
-                                [defaultItem]="defaultVoucher" (valueChange)="selectVoucher($event)">
+                                [disabled]="!isPayment" style="float: right;width: 100%;" [defaultItem]="defaultVoucher"
+                                (valueChange)="selectVoucher($event)">
                             </kendo-dropdownlist>
                         </div>
                     </div>

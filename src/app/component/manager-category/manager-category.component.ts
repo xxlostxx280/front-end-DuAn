@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, InjectionToken, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
-import { GridDataResult } from '@progress/kendo-angular-grid';
+import { DataStateChangeEvent, GridDataResult } from '@progress/kendo-angular-grid';
 import { SelectEvent } from '@progress/kendo-angular-layout';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { GroupDescriptor, State } from '@progress/kendo-data-query';
@@ -19,8 +19,13 @@ import { MessageService } from 'src/app/shared/message.service';
 export class ManagerCategoryComponent implements OnInit {
   public gridData: Array<any> = [];
   public gridData_2: Array<any> = [];
-  public view: Observable<GridDataResult> | undefined;
-  public groups: GroupDescriptor[] = [{ field: "category.name" }];
+  public state: State = {
+    filter: undefined,
+    skip: 0,
+    take: 10,
+    group: [{field: "category.name"}],
+    sort: [],
+  };
 
   public changes: any = {};
   constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
@@ -34,25 +39,25 @@ export class ManagerCategoryComponent implements OnInit {
     this.api_2.isManager = true;
     this.api.Controller = "CategoryManagerController";
     this.api_2.Controller = "CategoryDetailManagerController";
-    this.api_2.Grid.isGroup = true;
+    this.api_2.Grid.isGrouping = true;
     this.api.Read.Execute().subscribe((res) => {
       this.gridData = res.data;
     })
     this.api_2.Read.Execute().subscribe((res) => {
-      this.gridData_2 = res.data;
+      this.api_2.dataSource = res.data;
     })
     this.message.receivedDataAfterUpadte().subscribe((rs) => {
       if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
         this.gridData = rs.data;
       } else {
-        this.gridData_2 = rs.data;
+        this.api_2.dataSource = rs.data;
       }
     })
     this.message.receivedDataBehavior().subscribe((rs) => {
       if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
         this.gridData = rs;
       } else {
-        this.gridData_2 = rs;
+        this.api_2.dataSource = rs.data;
       }
     })
   }
@@ -120,5 +125,8 @@ export class ManagerCategoryComponent implements OnInit {
 
   cancelHandler(event: any): void {
     event.sender.closeRow(event.rowIndex);
+  }
+  dataStateChange(state: DataStateChangeEvent): void {
+    this.state = state;
   }
 }

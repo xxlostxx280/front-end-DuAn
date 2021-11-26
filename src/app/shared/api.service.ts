@@ -1,12 +1,15 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { MessageService } from './message.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, never } from 'rxjs';
-import { EditService } from '@progress/kendo-angular-grid';
+import { BehaviorSubject } from 'rxjs';
+import { EditService, GridDataResult } from '@progress/kendo-angular-grid';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { GroupDescriptor, State, process, DataResult } from '@progress/kendo-data-query';
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +24,14 @@ export class ApiService {
   public updatedItems: any[] = [];
   public deletedItems: any[] = [];
   public isManager = false;
-  public loaderVisible = false;
+  public loading = true;
+  public state: any;
+  public serviceGrid = {
+    aggregates: {},
+    field: "",
+    items: [null],
+    value: "",
+  };
 
   constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder) {
@@ -33,12 +43,12 @@ export class ApiService {
   }
   getApi(url: any) {
     let getHeader = this.getHeader();
-    if (getHeader instanceof HttpHeaders){
-      return this.http.get('http://localhost:8080/' + url, { headers: getHeader})
+    if (getHeader instanceof HttpHeaders) {
+      return this.http.get('http://localhost:8080/' + url, { headers: getHeader })
         .pipe(map((res: any) => {
           return res;
         }))
-    }else{
+    } else {
       return this.http.get('http://localhost:8080/' + url)
         .pipe(map((res: any) => {
           return res;
@@ -47,16 +57,16 @@ export class ApiService {
   }
   postApi(url: any, data: any) {
     let getHeader = this.getHeader();
-    if (getHeader instanceof HttpHeaders){
-      return this.http.post('http://localhost:8080/' + url, data,{headers: getHeader})
-      .pipe(map((res: any) => {
-        return res;
-      }))
-    }else{
+    if (getHeader instanceof HttpHeaders) {
+      return this.http.post('http://localhost:8080/' + url, data, { headers: getHeader })
+        .pipe(map((res: any) => {
+          return res;
+        }))
+    } else {
       return this.http.post('http://localhost:8080/' + url, data)
-      .pipe(map((res: any) => {
-        return res;
-      }))
+        .pipe(map((res: any) => {
+          return res;
+        }))
     }
   }
   public OpenWindow = {
@@ -79,10 +89,10 @@ export class ApiService {
         left: this.left
       })
       const getInfoWindow = windowRef.content.instance;
-      if (data.dataItem != undefined) {
+      if (status == "EDIT") {
         getInfoWindow.dataSource = data.dataItem;
       } else {
-        getInfoWindow.dataSource = this._.formGroup.value;
+        getInfoWindow.dataSource = data;
       }
       getInfoWindow.formGroup = this._.formGroup;
       getInfoWindow.status = status;
@@ -121,7 +131,8 @@ export class ApiService {
     _: this,
     oldState: [null],
     newState: [null],
-    isGroup: false,
+    rowIndex: [null],
+    isGrouping: false,
     cancelHandler: function (event: any) {
       event.sender.closeRow(event.rowIndex);
       return event;
@@ -133,21 +144,41 @@ export class ApiService {
     saveHandler: function (event: any) {
       this.newState = [];
       this._.createdItems.push(event.dataItem);
-      this.oldState = event.sender.data.data;
-      for (let i = 0; i < event.sender.data.data.length; i++) {
-        this.newState.push(event.sender.data.data[i]);
+      if (this.isGrouping == true) {
+        this.oldState = this._.dataSource;
+        for (let i = 0; i < this._.dataSource.length; i++) {
+          this.newState.push(this._.dataSource[i]);
+        }
+        this.newState.unshift(event.dataItem);
+      } else {
+        this.oldState = event.sender.data.data;
+        for (let i = 0; i < event.sender.data.data.length; i++) {
+          this.newState.push(event.sender.data.data[i]);
+        }
+        this.newState.unshift(event.dataItem);
       }
-      this.newState.unshift(event.dataItem);
       this._.message.SendDataBehavior(this.newState);
       return event;
     },
     removeHandler: function (event: any) {
       this.newState = [];
       this._.deletedItems.push(event.dataItem);
-      this.oldState = event.sender.data.data;
-      this.newState = this.oldState.filter((val, idx) => {
-        return idx !== event.rowIndex;
-      })
+      if (this.isGrouping == true) {
+        this.oldState = this._.dataSource;
+        for (let i = 0; i < this._.dataSource.length; i++) {
+          this.newState.push(this._.dataSource[i]);
+        }
+        this.newState.map((val, idx) => {
+          if (JSON.stringify(val) == JSON.stringify(event.dataItem)) {
+            this.newState.splice(idx, 1);
+          }
+        })
+      }else{
+        this.oldState = event.sender.data.data;
+        this.newState = this.oldState.filter((val, idx) => {
+          return idx !== event.rowIndex;
+        })
+      }
       this._.createdItems.map((val, idx) => {
         if (JSON.stringify(val) == JSON.stringify(event.dataItem)) {
           this._.createdItems.splice(idx, 1);
@@ -187,7 +218,7 @@ export class ApiService {
       this.newState = [];
       const { formGroup, dataItem } = event;
       this.oldState = event.sender.data.data;
-      if (this.isGroup) {
+      if (this.isGrouping) {
         event.sender.data.data.map((val: any) => {
           val.items.map((x: any) => {
             this.newState.push(x)
@@ -201,7 +232,16 @@ export class ApiService {
       if (!formGroup.valid) {
         event.preventDefault();
       } else if (formGroup.dirty) {
-        this._.updatedItems.push(formGroup.value);
+        if (this._.updatedItems.length == 0) {
+          this._.updatedItems.push(formGroup.value);
+        } else {
+          this._.updatedItems.map((val, idx) => {
+            if (JSON.stringify(val) == JSON.stringify(event.dataItem)) {
+              this._.updatedItems.splice(idx, 1);
+            }
+          })
+          this._.updatedItems.push(formGroup.value);
+        }
         for (let i = 0; i < this.newState.length; i++) {
           if (JSON.stringify(this.newState[i]) == JSON.stringify(event.dataItem)) {
             this.newState[i] = formGroup.value;
@@ -225,6 +265,8 @@ export class ApiService {
         return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAll')
           .pipe(map((res: any) => {
             return res;
+          }), tap(() => {
+            this._.loading = false
           }))
       } else {
         return this._.http.get('http://localhost:8080/Customer/' + this._.Controller + '/findAll')
@@ -318,10 +360,7 @@ export class ApiService {
     },
     UpdateDataWindow: function (data: any) {
       let url = "http://localhost:8080/Manager/" + this._.Controller + "/saveAndFlush";
-      this._.loaderVisible = true;
-      this._.message.SendLoadingVisible(this._.loaderVisible)
       return this._.http.post(url, data).pipe(map((res: any) => {
-        this._.loaderVisible = false;
         if (res.status) {
           res.type = this._.status;
           this._.Notification.notificationExecute(res);
@@ -348,7 +387,6 @@ export class ApiService {
         });
         this._.dataSource = newState;
       }
-      this._.message.SendLoadingVisible(this._.loaderVisible)
       this._.message.SendDataAfterUpdate(res);
       return res;
     },

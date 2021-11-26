@@ -44,7 +44,7 @@
                 <div class="row">
                     <label class="col-md-2 k-label">Chọn size</label>
                     <div class="col-md-10">
-                        <kendo-dropdownlist [data]="listSize" textField="name" valueField="id" formControlName="size"
+                        <kendo-dropdownlist [data]="listSizeByQuantity" textField="name" valueField="id" formControlName="size"
                             name="size" (valueChange)="changeSize($event)" [defaultItem]="defaultItem"
                             [filterable]="true">
                         </kendo-dropdownlist>
@@ -62,18 +62,6 @@
             </div>
         </div>
     </div>
-    <kendo-tabstrip>
-        <kendo-tabstrip-tab title="Mô tả" [selected]="true">
-            <ng-template kendoTabContent>
-                <div class="content" innerHTML="{{infoProduct.descriptionDetail}}">
-                </div>
-            </ng-template>
-        </kendo-tabstrip-tab>
-        <kendo-tabstrip-tab title="Điểm nổi bật">
-            <ng-template kendoTabContent>
-            </ng-template>
-        </kendo-tabstrip-tab>
-    </kendo-tabstrip>
     <h3 style="margin-top: 0;color: #333;font-weight: bold;line-height: 1.42857;">Sản phẩm cùng loại</h3>
     <swiper [config]="config" class="mySwiper" id="mySwiper">
         <ng-template swiperSlide *ngFor="let product of listProductByCategory">
@@ -86,8 +74,4 @@
             </div>
         </ng-template>
     </swiper>
-    <ng-template #template style="float: right;">
-        <p>Do size hoặc màu bạn đang chọn hiện không còn hàng</p>
-        <p>Mời bạn bui lòng chọn lại</p>
-      </ng-template>
 </div>

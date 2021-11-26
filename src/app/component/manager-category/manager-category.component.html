@@ -32,11 +32,13 @@
             </kendo-tabstrip-tab>
             <kendo-tabstrip-tab title="Danh mục cấp 2">
                 <ng-template kendoTabContent>
-                    <kendo-grid #grid [kendoGridBinding]="gridData_2" [height]="450" [pageSize]="20" [sortable]="true"
-                        [pageable]="true" [sortable]="true" (cellClose)="cellCloseHandler($event)"
-                        (cellClick)="cellClickHandler($event)" (cancel)="cancelHandler($event)"
-                        (save)="saveHandler($event)" (remove)="removeHandler($event)" (add)="addHandler($event)"
-                        [navigable]="true" [group]="groups">
+                    <kendo-grid #grid [kendoGridBinding]="api_2.dataSource" kendoGridSelectBy="id"
+                        [pageSize]="state.take!" [skip]="state.skip!" [sort]="state.sort!" [group]="state.group!"
+                        [pageable]="true" [sortable]="true" [navigable]="true" [height]="450"
+                        [columnMenu]="{ filter: true }" (dataStateChange)="dataStateChange($event)"
+                        (cellClose)="cellCloseHandler($event)" (cellClick)="cellClickHandler($event)"
+                        (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
+                        (add)="addHandler($event)">
                         <ng-template kendoGridToolbarTemplate>
                             <button iconClass="fa fa-plus" kendoGridAddCommand>Add new</button>
                             <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
@@ -51,10 +53,10 @@
                             </ng-template>
                             <ng-template kendoGridCellTemplate let-dataItem>
                                 {{ Category(dataItem.category.id)?.name }}
-                              </ng-template>
+                            </ng-template>
                             <ng-template kendoGridEditTemplate let-dataItem="dataItem">
-                                <kendo-dropdownlist [data]="gridData" textField="name" valueField="id" [valuePrimitive]="true"
-                                (valueChange)="onCategoryChange($event)">
+                                <kendo-dropdownlist [data]="gridData" textField="name" valueField="id"
+                                    [valuePrimitive]="true" (valueChange)="onCategoryChange($event)">
                                 </kendo-dropdownlist>
                             </ng-template>
                         </kendo-grid-column>

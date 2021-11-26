@@ -4,10 +4,10 @@
         <p class="card-category"> Here is a subtitle for this table</p>
     </div>
     <div class="card-body">
-        <kendo-grid [group]="groups" [data]="gridData" kendoGridSelectBy="id" [pageSize]="20"
-            [pageable]="true" [sortable]="true" [height]="450" [columnMenu]="{ filter: true }"
-            (edit)="editHandler($event)" (add)="addHanler($event)" (remove)="removeHandler($event)"
-            (groupChange)="groupChange($event)">
+        <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="state.take!" [skip]="state.skip!"
+            [sort]="state.sort!" [group]="state.group!" [pageable]="true" [sortable]="true" [height]="450"
+            [columnMenu]="{ filter: true }" (dataStateChange)="dataStateChange($event)" (edit)="editHandler($event)"
+            (add)="addHanler($event)" (remove)="removeHandler($event)">
             <ng-template kendoGridToolbarTemplate>
                 <button kendoGridAddCommand>Add new</button>
             </ng-template>

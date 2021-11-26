@@ -44,7 +44,8 @@ export class WindowProductComponent implements OnInit {
         if (this.status == "EDIT") {
             if(this.formGroup.value.description != null){
                 this.formGroup.controls.description.setValue(decodeURIComponent(this.dataSource.description.replace(/\+/g, " ")));
-            }else if(this.formGroup.value.descriptionDetail != null){
+            }
+             if(this.formGroup.value.descriptionDetail != null){
                 this.formGroup.controls.descriptionDetail.setValue(decodeURIComponent(this.dataSource.descriptionDetail.replace(/\+/g, " ")));
             }
         } else {

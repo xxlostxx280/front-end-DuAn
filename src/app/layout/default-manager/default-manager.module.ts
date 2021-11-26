@@ -9,6 +9,7 @@ import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ButtonsModule } from "@progress/kendo-angular-buttons";
+import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
 import { DialogModule, WindowModule } from "@progress/kendo-angular-dialog";
 import { DropDownsModule } from "@progress/kendo-angular-dropdowns";
 import { EditorModule } from "@progress/kendo-angular-editor";
@@ -88,6 +89,7 @@ import { DefaultManagerComponent } from "./default-manager.component";
         EditorModule,
         ToolBarModule,
         UploadsModule,
+        DateInputsModule,
         //Routing module
         shareManagerModule
     ],

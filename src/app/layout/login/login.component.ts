@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
       if (res.status == true) {
         sessionStorage.setItem('USERNAME', res.data.username);
         sessionStorage.setItem('TOKEN', res.data.token);
+        sessionStorage.setItem('USER_ID',res.data.id);
         window.location.href = "/";
         this.loaderVisible = false;
       } else {

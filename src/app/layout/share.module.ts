@@ -36,6 +36,10 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NavigationModule } from "@progress/kendo-angular-navigation";
 import { ToolBarModule } from "@progress/kendo-angular-toolbar";
+import { HistoryAndWalletComponent } from "./history-and-wallet/history-and-wallet.component";
+import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
+import { WindowHistoryComponent } from "./history-and-wallet/windowHistory.component";
+import { WindowRechargeComponent } from "./history-and-wallet/windowRecharge.component";
 
 @NgModule({
     declarations:[
@@ -45,10 +49,15 @@ import { ToolBarModule } from "@progress/kendo-angular-toolbar";
         HomePageComponent,
         LoginComponent,
         ShoppingCartComponent,
-        DialogInfoProductComponent,
-        DialogLoginComponent,
         RegisterComponent,
         ChangePasswordComponent,
+        HistoryAndWalletComponent,
+        
+        ///Các popup window /////////
+        DialogInfoProductComponent,
+        DialogLoginComponent,
+        WindowHistoryComponent,
+        WindowRechargeComponent
     ],
     imports:[
         NgbModule,
@@ -79,8 +88,14 @@ import { ToolBarModule } from "@progress/kendo-angular-toolbar";
         CarouselModule,
         NavigationModule,
         ToolBarModule,
+        DateInputsModule,
     ],
-    entryComponents: [DialogInfoProductComponent,DialogLoginComponent],
+    entryComponents: [
+        DialogInfoProductComponent,
+        DialogLoginComponent,
+        WindowHistoryComponent,
+        WindowRechargeComponent
+    ],
     exports:[
         HeaderComponent,
         SidebarComponent,

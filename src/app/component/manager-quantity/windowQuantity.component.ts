@@ -21,6 +21,7 @@ export class WindowQuantityComponent implements OnInit {
     public listSize: Array<any> = [];
     public listSizeById: Array<any> = [];
     public listProduct: Array<any> = [];
+    public selectedValue = 2;
     public defaultItem: { name: string; id: number, typesize: any } = {
         name: "Choose...",
         id: 0,
@@ -65,6 +66,14 @@ export class WindowQuantityComponent implements OnInit {
         })
         this.Size.Read.Execute().subscribe((rs) => {
             this.listSize = rs.data;
+            if (this.status == "CREATE") {
+                this.disabled = true;
+                this.dataSource.size = this.defaultItem;
+                this.formGroup.controls.size.setValue(this.defaultItem);
+                this.formGroup.controls.property.setValue(this.defaultItemProperty);
+            }else{
+                this.listSizeById = this.listSize.filter((x) => x.typesize.id == this.formGroup.value.size.typesize.id);
+            }
         })
         this.Property.Read.Execute().subscribe((rs) => {
             this.listProperty = rs.data;
@@ -72,6 +81,7 @@ export class WindowQuantityComponent implements OnInit {
         this.Product.Read.Execute().subscribe((rs) => {
             this.listProduct = rs.data;
         })
+        this.formGroup.addControl('typesize', new FormControl());
         if (this.status == "CREATE") {
             this.disabled = true;
             this.dataSource.size = this.defaultItem;
@@ -88,10 +98,7 @@ export class WindowQuantityComponent implements OnInit {
     selectTypeSize(event: any): void {
         this.disabled = false;
         this.formGroup.value.size = this.defaultItem;
-        this.listSize = this.listSize.filter((x) => x.typesize.id == event.id);
-    }
-    selectSize(event: any): void {
-
+        this.listSizeById = this.listSize.filter((x) => x.typesize.id == event.id);
     }
     saveHandler(event: any): void {
         let request = {

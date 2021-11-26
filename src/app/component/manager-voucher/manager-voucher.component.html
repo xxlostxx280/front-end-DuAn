@@ -1,1 +1,30 @@
-<p>manager-voucher works!</p>
+<div class="card">
+    <div class="card-header card-header-danger">
+        <h4 class="card-title ">Simple Table</h4>
+        <p class="card-category"> Here is a subtitle for this table</p>
+    </div>
+    <div class="card-body">
+        <kendo-grid #grid [kendoGridBinding]="listVoucher" [height]="450" [pageSize]="20" [sortable]="true"
+            [pageable]="true" [sortable]="true" (cellClose)="cellCloseHandler($event)"
+            (cellClick)="cellClickHandler($event)" (cancel)="cancelHandler($event)" (save)="saveHandler($event)"
+            (remove)="removeHandler($event)" (add)="addHandler($event)" [navigable]="true">
+            <ng-template kendoGridToolbarTemplate>
+                <button iconClass="fa fa-plus" kendoGridAddCommand>Add new</button>
+                <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
+                    Update
+                </button>
+            </ng-template>
+            <kendo-grid-column field="id" title="ID"></kendo-grid-column>
+            <kendo-grid-column field="name" title="Tên voucher"></kendo-grid-column>
+            <kendo-grid-column field="amount" title="Số lượng"></kendo-grid-column>
+            <kendo-grid-column field="discount" title="Phần trăm giảm"></kendo-grid-column>
+            <kendo-grid-command-column title="command" [width]="220">
+                <ng-template kendoGridCellTemplate let-isNew="isNew">
+                    <button kendoGridRemoveCommand>Remove</button>
+                    <button kendoGridSaveCommand>Add</button>
+                    <button kendoGridCancelCommand>Cancel</button>
+                </ng-template>
+            </kendo-grid-command-column>
+        </kendo-grid>
+    </div>
+</div>

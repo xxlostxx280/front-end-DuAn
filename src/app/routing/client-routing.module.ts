@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { ModuleWithProviders } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { HistoryAndWalletComponent } from "../layout/history-and-wallet/history-and-wallet.component";
 import { ListProductByCategoryComponent } from "../component/list-product-by-category/list-product-by-category.component";
 import { ListProductComponent } from "../component/list-product/list-product.component";
 import { ProductDetailsComponent } from "../component/product-details/product-details.component";
@@ -34,7 +35,11 @@ const routes: Routes = [
                 component: ListProductByCategoryComponent
             }
         ]
-    }
+    },
+    {
+        path: 'history-and-wallet',
+        component: HistoryAndWalletComponent,
+    },
 ];
 @NgModule({
     imports: [

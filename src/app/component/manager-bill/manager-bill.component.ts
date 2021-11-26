@@ -53,11 +53,19 @@ export class ManagerBillComponent implements OnInit {
     this.Bill.Read.Execute().subscribe((rs) => {
       this.gridData = rs.data;
     })
-    this.message.receivedDataBehavior().subscribe((rs) => {
-      this.gridData = rs;
+    this.message.receivedDataAfterUpadte().subscribe((rs)=>{
+      this.gridData.map((val,idx)=>{
+        if(val.id == rs.id){
+          this.gridData[idx] = rs; 
+        }
+      })
     })
   }
 
+  Update(grid: any): void {
+    this.Bill.Update.Execute(grid);
+  }
+  
   onStatusChange(event: any): void{
     this.Bill.formGroup.markAsDirty({onlySelf: true});
     this.Bill.formGroup.controls.status.setValue(this.listStatus.find((x)=> x.id == event)?.name);

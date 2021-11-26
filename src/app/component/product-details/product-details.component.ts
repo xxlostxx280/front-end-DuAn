@@ -27,6 +27,8 @@ export class ProductDetailsComponent implements OnInit {
   public listProductByCategory: Array<any> = [];
   public listProductByQuantity: Array<any> = [];
   public listProperty: Array<any> = [];
+  public listPropertyByQuantity: Array<any> = [];
+  public listSizeByQuantity: Array<any> = [];
   public badge = 0;
   public dataSource: Array<any> = [];
   public QuantityObj: QuanityModel = new QuanityModel();
@@ -144,6 +146,15 @@ export class ProductDetailsComponent implements OnInit {
           })
           this.QuantityObj.Property = this.listProperty[0];
           this.formGroup.controls.property.setValue(String(this.listProperty[0].idproperty));
+
+          ///List size theo màu sản phẩm/////
+          this.listSizeByQuantity = [];
+          let SizeByProperty = this.listProductByQuantity.filter((x)=> x.idproperty == this.listProperty[0].idproperty);
+          SizeByProperty.map((x)=>{
+            this.listSizeByQuantity.push(x.size);
+          })
+          this.QuantityObj.Size = this.listSizeByQuantity[0];
+          this.formGroup.controls.size.setValue(this.listSizeByQuantity[0]);
         })
         this.Size.Read.Execute().subscribe((rs) => {
           this.listProductByQuantity.map((val: any, idx: any) => {
@@ -173,9 +184,19 @@ export class ProductDetailsComponent implements OnInit {
       this.listImageProduct = res.data;
     })
   }
+
   changeProperty(e: any): void {
-    let property = this.listProperty.filter((x: any) => x.idproperty == e.idproperty)
+    this.listSizeByQuantity = [];
+    let property = this.listProperty.filter((x: any) => x.idproperty == e.idproperty);
     this.QuantityObj.Property = property[0];
+
+    /////Khi tìm sản phẩm theo màu sắc danh mục size sẽ select mảng đầu tiên////////
+    let SizeByProperty = this.listProductByQuantity.filter((x)=> x.idproperty == e.idproperty);
+    SizeByProperty.map((x)=>{
+      this.listSizeByQuantity.push(x.size);
+    })
+    this.QuantityObj.Size = this.listSizeByQuantity[0];
+    this.formGroup.controls.size.setValue(this.listSizeByQuantity[0]);
   }
   changeSize(value: any): void {
     this.QuantityObj.Size = value;
@@ -183,6 +204,7 @@ export class ProductDetailsComponent implements OnInit {
   changeQuantity(value: any): void {
     this.QuantityObj.Quantity = value;
   }
+
   addSoppingCart(): void {
     this.dataSource = [];
     let key = Object.keys(localStorage);

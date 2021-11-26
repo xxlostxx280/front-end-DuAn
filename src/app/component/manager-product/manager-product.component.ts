@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EditService, GridDataResult } from '@progress/kendo-angular-grid';
+import { DataStateChangeEvent, EditService, GridDataResult } from '@progress/kendo-angular-grid';
 import { GroupDescriptor, State } from '@progress/kendo-data-query';
 import { Observable } from 'rxjs';
 import { ApiService } from 'src/app/shared/api.service';
@@ -13,12 +13,18 @@ import { WindowProductComponent } from './windowProduct.component';
   styleUrls: ['./manager-product.component.css']
 })
 export class ManagerProductComponent implements OnInit {
-  // @ViewChild('datalist',{read: ElementRef}) public datalist !: ElementRef;
+  public view!: Observable<GridDataResult>;
   public hiddenColumns: string[] = [];
   public gridData: Array<any> = [];
   public method: any;
-  public loaderVisible = false;
-  public groups: GroupDescriptor[] = [{field: "categorydetail.category.name"}, { field: "categorydetail.name" },];
+  public loading = false;
+  public state: State = {
+    filter: undefined,
+    skip: 0,
+    take: 5,
+    group: [{field: "categorydetail.category.name"}, { field: "categorydetail.name" },],
+    sort: [],
+  };
   constructor(private api: ApiService, private message: MessageService, private formBuilder: FormBuilder) {
   }
 
@@ -27,9 +33,11 @@ export class ManagerProductComponent implements OnInit {
     this.api.Controller = "ProductManagerController";
     this.api.OpenWindow.Width = 1200;
     this.api.typeData = "popup";
+    this.loading = this.api.loading
     this.api.Read.Execute().subscribe((rs) => {
       this.api.dataSource = rs.data;
       this.gridData = rs.data;
+      this.loading = this.api.loading
     })
     this.message.receivedDataAfterUpadte().subscribe((res) => {
       if (res.status) {
@@ -53,5 +61,8 @@ export class ManagerProductComponent implements OnInit {
   }
   removeHandler(event: any) {
 
+  }
+  public dataStateChange(state: DataStateChangeEvent): void {
+    this.state = state;
   }
 }

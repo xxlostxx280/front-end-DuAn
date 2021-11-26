@@ -1,0 +1,128 @@
+<style>
+    i{
+        padding: 0px 15px;
+    }
+    h4{
+        margin: 0px;
+    }
+</style>
+<app-header></app-header>
+<div kendoWindowContainer></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card ">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title "><i class="fa fa-history" aria-hidden="true"></i>Lịch sử mua hàng</h4>
+                </div>
+                <div class="card-body">
+                    <kendo-tabstrip >
+                        <kendo-tabstrip-tab title="Đơn hàng đã mua" [selected]="true">
+                            <ng-template kendoTabContent style="padding: 0px;">
+                                <kendo-grid #grid [kendoGridBinding]="listBillBought" style="height: 450px;" [pageSize]="20"
+                                    [sortable]="true" [pageable]="true" [sortable]="true" [navigable]="true"
+                                    [resizable]="true" filterable="menu" (edit)="editHandler($event)">
+                                    <kendo-grid-command-column title="command" [width]="120" [locked]="true">
+                                        <ng-template kendoGridCellTemplate let-isNew="isNew">
+                                            <button kendoGridEditCommand [primary]="true">Info</button>
+                                        </ng-template>
+                                    </kendo-grid-command-column>
+                                    <kendo-grid-column field="payment" title="Phương thức" [width]="220">
+                                        <ng-template kendoGridCellTemplate let-dataItem>
+                                            {{ dataItem.payment ? "Thanh toán bằng ví" : "Thanh toán bằng tiền mặt" }}
+                                        </ng-template>
+                                    </kendo-grid-column>
+                                    <kendo-grid-column field="createAt" title="Ngày tạo đơn" [width]="250">
+                                        <ng-template kendoGridCellTemplate let-dataItem>
+                                            <kendo-datetimepicker [value]="getDate(dataItem.createAt)" [disabled]="true"
+                                                style="margin: 0px 10px;"> </kendo-datetimepicker>
+                                        </ng-template>
+                                    </kendo-grid-column>
+                                    <kendo-grid-column field="fullname" title="Tên người nhận" [width]="200">
+                                    </kendo-grid-column>
+                                    <kendo-grid-column field="sdt" title="SĐT" [width]="150"></kendo-grid-column>
+                                    <kendo-grid-column field="address" title="Địa chỉ" [width]="300">
+                                    </kendo-grid-column>
+                                    <kendo-grid-column field="total" title="Giá gốc" [width]="150"></kendo-grid-column>
+                                    <kendo-grid-column field="downtotal" title="Giá giảm" [width]="150">
+                                    </kendo-grid-column>
+                                    <kendo-grid-column field="transportFee" title="Giá ship" [width]="150">
+                                    </kendo-grid-column>
+                                </kendo-grid>
+                            </ng-template>
+                        </kendo-tabstrip-tab>
+                        <kendo-tabstrip-tab title="Đơn hàng đang xử lý">
+                            <ng-template kendoTabContent style="padding: 0px;">
+                                <kendo-grid #grid [kendoGridBinding]="listBillBuying" style="height: 450px;" [pageSize]="20"
+                                    [sortable]="true" [pageable]="true" [sortable]="true" [navigable]="true"
+                                    [resizable]="true" filterable="menu" (edit)="editHandler($event)">
+                                    <kendo-grid-command-column title="command" [width]="120" [locked]="true">
+                                        <ng-template kendoGridCellTemplate let-isNew="isNew">
+                                            <button kendoGridEditCommand [primary]="true">Info</button>
+                                        </ng-template>
+                                    </kendo-grid-command-column>
+                                    <kendo-grid-column field="payment" title="Phương thức" [width]="220">
+                                        <ng-template kendoGridCellTemplate let-dataItem>
+                                            {{ dataItem.payment ? "Thanh toán bằng ví" : "Thanh toán bằng tiền mặt" }}
+                                        </ng-template>
+                                    </kendo-grid-column>
+                                    <kendo-grid-column field="createAt" title="Ngày tạo đơn" [width]="250">
+                                        <ng-template kendoGridCellTemplate let-dataItem>
+                                            <kendo-datetimepicker [value]="getDate(dataItem.createAt)" [disabled]="true"
+                                                style="margin: 0px 10px;"> </kendo-datetimepicker>
+                                        </ng-template>
+                                    </kendo-grid-column>
+                                    <kendo-grid-column field="fullname" title="Tên người nhận" [width]="200">
+                                    </kendo-grid-column>
+                                    <kendo-grid-column field="sdt" title="SĐT" [width]="150"></kendo-grid-column>
+                                    <kendo-grid-column field="address" title="Địa chỉ" [width]="300">
+                                    </kendo-grid-column>
+                                    <kendo-grid-column field="total" title="Giá gốc" [width]="150"></kendo-grid-column>
+                                    <kendo-grid-column field="downtotal" title="Giá giảm" [width]="150">
+                                    </kendo-grid-column>
+                                    <kendo-grid-column field="transportFee" title="Giá ship" [width]="150">
+                                    </kendo-grid-column>
+                                </kendo-grid>
+                            </ng-template>
+                        </kendo-tabstrip-tab>
+                    </kendo-tabstrip>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header card-header-danger">
+                    <h4 class="card-title "><i class="fa fa-credit-card-alt" aria-hidden="true"></i>Ví MamiPay</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row" style="border-bottom: 1px solid #ddd;margin: 15px 0px;">
+                        <label class="col-md-5">Họ tên khách hàng:</label>
+                        <label class="col-md-7">{{getCustomer.fullname}}</label>
+                    </div>
+                    <div class="row" style="border-bottom: 1px solid #ddd;margin: 15px 0px;">
+                        <label class="col-md-5">Email:</label>
+                        <label class="col-md-7">{{getCustomer.account.email}}</label>
+                    </div>
+                    <div class="row" style="border-bottom: 1px solid #ddd;margin: 15px 0px;">
+                        <label class="col-md-5">SDT:</label>
+                        <label class="col-md-7">{{getCustomer.account.phone}}</label>
+                    </div>
+                    <div class="row" style="text-align: center;margin: 15px 0px;" *ngIf="!isWallet">
+                        <label>Hiện tại bạn không có ví, vì vậy bạn muốn tạo ví để được nhận ưu đãi khác không</label>
+                        <button kendoButton (click)="createWallet()">Tạo ví</button>
+                    </div>
+                    <div class="row" style="border-bottom: 1px solid #ddd;margin: 15px 0px;" *ngIf="isWallet">
+                        <label class="col-md-5">Số dư trong tài khoản:</label>
+                        <label class="col-md-7">{{myWallet.surplus}} VND</label>
+                    </div>
+                    <div class="row" *ngIf="isWallet">
+                       <div class="col-md-12">
+                            <button kendoButton (click)="recharge()" style="width: 100%;">Nạp tiền</button>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-footer></app-footer>

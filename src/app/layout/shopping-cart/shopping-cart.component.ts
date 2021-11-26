@@ -209,10 +209,18 @@ export class ShoppingCartComponent implements OnInit {
         this.BillObj.payment = true;
       }
       this.api.postApi('api/bill/creat',this.BillObj).subscribe((rs)=>{
-        this.dataSource.map((x)=>{
-          localStorage.removeItem(x.Id);
-        })
-        this.current += 1;
+        if(rs.status){
+          this.dataSource.map((x)=>{
+            localStorage.removeItem(x.Id);
+          })
+          this.dataSource = [];
+          this.total = 0;
+          this.toMoney = 0;
+          this.step_2 = false;
+          this.step_3 = true;
+          this.current += 1;
+          this.message.SendBadgeCart(localStorage.length);
+        }
       })
     }
   }
