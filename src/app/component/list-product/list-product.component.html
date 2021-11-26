@@ -5,14 +5,23 @@
 </style>
 <div class="row">
     <div class="col-md-3" *ngFor="let product of dataSource">
-        <div
-            style="margin-bottom: 10px;background: white; border: 1px solid white; ">
-            <img src="{{product.image}}" width="100%" height="350px" style="border-radius: 5px" />
+        <div style="margin-bottom: 10px;background: white; border: 1px solid white; ">
+            <div class="img" class="thu-nghiem-zoom">
+                <a href="/list-product/info/{{product.id}}">
+                    <p>
+                        <img class="img" src="{{product.image}}" width="100%" height="350px" />
+                    </p>
+                </a>
+
+            </div>
             <div style="padding: 15px;">
-                <a href="/list-product/info/{{product.id}}"
-                    style="font-weight: normal;font-size: 1.2857em;text-decoration: none;color: #3f3e3e"
-                    class="title">{{product.name}}</a>
-                <p style="color: #cc4148;margin: 0;padding-top: 10px;">{{product.price}} VNĐ</p>
+                <div class="name">
+                    <a href="/list-product/info/{{product.id}}">{{product.name}}</a>
+                </div>
+                <div class="price">
+                    <p style="color: #ffc045;margin: 0;padding-top: 10px;">{{product.price|number :'1.0-3'}}</p>
+                    <div class="d">đ</div>
+                </div>
             </div>
         </div>
     </div>
