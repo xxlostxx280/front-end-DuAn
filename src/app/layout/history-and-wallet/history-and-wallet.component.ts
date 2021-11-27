@@ -36,7 +36,7 @@ export class HistoryAndWalletComponent implements OnInit {
       window.location.href = "";
     } else {
       if(sessionStorage.getItem("isRecharge") == "true"){
-        this.MamiPay.Notification.notificationExecute('Nạp tiền thành công');
+        this.MamiPay.Notification.notificationDefault('Nạp tiền thành công');
         sessionStorage.setItem("isRecharge","false")
       }
 

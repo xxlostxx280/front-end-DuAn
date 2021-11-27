@@ -44,12 +44,12 @@ export class ListProductComponent implements OnInit {
       this.pageData();
     })
     this.message.receviedFilterProduct().subscribe((rs)=>{
-      this.listProduct = [];
+      this.dataSource = [];
       if(rs == "all"){
         this.Product.dataSource.map((x)=>{
           let arr = this.Quantity.dataSource.filter((val)=> val.product.id == x.id)
           if(arr.length > 0){
-            this.listProduct.push(x);
+            this.dataSource.push(x);
           }
         })
       }
@@ -57,7 +57,7 @@ export class ListProductComponent implements OnInit {
         this.Product.dataSource.map((x)=>{
           let arr = this.Quantity.dataSource.filter((val)=> val.product.id == x.id && val.product.discount > 0)
           if(arr.length > 0){
-            this.listProduct.push(x);
+            this.dataSource.push(x);
           }
         })
       }
