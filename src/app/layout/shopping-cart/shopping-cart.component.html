@@ -10,7 +10,8 @@
         padding-right: 5px;
     }
 </style>
-<app-header></app-header>
+<app-header>
+</app-header>
 <div class="container">
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
         <kendo-stepper [steps]="steps" stepType="full" [(currentStep)]="current" [style.width.px]="570"
@@ -25,16 +26,24 @@
                 </h3>
                 <form [formGroup]="InfomationCustomer" class="row">
                     <div class="col-md-6">
-                        <kendo-textbox placeholder="Họ và tên" formControlName="FullName"></kendo-textbox>
+                        <!-- <kendo-textbox class="effect-1" type="text" placeholder="Họ và tên"></kendo-textbox> -->
+                        <input class="effect-1" type="text" placeholder="Họ và tên">
+                        <span class="focus-border"></span>
                     </div>
                     <div class="col-md-6">
-                        <kendo-textbox placeholder="Số điện thoại" formControlName="PhoneNumber"></kendo-textbox>
+                        <!-- <kendo-textbox placeholder="Số điện thoại" formControlName="PhoneNumber"></kendo-textbox> -->
+                        <input class="effect-1" type="text" placeholder="Số điện thoại" formControlName="PhoneNumber">
+                        <span class="focus-border"></span>
                     </div>
-                    <div class="col-md-12">
-                        <kendo-textbox placeholder="Địa chỉ" formControlName="Address"></kendo-textbox><br />
+                    <div class="col-md-12" style="margin-top: 20px;">
+                        <!-- <kendo-textbox placeholder="Địa chỉ" formControlName="Address"></kendo-textbox><br /> -->
+                        <input class="effect-1" type="text" placeholder="Địa chỉ" formControlName="Address">
+                        <span class="focus-border"></span>
                     </div>
-                    <div class="col-md-12">
-                        <kendo-textbox placeholder="Ghi chú" formControlName="Note"></kendo-textbox>
+                    <div class="col-md-12" style="margin-top: 20px;margin-bottom: 20px;">
+                        <!-- <kendo-textbox placeholder="Ghi chú" formControlName="Note"></kendo-textbox> -->
+                        <input class="effect-1" type="text" placeholder="Ghi chú" formControlName="Note">
+                        <span class="focus-border"></span>
                     </div>
                 </form>
             </div>
@@ -81,11 +90,20 @@
                 <i class="fa fa-check-circle" aria-hidden="true" style="color: limegreen;font-size: 80px;"></i>
                 <h3 style="margin: 15px 0px;font-weight: 600;">Bạn đã đặt hàng thành công</h3>
             </div>
-            <div style="float: right;background: #ef2b2b;border-radius: 5px;" *ngIf="!step_3">
-                <button kendoButton iconClass="fa fa-check" look="clear" (click)="buyProduct()"
+            <div style="float: right;" *ngIf="!step_3">
+                <!-- <button kendoButton iconClass="fa fa-check" look="clear" (click)="buyProduct()"
                     style="background-color: #ef2b2b;color: white;font-size: 20px;">
                     Thanh toán đơn hàng
-                </button>
+                </button> -->
+                <button class="animated-button1" style="display: block;
+                box-shadow: 0px 0px rgb(255, 252, 252);
+                border: none;">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    Thanh toán đơn hàng
+            </button>
             </div>
         </div>
         <div class="col-md-5" style="margin: 20px 0px;">
@@ -170,4 +188,7 @@
     </div>
     <div kendoDialogContainer></div>
 </div>
+<header>
+
+</header>
 <app-footer></app-footer>
