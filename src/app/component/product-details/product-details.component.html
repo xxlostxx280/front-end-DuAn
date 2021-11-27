@@ -23,16 +23,16 @@
                     {{infoProduct.name}}
                 </p>
                 <p style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;" *ngIf="isDiscount">
-                    {{newPrice}} VNĐ <small style="text-decoration-line: line-through;padding: 0px 15px;color: #ddd;">{{infoProduct.price}} VNĐ</small>
+                    {{newPrice}}₫ <small style="text-decoration-line: line-through;padding: 0px 15px;color: #ddd;">{{infoProduct.price}} VNĐ</small>
                 </p>
                 <p style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;" *ngIf="!isDiscount">
-                    {{infoProduct.price}} VNĐ 
+                    {{infoProduct.price}}₫ 
                 </p>
                 <div innerHTML="{{infoProduct.description}}"></div>
-                <div class="row" style="background: #F2F3F5;margin: 15px 0px;padding-top: 5px;border-radius: 10px;">
-                    <span class="col-md-2 col-sm-2">Màu sắc</span>
+                <div class="row" style="margin: 15px 0px;">
+                    <span class="col-md-2 col-sm-2" style="padding: 0px;">Màu sắc</span>
                     <form [formGroup]="formGroup" class="row col-md-10">
-                        <div *ngFor="let color of listProperty" class="col-md-3 col-sm-2">
+                        <div *ngFor="let color of listProperty" class="col-md-2 col-sm-2">
                             <input type="radio" name="property" value="{{color.idproperty}}" #{{color.idproperty}}
                                 formControlName="property" kendoRadioButton (change)="changeProperty(color)" />&nbsp;
                             <label class="k-label" [for]="color.name">{{color.name}}</label>
@@ -74,11 +74,12 @@
             </div>
             <div style="padding: 15px;">
                 <div class="name">
-                    <a href="/list-product/info/{{product.id}}">{{product.name}}</a>
+                    <a href="/list-product/info/{{product.id}}" style="font-weight: bold;font-size: 16px;">
+                        {{product.name}}
+                    </a>
                 </div>
                 <div class="price">
-                    <p style="color: #ffc045;margin: 0;padding-top: 10px;">{{product.price|number :'1.0-3'}}</p>
-                    <div class="d">đ</div>
+                    <p style="color: #ffc045;margin: 0;padding-top: 10px;">{{product.price|number :'1.0-3'}}₫</p>
                 </div>
             </div>
         </ng-template>

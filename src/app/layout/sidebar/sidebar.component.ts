@@ -20,6 +20,9 @@ export class SidebarComponent implements OnInit {
   public panelItem: Array<any> = [];
   public router: Router;
   public selectedId = "";
+  public model = {
+    status: "all",
+  };
 
   constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder, router: Router) {
@@ -32,6 +35,21 @@ export class SidebarComponent implements OnInit {
     this.api.Controller = 'CategoryController';
     this.api_2.Controller = 'CategoryDetailController';
     this.queryItems();
+  }
+
+  changeStatus(): void{
+    if(this.model.status == "all"){
+      this.message.SendFilterProduct(this.model.status);
+    }
+    if(this.model.status == "discount"){
+      this.message.SendFilterProduct(this.model.status)
+    }
+    if(this.model.status == "new"){
+      this.message.SendFilterProduct(this.model.status)
+    }
+    if(this.model.status == "selling"){
+      this.message.SendFilterProduct(this.model.status)
+    }
   }
 
   private queryItems(): void {

@@ -91,6 +91,9 @@
     width: 100%;
     height: 100%;
 }
+::ng-deep .k-dropdown-wrap .k-input{
+    padding: 8px;
+  }
 /* ::ng-deep .k-grid-header .k-header{
     text-align: center;
 } */

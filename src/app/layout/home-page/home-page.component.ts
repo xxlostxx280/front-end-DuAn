@@ -1,5 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
+import { NotificationService } from '@progress/kendo-angular-notification';
 import { ApiService } from 'src/app/shared/api.service';
+import { MessageService } from 'src/app/shared/message.service';
 
 @Component({
   selector: 'app-home-page',
@@ -13,14 +18,40 @@ export class HomePageComponent implements OnInit {
     { title: "Sky", url: "https://cdn.shopify.com/s/files/1/0064/5667/2338/files/August-website-banner-1_1024x1024.jpg?v=1618915575" },
   ];
   public listProduct: Array<any> = [] ;
+  public listProductDiscount: Array<any> = [];
   public width = "100%";
   public height = "600px";
-  constructor(private api: ApiService) { }
+  
+  constructor(private api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+    private notificationService: NotificationService, private formBuilder: FormBuilder) {
+  }
+  public Product: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Quantity: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+
 
   ngOnInit(): void {
-    this.api.getApi("Customer/ProductController/home").subscribe((res)=>{
-      this.listProduct = res.data.slice(0,8);
-    })
+    this.Product.Controller = "ProductController";
+    this.Quantity.Controller = "QuantityController";
+    this.Product.getApi('Customer/ProductController/home').subscribe((res) => {
+      this.Product.dataSource = res.data;
+    });
+    setTimeout(()=>{
+      this.Quantity.Read.Execute().subscribe((res) => {
+        this.Quantity.dataSource = res.data;
+        this.Product.dataSource.map((x)=>{
+          let arr = this.Quantity.dataSource.filter((val)=> val.product.id == x.id);
+          let arr_2 = this.Quantity.dataSource.filter((val)=> val.product.id == x.id && val.product.discount > 0)
+          if(arr.length > 0){
+            this.listProduct.push(x);
+          }
+          if(arr_2.length > 0){
+            this.listProductDiscount.push(x);
+          }
+        })
+        this.listProduct.slice(0,8);
+        this.listProductDiscount.slice(0,8);
+      })
+    },2000)
   }
 
 }

@@ -15,7 +15,7 @@ import { FormBuilder } from '@angular/forms';
 export class ListProductComponent implements OnInit {
   public listProduct: Array<any> = [];
   public dataSource: any = [];
-  public pageSize = 12;
+  public pageSize = 20;
   public skip = 0;
   public pagedDestinations = [];
   public total = 0;
@@ -31,18 +31,38 @@ export class ListProductComponent implements OnInit {
     this.Quantity.Controller = "QuantityController";
     this.Product.Read.Execute().subscribe((res) => {
       this.Product.dataSource = res.data;
-      this.total = res.data.length;
-      this.pageData();
     });
     this.Quantity.Read.Execute().subscribe((res) => {
       this.Quantity.dataSource = res.data;
-      this.Product.dataSource = this.Quantity.dataSource.map((val, idx) => {
-        for (let i = 0; i < this.Product.dataSource.length; i++) {
-          if(val.product.id == this.Product.dataSource[i].id){
-            this.listProduct.push(this.Product.dataSource[i]);
-          }
+      this.Product.dataSource.map((x)=>{
+        let arr = this.Quantity.dataSource.filter((val)=> val.product.id == x.id)
+        if(arr.length > 0){
+          this.listProduct.push(x);
         }
       })
+      this.total = this.listProduct.length;
+      this.pageData();
+    })
+    this.message.receviedFilterProduct().subscribe((rs)=>{
+      this.listProduct = [];
+      if(rs == "all"){
+        this.Product.dataSource.map((x)=>{
+          let arr = this.Quantity.dataSource.filter((val)=> val.product.id == x.id)
+          if(arr.length > 0){
+            this.listProduct.push(x);
+          }
+        })
+      }
+      if(rs == "discount"){
+        this.Product.dataSource.map((x)=>{
+          let arr = this.Quantity.dataSource.filter((val)=> val.product.id == x.id && val.product.discount > 0)
+          if(arr.length > 0){
+            this.listProduct.push(x);
+          }
+        })
+      }
+      if(rs == "new"){}
+      if(rs == "selling"){}
     })
   }
   public onPageChange(e: PageChangeEvent): void {

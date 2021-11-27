@@ -29,15 +29,22 @@ export class HistoryAndWalletComponent implements OnInit {
   public Customer: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
   public Bill: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
   public MamiPay: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
-  
+  public History: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+
   ngOnInit(): void {
     if (sessionStorage.getItem('TOKEN') == null || sessionStorage.getItem('TOKEN') == undefined) {
       window.location.href = "";
     } else {
+      if(sessionStorage.getItem("isRecharge") == "true"){
+        this.MamiPay.Notification.notificationExecute('Nạp tiền thành công');
+        sessionStorage.setItem("isRecharge","false")
+      }
+
       this.Customer.isManager = true;
       this.Customer.Controller = "CustomersManagerController";
       this.Bill.Controller = "BillController";
       this.MamiPay.Controller = "MamiPayController";
+      this.History.Controller = "HistoryManagerController"
 
       this.Customer.Read.Execute().subscribe((rs) => {
         this.listCustomer = rs.data;
@@ -53,14 +60,17 @@ export class HistoryAndWalletComponent implements OnInit {
           this.myWallet = rs.data;
         }
       })
+      this.History.getApi('Customer/HistoryManagerController').subscribe((rs)=>{
+        this.History.dataSource = rs.data;
+      })
+
       this.message.receivedDataAfterUpadte().subscribe((rs)=>{
         this.listBillBuying.map((x,idx)=>{
           if(x.id == rs.id){
             this.listBillBuying.splice(idx,1);
             this.listBillBought.push(rs);
           }
-        })
-        
+        })   
       })
     }
   }
@@ -93,6 +103,7 @@ export class HistoryAndWalletComponent implements OnInit {
       bankcode: new FormControl({id: '',name: ''}),
       language: new FormControl('vn'),
     })
+    sessionStorage.setItem('isRecharge',"true");
     this.MamiPay.OpenWindow.Execute(WindowRechargeComponent,'','');
   }
 }

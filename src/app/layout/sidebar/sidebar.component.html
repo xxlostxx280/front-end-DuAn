@@ -11,6 +11,13 @@
         line-height: 1.5;
         text-transform: uppercase;
     }
+    .k-label{
+        padding: 0px 10px;
+    }
+    li{
+        list-style: none;
+        margin: 10px 0px;
+    }
 </style>
 <div class="layout">
     <div class="panelbar-wrapper">
@@ -19,10 +26,29 @@
             (stateChange)="stateChange($event)" [selectable]="false" style="border: none;">
         </kendo-panelbar>
     </div>
-    <!-- <div class="panelbar-wrapper">
-        <h3 class="NH-titleSidebar">Danh mục sản phẩm </h3>
-    </div>
     <div class="panelbar-wrapper">
         <h3 class="NH-titleSidebar">Trạng thái </h3>
-    </div> -->
+        <ul>
+            <li>
+                <input type="radio" name="status" value="all" #all [(ngModel)]="model.status" kendoRadioButton
+                    (change)="changeStatus()" checked/>
+                <label class="k-label" [for]="all">Tất cả</label>
+            </li>
+            <li>
+                <input type="radio" name="status" value="discount" #discount [(ngModel)]="model.status" kendoRadioButton
+                    (change)="changeStatus()" />
+                <label class="k-label" [for]="discount">Giảm giá</label>
+            </li>
+            <li>
+                <input type="radio" name="status" value="new" #new [(ngModel)]="model.status" kendoRadioButton
+                    (change)="changeStatus()" />
+                <label class="k-label" [for]="new">Hàng mới về</label>
+            </li>
+            <li>
+                <input type="radio" name="status" value="selling" #selling [(ngModel)]="model.status" kendoRadioButton
+                    (change)="changeStatus()" />
+                <label class="k-label" [for]="selling">Hàng bán chạy </label>
+            </li>
+        </ul>
+    </div>
 </div>

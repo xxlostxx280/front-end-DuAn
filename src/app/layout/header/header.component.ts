@@ -58,10 +58,12 @@ export class HeaderComponent implements OnInit {
     this.api.Read.Execute().subscribe((res) => {
       this.itemsParent = res;
     });
-    this.api_2.Read.Execute().subscribe((res) => {
-      this.itemsChild = res;
-      this.mapItems();
-    })
+    setTimeout(()=>{
+      this.api_2.Read.Execute().subscribe((res) => {
+        this.itemsChild = res;
+        this.mapItems();
+      })
+    },1000);
     if (sessionStorage.getItem("USERNAME") != null) {
       this.showLogin = false;
       this.showAvatar = true;
