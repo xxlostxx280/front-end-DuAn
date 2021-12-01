@@ -14,7 +14,6 @@
                     Update
                 </button>
             </ng-template>
-            <kendo-grid-column field="id" title="ID"></kendo-grid-column>
             <kendo-grid-column field="name" title="Tên voucher"></kendo-grid-column>
             <kendo-grid-column field="amount" title="Số lượng"></kendo-grid-column>
             <kendo-grid-column field="discount" title="Phần trăm giảm"></kendo-grid-column>
@@ -26,5 +25,6 @@
                 </ng-template>
             </kendo-grid-command-column>
         </kendo-grid>
+        <div *ngIf="Voucher.loading" class="k-i-loading"></div>
     </div>
 </div>

@@ -18,16 +18,9 @@
                     <button kendoGridEditCommand [primary]="true">Info</button>
                 </ng-template>
             </kendo-grid-command-column>
+            <kendo-grid-column field="statusshipping" title="Mã trạng thái ship" [width]="200" [locked]="true">
+            </kendo-grid-column>
             <kendo-grid-column field="status" title="Trạng thái" [width]="250" [locked]="true">
-                <ng-template kendoGridGroupHeaderTemplate let-value="value">
-                    {{ value }}
-                </ng-template>
-                <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-column="column">
-                    <kendo-dropdownlist [defaultItem]="{ id: null, name: 'Choose...' }" [data]="listStatus"
-                        textField="name" valueField="id" [valuePrimitive]="true"
-                        (valueChange)="onStatusChange($event)">
-                    </kendo-dropdownlist>
-                </ng-template>
             </kendo-grid-column>
             <kendo-grid-column field="payment" title="Phương thức" [width]="250">
                 <ng-template kendoGridCellTemplate let-dataItem>
@@ -41,6 +34,7 @@
             <kendo-grid-column field="downtotal" title="Giá giảm" [width]="150"></kendo-grid-column>
             <kendo-grid-column field="transportFee" title="Giá ship" [width]="150"></kendo-grid-column>
         </kendo-grid>
+        <div *ngIf="Bill.loading" class="k-i-loading"></div>
         <div kendoWindowContainer></div>
     </div>
 </div>

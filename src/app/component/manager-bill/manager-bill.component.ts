@@ -28,7 +28,7 @@ export class ManagerBillComponent implements OnInit {
     },
     {
       id: 1,
-      name: "DA_XAC_NHAN"
+      name: "DA_XAC_NHAN_VA_DONG_GOI"
     },
     {
       id: 2,
@@ -72,6 +72,8 @@ export class ManagerBillComponent implements OnInit {
   }
 
   editHandler(event: any) {
+    this.Bill.OpenWindow.top = -160;
+    this.Bill.OpenWindow.left = -60;
     this.Bill.Edit.Execute(WindowBillComponent, event);
   }
 
@@ -85,7 +87,7 @@ export class ManagerBillComponent implements OnInit {
   }
 
   private isReadOnly(field: string): boolean {
-    const readOnlyColumns = ["status"];
+    const readOnlyColumns = ["statusshipping"];
     return readOnlyColumns.indexOf(field) > -1;
   }
 

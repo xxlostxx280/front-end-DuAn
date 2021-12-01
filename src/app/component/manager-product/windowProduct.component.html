@@ -1,5 +1,5 @@
 <style>
-    .row{
+    .row {
         margin: 10px 0px;
     }
 </style>
@@ -30,8 +30,9 @@
             <div class="row">
                 <label class="col-md-3">Danh mục cấp 1</label>
                 <div class="col-md-9">
-                    <kendo-dropdownlist [data]="category" textField="name" valueField="id" [defaultItem]="defaultItem" formControlName="category"
-                    (selectionChange)="selectCategory($event)" style="width: 100%" [(ngModel)]="dataSource.categorydetail.category">
+                    <kendo-dropdownlist [data]="category" textField="name" valueField="id" [defaultItem]="defaultItem"
+                        formControlName="category" (selectionChange)="selectCategory($event)" style="width: 100%"
+                        [(ngModel)]="dataSource.categorydetail.category">
                     </kendo-dropdownlist>
                 </div>
             </div>
@@ -40,8 +41,10 @@
             <div class="row">
                 <label class="col-md-3">Danh mục cấp 2</label>
                 <div class="col-md-9">
-                    <kendo-dropdownlist [data]="CategoryDetailById" textField="name" valueField="id" [defaultItem]="defaultItem" [disabled]="disabled"
-                    formControlName="categorydetail" (selectionChange)="selectCategoryDetail($event)" style="width: 100%" [(ngModel)]="formGroup.value.categorydetail">
+                    <kendo-dropdownlist [data]="CategoryDetailById" textField="name" valueField="id"
+                        [defaultItem]="defaultItem" [disabled]="disabled" formControlName="categorydetail"
+                        (selectionChange)="selectCategoryDetail($event)" style="width: 100%"
+                        [(ngModel)]="formGroup.value.categorydetail">
                     </kendo-dropdownlist>
                 </div>
             </div>
@@ -58,21 +61,23 @@
         </div>
         <div class="col-md-6">
             <div class="row">
-                <label class="col-md-3">Mô tả chi tiết</label>
-                <div class="col-md-9">
-                    <kendo-editor [iframe]="false" style="height: 300px;" name="descriptionDetail"
-                        formControlName="descriptionDetail" [(ngModel)]="formGroup.value.descriptionDetail">
-                    </kendo-editor>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="row">
                 <label class="col-md-3">Hình ảnh</label>
                 <div class="col-md-9">
+                    <div class="text-box">
+                        <span class="list-title">
+                            {{
+                            formGroup.value.image != null
+                            ? "Files currently bound to the model:"
+                            : "No files are currently bound to the model"
+                            }}
+                        </span>&nbsp;
+                        <span>
+                            {{ formGroup.value.image }}
+                        </span>
+                    </div>
                     <kendo-fileselect (select)="select($event)" [multiple]="false"></kendo-fileselect>
                 </div>
             </div>
-        </div>  
+        </div>
     </div>
 </form>

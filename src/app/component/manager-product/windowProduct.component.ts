@@ -82,15 +82,10 @@ export class WindowProductComponent implements OnInit {
         }
     }
     addImage(): void {
-        const imageData = new FormData();
-        imageData.append("file", this.imagePreview[0].rawFile);
-        this.api.postApi("Manager/ProductManagerController/uploads", imageData).subscribe((rs) => {
-            this.formGroup.value.description = encodeURIComponent(this.formGroup.value.description).replace(/'/g, "%27");
-            this.formGroup.value.descriptionDetail = encodeURIComponent(this.formGroup.value.descriptionDetail).replace(/'/g, "%27");
-            if (rs.status) {
-                this.api.Update.Execute(this.formGroup.value);
-            }
-        });
+        const data = new FormData();
+        data.append("files", this.imagePreview[0].rawFile);
+        data.append("Product",JSON.stringify(this.formGroup.value));
+        this.api.Update.Execute(data);
     }
     select(e: SelectEvent): void {
         this.imagePreview = e.files;

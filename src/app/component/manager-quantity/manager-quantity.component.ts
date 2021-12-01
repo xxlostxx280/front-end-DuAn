@@ -27,7 +27,7 @@ export class ManagerQuantityComponent implements OnInit {
     filter: undefined,
     skip: 0,
     take: 5,
-    group: [{field: "idProduct"}],
+    group: [{field: "product.name"}],
     sort: [],
   };
   

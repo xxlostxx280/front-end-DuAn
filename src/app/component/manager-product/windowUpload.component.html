@@ -1,0 +1,7 @@
+<form [formGroup]="formGroup">
+    <kendo-toolbar>
+        <kendo-toolbar-button text="Save" (click)="saveHandler($event)"></kendo-toolbar-button>
+    </kendo-toolbar>
+    <label style="margin: 10px 0px;">Tên sản phẩm : <span style="padding: 0px 15px;">{{dataSource.name}}</span></label>
+    <kendo-fileselect (select)="select($event)" [multiple]="true" formControlName="files" ></kendo-fileselect>
+</form>

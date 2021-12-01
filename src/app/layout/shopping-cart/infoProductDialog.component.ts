@@ -7,7 +7,7 @@ import { MessageService } from "src/app/shared/message.service";
     template: `
       <div class="row">
             <div class="col-md-5">
-                <img src="{{infoProduct.Product.image}}" width="100%" height="350px">
+                <img src="http://localhost:8080/manager/image/get/{{infoProduct.Product.image}}" width="100%" height="350px">
             </div>
             <div class="col-md-7">
                 <h3 style="border-bottom: 2px solid #dee2e6;margin: 0px;padding-bottom: 15px;font-size: 25px;font-weight: 600;">

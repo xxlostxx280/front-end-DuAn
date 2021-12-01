@@ -26,24 +26,37 @@
                 </h3>
                 <form [formGroup]="InfomationCustomer" class="row">
                     <div class="col-md-6">
-                        <!-- <kendo-textbox class="effect-1" type="text" placeholder="Họ và tên"></kendo-textbox> -->
-                        <input class="effect-1" type="text" placeholder="Họ và tên">
-                        <span class="focus-border"></span>
+                        <kendo-textbox formControlName="FullName" type="text" placeholder="Họ và tên"></kendo-textbox>
                     </div>
                     <div class="col-md-6">
-                        <!-- <kendo-textbox placeholder="Số điện thoại" formControlName="PhoneNumber"></kendo-textbox> -->
-                        <input class="effect-1" type="text" placeholder="Số điện thoại" formControlName="PhoneNumber">
-                        <span class="focus-border"></span>
+                        <kendo-textbox placeholder="Số điện thoại" formControlName="PhoneNumber"></kendo-textbox>
                     </div>
-                    <div class="col-md-12" style="margin-top: 20px;">
-                        <!-- <kendo-textbox placeholder="Địa chỉ" formControlName="Address"></kendo-textbox><br /> -->
-                        <input class="effect-1" type="text" placeholder="Địa chỉ" formControlName="Address">
-                        <span class="focus-border"></span>
+                    <div class="col-md-6" style="margin: 10px 0px;">
+                        <kendo-dropdownlist [data]="listProvince" textField="Name" valueField="Id"
+                            [defaultItem]="{ Name: 'Tỉnh Thành', Id: null }" (valueChange)="ProvinceChange($event)"
+                            formControlName="Province" [valuePrimitive]="true" style="width: 100%;">
+                        </kendo-dropdownlist>
                     </div>
-                    <div class="col-md-12" style="margin-top: 20px;margin-bottom: 20px;">
-                        <!-- <kendo-textbox placeholder="Ghi chú" formControlName="Note"></kendo-textbox> -->
-                        <input class="effect-1" type="text" placeholder="Ghi chú" formControlName="Note">
-                        <span class="focus-border"></span>
+                    <div class="col-md-6" style="margin: 10px 0px;">
+                        <kendo-dropdownlist [data]="listDistrict" textField="Name" valueField="Id"
+                            [defaultItem]="{ Name: 'Quận/Huyện', Id: null }" (valueChange)="DistrictChange($event)"
+                            formControlName="District" [valuePrimitive]="true" style="width: 100%;">
+                        </kendo-dropdownlist>
+                    </div>
+                    <div class="col-md-6" style="margin: 10px 0px;">
+                        <kendo-dropdownlist [data]="listWards" textField="Name" valueField="Id"
+                            [defaultItem]="{ Name: 'Phường/Xã', Id: null }" (valueChange)="WardsChange($event)"
+                            formControlName="Wards" [valuePrimitive]="true" style="width: 100%;">
+                        </kendo-dropdownlist>
+                    </div>
+                    <div class="col-md-6" style="margin: 10px 0px;">
+                        <kendo-textbox placeholder="Tổ/Xóm" formControlName="Hamlet" (change)="HamletChange($event)"></kendo-textbox>
+                    </div>
+                    <div class="col-md-12">
+                        <kendo-textbox placeholder="Địa chỉ" formControlName="Address" [(ngModel)]="InfomationCustomer.value.Address"></kendo-textbox>
+                    </div>
+                    <div class="col-md-12">
+                        <kendo-textbox placeholder="Ghi chú" formControlName="Note"></kendo-textbox>
                     </div>
                 </form>
             </div>
@@ -66,16 +79,16 @@
                         </h3>
                         <form [formGroup]="Payment">
                             <div style="font-size: 30px;margin: 20px 0px;">
-                                <input type="radio" name="payment" value="truck" #male formControlName="payment"
-                                    kendoRadioButton />
+                                <input type="radio" name="payment" value="cash"formControlName="payment"
+                                    kendoRadioButton (change)="PaymentMethodChange($event)"/>
                                 <label style="padding: 0px 20px;">
                                     <i class="fa fa-truck" aria-hidden="true"></i>
                                     Vận chuyển toàn quốc
                                 </label>
                             </div>
                             <div style="font-size: 30px;margin: 20px 0px;">
-                                <input type="radio" name="payment" value="card" #female formControlName="payment"
-                                    kendoRadioButton />
+                                <input type="radio" name="payment" value="transfer" formControlName="payment"
+                                    kendoRadioButton (change)="PaymentMethodChange($event)"/>
                                 <label style="padding: 0px 20px;">
                                     <i class="fa fa-credit-card" aria-hidden="true"></i>
                                     Thanh toán qua ví
@@ -91,19 +104,10 @@
                 <h3 style="margin: 15px 0px;font-weight: 600;">Bạn đã đặt hàng thành công</h3>
             </div>
             <div style="float: right;" *ngIf="!step_3">
-                <!-- <button kendoButton iconClass="fa fa-check" look="clear" (click)="buyProduct()"
+                <button kendoButton iconClass="fa fa-check" (click)="buyProduct()"
                     style="background-color: #ef2b2b;color: white;font-size: 20px;">
                     Thanh toán đơn hàng
-                </button> -->
-                <button class="animated-button1" style="display: block;
-                box-shadow: 0px 0px rgb(255, 252, 252);
-                border: none;">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    Thanh toán đơn hàng
-            </button>
+                </button>
             </div>
         </div>
         <div class="col-md-5" style="margin: 20px 0px;">
@@ -116,7 +120,7 @@
                 <ng-template kendoListViewItemTemplate let-card="dataItem" let-index="index">
                     <kendo-card-header class="k-hbox">
                         <div class="col-md-3">
-                            <img src="{{card.Product.image}}" width="80px" height="100px">
+                            <img src="http://localhost:8080/manager/image/get/{{card.Product.image}}" width="80px" height="100px">
                         </div>
                         <div class="col-md-6" style="padding: 0px;">
                             <div *ngIf="card.newPrice != 0">
@@ -186,6 +190,7 @@
             </kendo-listview>
         </div>
     </div>
+    <div *ngIf="api.loading" class="k-i-loading"></div>
     <div kendoDialogContainer></div>
 </div>
 <header>

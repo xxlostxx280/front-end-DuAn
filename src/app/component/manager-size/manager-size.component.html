@@ -18,7 +18,6 @@
                                 Update
                             </button>
                         </ng-template>
-                        <kendo-grid-column field="id" title="ID"></kendo-grid-column>
                         <kendo-grid-column field="name" title="Name"></kendo-grid-column>
                         <kendo-grid-command-column title="command" [width]="220">
                             <ng-template kendoGridCellTemplate let-isNew="isNew">
@@ -28,23 +27,24 @@
                             </ng-template>
                         </kendo-grid-command-column>
                     </kendo-grid>
+                    <div *ngIf="api.loading" class="k-i-loading"></div>
                 </ng-template>
             </kendo-tabstrip-tab>
             <kendo-tabstrip-tab title="Danh mục cấp 2">
                 <ng-template kendoTabContent>
-                    <kendo-grid #grid [kendoGridBinding]="api_2.dataSource" kendoGridSelectBy="id" [pageSize]="state.take!"
-                        [skip]="state.skip!" [sort]="state.sort!" [group]="state.group!" [pageable]="true"
-                        [sortable]="true" [navigable]="true" [height]="450" [columnMenu]="{ filter: true }"
-                        (dataStateChange)="dataStateChange($event)" (cellClose)="cellCloseHandler($event)"
-                        (cellClick)="cellClickHandler($event)" (cancel)="cancelHandler($event)"
-                        (save)="saveHandler($event)" (remove)="removeHandler($event)" (add)="addHandler($event)">
+                    <kendo-grid #grid [kendoGridBinding]="api_2.dataSource" kendoGridSelectBy="id"
+                        [pageSize]="state.take!" [skip]="state.skip!" [sort]="state.sort!" [group]="state.group!"
+                        [pageable]="true" [sortable]="true" [navigable]="true" [height]="450"
+                        [columnMenu]="{ filter: true }" (dataStateChange)="dataStateChange($event)"
+                        (cellClose)="cellCloseHandler($event)" (cellClick)="cellClickHandler($event)"
+                        (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
+                        (add)="addHandler($event)">
                         <ng-template kendoGridToolbarTemplate>
                             <button iconClass="fa fa-plus" kendoGridAddCommand>Add new</button>
                             <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
                                 Update
                             </button>
                         </ng-template>
-                        <kendo-grid-column field="id" title="ID" [width]="100"></kendo-grid-column>
                         <kendo-grid-column field="name" title="Name" [width]="150"></kendo-grid-column>
                         <kendo-grid-column field="typesize.name" title="TypeSize" [width]="150">
                             <ng-template kendoGridGroupHeaderTemplate let-value="value">
@@ -67,6 +67,7 @@
                             </ng-template>
                         </kendo-grid-command-column>
                     </kendo-grid>
+                    <div *ngIf="api_2.loading" class="k-i-loading"></div>
                 </ng-template>
             </kendo-tabstrip-tab>
         </kendo-tabstrip>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/shared/api.service';
+import { MessageService } from 'src/app/shared/message.service';
 
 @Component({
   selector: 'app-manager-account',
@@ -8,16 +9,24 @@ import { ApiService } from 'src/app/shared/api.service';
 })
 export class ManagerAccountComponent implements OnInit {
   public gridData: Array<any> = [];
-  constructor(private api: ApiService) { }
+  constructor(public api: ApiService, private message: MessageService) { }
 
   ngOnInit(): void {
     this.api.Controller = "AccountManagerController";
     this.api.isManager = true;
     this.api.Read.Execute().subscribe((rs) => {
       this.gridData = rs.data;
+      this.api.dataSource = rs.data
+    })
+    this.message.receivedDataBehavior().subscribe((rs) => {
+      this.gridData = rs;
+    })
+    this.message.receivedDataAfterUpadte().subscribe((rs) => {
+      this.gridData = rs.data;
+      this.api.dataSource = rs.data;
     })
   }
-  
+
   Update(grid: any): void {
     this.api.Update.Execute(grid);
   }

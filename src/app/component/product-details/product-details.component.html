@@ -4,29 +4,34 @@
         <div class="col-md-5" style="border-color: 2px solid #dee2e6">
             <swiper style="--swiper-navigation-color: #fff;--swiper-pagination-color: #fff;height: 500px;"
                 [spaceBetween]="10" [navigation]="true" [thumbs]="{ swiper: thumbsSwiper }" class="mySwiper2">
-                <ng-template swiperSlide><img src="{{infoProduct.image}}" width="100%" height="500px" /></ng-template>
+                <ng-template swiperSlide><img src="http://localhost:8080/manager/image/get/{{infoProduct.image}}" width="100%" height="500px" /></ng-template>
                 <ng-template swiperSlide *ngFor="let image of listImageProduct">
-                    <img src="{{image.file}}" width="100%" height="550px" />
+                    <img src="http://localhost:8080/manager/image/get/{{image.file}}" width="100%" height="550px" />
                 </ng-template>
             </swiper>
             <swiper (swiper)="thumbsSwiper = $event" [spaceBetween]="5" [slidesPerView]="4" [freeMode]="true"
                 style="height: 100px;margin: 10px 0px" [watchSlidesProgress]="true" class="mySwiper">
-                <ng-template swiperSlide><img src="{{infoProduct.image}}" width="100%" height="120px" /></ng-template>
+                <ng-template swiperSlide><img src="http://localhost:8080/manager/image/get/{{infoProduct.image}}" width="100%" height="120px" /></ng-template>
                 <ng-template swiperSlide *ngFor="let image of listImageProduct">
-                    <img src="{{image.file}}" width="100%" height="120px" />
+                    <img src="http://localhost:8080/manager/image/get/{{image.file}}" width="100%" height="120px" />
                 </ng-template>
             </swiper>
         </div>
         <div class="col-md-7">
             <div>
-                <p style="border-bottom: 2px solid #dee2e6;margin: 0px;padding-bottom: 15px;font-size: 25px;font-weight: 600;">
+                <p
+                    style="border-bottom: 2px solid #dee2e6;margin: 0px;padding-bottom: 15px;font-size: 25px;font-weight: 600;">
                     {{infoProduct.name}}
                 </p>
-                <p style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;" *ngIf="isDiscount">
-                    {{newPrice}}₫ <small style="text-decoration-line: line-through;padding: 0px 15px;color: #ddd;">{{infoProduct.price}} VNĐ</small>
+                <p style="color: #ffc045;padding-top: 10px;font-size: 25px;font-weight: 600;font-family: Arial, Helvetica, sans-serif;" *ngIf="isDiscount">
+                    {{newPrice}}₫
+                    <small style="text-decoration-line: line-through;font-size: 16px;padding: 0px 15px;color: #ddd;font-family: Arial, Helvetica, sans-serif;">
+                        {{infoProduct.price}}₫
+                    </small>
                 </p>
-                <p style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;" *ngIf="!isDiscount">
-                    {{infoProduct.price}}₫ 
+                <p style="color: #ffc045;padding-top: 10px;font-size: 25px;font-weight: 600;font-family: Arial, Helvetica, sans-serif;
+                " *ngIf="!isDiscount">
+                    {{infoProduct.price}}₫
                 </p>
                 <div innerHTML="{{infoProduct.description}}"></div>
                 <div class="row" style="margin: 15px 0px;">
@@ -44,9 +49,9 @@
                 <div class="row">
                     <label class="col-md-2 k-label">Chọn size</label>
                     <div class="col-md-10">
-                        <kendo-dropdownlist [data]="listSizeByQuantity" textField="name" valueField="id" formControlName="size"
-                            name="size" (valueChange)="changeSize($event)" [defaultItem]="defaultItem"
-                            [filterable]="true">
+                        <kendo-dropdownlist [data]="listSizeByQuantity" textField="name" valueField="id"
+                            formControlName="size" name="size" (valueChange)="changeSize($event)"
+                            [defaultItem]="defaultItem" [filterable]="true">
                         </kendo-dropdownlist>
                     </div>
                 </div>
@@ -68,7 +73,7 @@
             <div class="img" class="thu-nghiem-zoom">
                 <a href="/list-product/info/{{product.id}}">
                     <p>
-                        <img class="img" src="{{product.image}}" width="100%" height="300px" />
+                        <img class="img" src="http://localhost:8080/manager/image/get/{{product.image}}" width="100%" height="300px" />
                     </p>
                 </a>
             </div>
@@ -79,7 +84,17 @@
                     </a>
                 </div>
                 <div class="price">
-                    <p style="color: #ffc045;margin: 0;padding-top: 10px;">{{product.price|number :'1.0-3'}}₫</p>
+                    <p style="color: #ffc045;margin: 0;padding-top: 10px;font-family: Arial, Helvetica, sans-serif;" 
+                    *ngIf="product.discount == 0 || product.discount == null">
+                        {{product.price|number :'1.0-3'}}₫
+                    </p>
+                    <p style="color: #ffc045;margin: 0;padding-top: 10px;font-family: Arial, Helvetica, sans-serif;" 
+                    *ngIf="product.discount > 0">
+                        {{product.price * product.discount/100|number :'1.0-3'}}₫
+                        <small style="text-decoration-line: line-through;padding: 0px 15px;color: #ddd;font-family: Arial, Helvetica, sans-serif;">
+                            {{product.price | number :'1.0-3'}}₫
+                        </small>
+                    </p>
                 </div>
             </div>
         </ng-template>

@@ -35,6 +35,7 @@ import { WindowBillComponent } from "src/app/component/manager-bill/windowBill.c
 import { ManagerCategoryComponent } from "src/app/component/manager-category/manager-category.component";
 import { ManagerProductComponent } from "src/app/component/manager-product/manager-product.component";
 import { WindowProductComponent } from "src/app/component/manager-product/windowProduct.component";
+import { WindowUploadComponent } from "src/app/component/manager-product/windowUpload.component";
 import { ManagerPropertyComponent } from "src/app/component/manager-property/manager-property.component";
 import { ManagerQuantityComponent } from "src/app/component/manager-quantity/manager-quantity.component";
 import { WindowQuantityComponent } from "src/app/component/manager-quantity/windowQuantity.component";
@@ -59,7 +60,8 @@ import { DefaultManagerComponent } from "./default-manager.component";
         ///////Popup của component cha//////
         WindowProductComponent,
         WindowQuantityComponent,
-        WindowBillComponent
+        WindowBillComponent,
+        WindowUploadComponent,
     ],
     imports:[
         NgbModule,
@@ -96,7 +98,8 @@ import { DefaultManagerComponent } from "./default-manager.component";
     entryComponents: [
         WindowProductComponent,
         WindowQuantityComponent,
-        WindowBillComponent
+        WindowBillComponent,
+        WindowUploadComponent
     ],
     bootstrap: [DefaultManagerComponent]
 })

@@ -11,13 +11,9 @@
             <ng-template kendoGridToolbarTemplate>
                 <button kendoGridAddCommand>Add new</button>
             </ng-template>
-            <kendo-grid-column field="id" title="ID" [width]="100">
+            <kendo-grid-column field="product.name" title="Tên sản phẩm" [width]="300" [hidden]=true>
             </kendo-grid-column>
-            <kendo-grid-column field="quantity" title="Số lượng" [width]="150">
-            </kendo-grid-column>
-            <kendo-grid-column field="idProduct" title="Mã sản phẩm" [width]="100">
-            </kendo-grid-column>
-            <kendo-grid-column field="product.name" title="Tên sản phẩm" [width]="300">
+            <kendo-grid-column field="quantity" title="Số lượng" [width]="120">
             </kendo-grid-column>
             <kendo-grid-column field="property.name" title="Thuộc tính" [width]="120">
             </kendo-grid-column>
@@ -30,6 +26,7 @@
                 </ng-template>
             </kendo-grid-command-column>
         </kendo-grid>
+        <div *ngIf="Quantity.loading" class="k-i-loading"></div>
         <div kendoWindowContainer></div>
     </div>
 </div>

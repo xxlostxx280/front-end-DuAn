@@ -24,11 +24,6 @@ export const items = [
         path: 'quan-ly-voucher',
         expanded: false,
       },
-      {
-        text: 'Quản lý ảnh sự kiện',
-        path: 'quan-ly-event',
-        expanded: false,
-      }
     ]
   },
   {

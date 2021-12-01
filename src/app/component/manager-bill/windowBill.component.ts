@@ -98,7 +98,7 @@ export class WindowBillComponent implements OnInit {
             this.isShip = false;
             this.isRefund = false;
         }
-        if(this.formGroup.value.status == "DA_XAC_NHAN"){
+        if(this.formGroup.value.status == "DA_XAC_NHAN_VA_DONG_GOI"){
             this.isConfirm = false;
             this.isReceived = false;
             this.isRefund = false;

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { ApiService } from 'src/app/shared/api.service';
 import { MessageService } from 'src/app/shared/message.service';
 import { WindowProductComponent } from './windowProduct.component';
+import { WindowUploadComponent } from './windowUpload.component';
 
 @Component({
   selector: 'app-manager-product',
@@ -25,7 +26,7 @@ export class ManagerProductComponent implements OnInit {
     group: [{field: "categorydetail.category.name"}, { field: "categorydetail.name" },],
     sort: [],
   };
-  constructor(private api: ApiService, private message: MessageService, private formBuilder: FormBuilder) {
+  constructor(public api: ApiService, private message: MessageService, private formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
@@ -54,15 +55,30 @@ export class ManagerProductComponent implements OnInit {
     return this.gridData.find(x => x.id === id);
   }
   addHanler(event: any) {
+    this.api.OpenWindow.top = -160;
+    this.api.OpenWindow.left = -60;
+    this.api.OpenWindow.Width = 1200;
+    this.api.OpenWindow.Height = 600;
     this.api.Create.Execute(WindowProductComponent, this.gridData[0]);
   }
   editHandler(event: any) {
+    this.api.OpenWindow.top = -160;
+    this.api.OpenWindow.left = -60;
+    this.api.OpenWindow.Width = 1200;
+    this.api.OpenWindow.Height = 600;
     this.api.Edit.Execute(WindowProductComponent, event);
   }
   removeHandler(event: any) {
 
   }
-  public dataStateChange(state: DataStateChangeEvent): void {
+  dataStateChange(state: DataStateChangeEvent): void {
     this.state = state;
+  }
+  UploadImage(event: any): void{
+    this.api.OpenWindow.top = -160;
+    this.api.OpenWindow.left = 200;
+    this.api.OpenWindow.Width = 500;
+    this.api.OpenWindow.Height = 650;
+    this.api.OpenWindow.Execute(WindowUploadComponent,this.gridData.find((x)=> x.id == event),null);
   }
 }

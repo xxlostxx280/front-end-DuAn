@@ -1,33 +1,23 @@
-<style>
-    .k-i-loading {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        font-size: 64px;
-        background-color: rgba(255, 255, 255, 0.3);
-        color: #ff6757;
-    }
-</style>
 <div class="card">
+    <div class="card-header card-header-danger">
+        <h4 class="card-title ">Simple Table</h4>
+        <p class="card-category"> Here is a subtitle for this table</p>
+    </div>
     <div class="card-body">
         <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="state.take!" [skip]="state.skip!"
-            [sort]="state.sort!" [group]="state.group!"  [pageable]="true" [sortable]="true" style="height: 540px; width: 1150px;"
+            [sort]="state.sort!" [group]="state.group!"  [pageable]="true" [sortable]="true" style="height: 450px; width: 1150px;"
             [columnMenu]="{ filter: true }" (edit)="editHandler($event)" (add)="addHanler($event)"
             (remove)="removeHandler($event)" (dataStateChange)="dataStateChange($event)">
-            <div class="k-loading-panel">
-                <div class="k-loading-panel-mask"></div>
-                <div class="k-loading-panel-wrapper">
-                    <kendo-loader type="infinite-spinner" themeColor="primary" size="large">
-                    </kendo-loader>
-                </div>
-            </div>
             <ng-template kendoGridToolbarTemplate>
                 <button kendoGridAddCommand>Add new </button>
             </ng-template>
-            <kendo-grid-column field="id" title="ID" [width]="100">
-            </kendo-grid-column>
+            <kendo-grid-command-column title="Command" [width]="370" [locked]="true">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <button kendoGridEditCommand [primary]="true">Edit</button>
+                    <button kendoGridRemoveCommand>Remove</button>
+                    <button kendoButton iconClass="fa fa-upload" (click)="UploadImage(dataItem.id)">Upload Image</button>
+                </ng-template>
+            </kendo-grid-command-column>
             <kendo-grid-column field="name" title="Tên sản phẩm" [width]="250">
             </kendo-grid-column>
             <kendo-grid-column field="price" title="Giá" [width]="100">
@@ -37,19 +27,13 @@
                     {{ value }}
                 </ng-template>
             </kendo-grid-column>
-            <kendo-grid-column field="categorydetail.name" title="Danh mục sản phẩm" [width]="250">
+            <kendo-grid-column field="categorydetail.name" title="Danh mục cấp 2" [width]="250">
                 <ng-template kendoGridGroupHeaderTemplate let-value="value">
                     {{ value }}
                 </ng-template>
             </kendo-grid-column>
-            <kendo-grid-command-column title="Command" [width]="220">
-                <ng-template kendoGridCellTemplate>
-                    <button kendoGridEditCommand [primary]="true">Edit</button>
-                    <button kendoGridRemoveCommand>Remove</button>
-                </ng-template>
-            </kendo-grid-command-column>
         </kendo-grid>
-        <div *ngIf="loading" class="k-i-loading"></div>
+        <div *ngIf="api.loading" class="k-i-loading"></div>
         <div kendoWindowContainer></div>
     </div>
 </div>

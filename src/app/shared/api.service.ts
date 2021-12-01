@@ -24,7 +24,7 @@ export class ApiService {
   public updatedItems: any[] = [];
   public deletedItems: any[] = [];
   public isManager = false;
-  public loading = true;
+  public loading = false;
   public state: any;
   public serviceGrid = {
     aggregates: {},
@@ -32,7 +32,7 @@ export class ApiService {
     items: [null],
     value: "",
   };
-
+  public windowRef: any;
   constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder) {
   }
@@ -56,16 +56,21 @@ export class ApiService {
     }
   }
   postApi(url: any, data: any) {
+    this.loading = true;
     let getHeader = this.getHeader();
     if (getHeader instanceof HttpHeaders) {
       return this.http.post('http://localhost:8080/' + url, data, { headers: getHeader })
         .pipe(map((res: any) => {
           return res;
+        }), tap(() => {
+          this.loading = false
         }))
     } else {
       return this.http.post('http://localhost:8080/' + url, data)
         .pipe(map((res: any) => {
           return res;
+        }), tap(() => {
+          this.loading = false
         }))
     }
   }
@@ -76,8 +81,8 @@ export class ApiService {
     Height: 650,
     top: -70,
     left: -120,
-    After: function (getInfoWindow: any) {
-      return getInfoWindow;
+    After: function (windowRef: any) {
+      return windowRef;
     },
     Execute: function (component: any, data: any, status: any) {
       let windowRef = this._.windowService.open({
@@ -88,15 +93,18 @@ export class ApiService {
         top: this.top,
         left: this.left
       })
+      this._.windowRef = windowRef;
       const getInfoWindow = windowRef.content.instance;
       if (status == "EDIT") {
         getInfoWindow.dataSource = data.dataItem;
       } else {
         getInfoWindow.dataSource = data;
       }
-      getInfoWindow.formGroup = this._.formGroup;
-      getInfoWindow.status = status;
-      this.After(getInfoWindow);
+      if (this._.formGroup != undefined) {
+        getInfoWindow.formGroup = this._.formGroup;
+        getInfoWindow.status = status;
+      }
+      this.After(windowRef);
     },
   }
   public Notification = {
@@ -173,7 +181,7 @@ export class ApiService {
             this.newState.splice(idx, 1);
           }
         })
-      }else{
+      } else {
         this.oldState = event.sender.data.data;
         this.newState = this.oldState.filter((val, idx) => {
           return idx !== event.rowIndex;
@@ -333,6 +341,10 @@ export class ApiService {
     Data: function () {
 
     },
+    Before: function () {
+      this._.loading = true;
+      return this._.loading;
+    },
     Execute: function (data: any) {
       if (this._.typeData == "grid") {
         this.UpdateDataGrid(data).subscribe();
@@ -341,6 +353,7 @@ export class ApiService {
       }
     },
     UpdateDataGrid: function (grid: any) {
+      this._.loading = true;
       const formData = new FormData();
       formData.append("createdItems", JSON.stringify(this._.createdItems));
       formData.append("updatedItems", JSON.stringify(this._.updatedItems));
@@ -356,9 +369,12 @@ export class ApiService {
         }
         this.UpdateAfterGrid(res);
         return res;
+      }), tap(() => {
+        this._.loading = false
       }))
     },
     UpdateDataWindow: function (data: any) {
+      this._.loading = true;
       let url = "http://localhost:8080/Manager/" + this._.Controller + "/saveAndFlush";
       return this._.http.post(url, data).pipe(map((res: any) => {
         if (res.status) {
@@ -369,6 +385,8 @@ export class ApiService {
         }
         this.UpdateAfterWindow(res);
         return res;
+      }), tap(() => {
+        this._.loading = false
       }))
     },
     UpdateAfterWindow: function (res: any) {
@@ -387,6 +405,7 @@ export class ApiService {
         });
         this._.dataSource = newState;
       }
+      this._.windowRef.close();
       this._.message.SendDataAfterUpdate(res);
       return res;
     },

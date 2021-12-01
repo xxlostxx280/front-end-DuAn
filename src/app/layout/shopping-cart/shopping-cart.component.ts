@@ -9,7 +9,7 @@ import { DialogInfoProductComponent } from 'src/app/layout/shopping-cart/infoPro
 import { DialogLoginComponent } from './loginDialog.component';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { HttpClient } from '@angular/common/http';
-import { BillModel } from './bill.model';
+import { ApiVietNam, BillModel } from './bill.model';
 @Component({
   selector: 'app-shopping-cart',
   templateUrl: './shopping-cart.component.html',
@@ -29,6 +29,9 @@ export class ShoppingCartComponent implements OnInit {
   public newPrice: number = 0;
   public isDiscount = false;
   public isPayment = false;
+  public listProvince: Array<any> = ApiVietNam;
+  public listDistrict: Array<any> = [];
+  public listWards: Array<any> = [];
 
   public steps = [
     { label: "First step", index: 0 },
@@ -63,6 +66,10 @@ export class ShoppingCartComponent implements OnInit {
   public InfomationCustomer = new FormGroup({
     FullName: new FormControl('', Validators.required),
     PhoneNumber: new FormControl('', Validators.required),
+    Province: new FormControl('', Validators.required),
+    District: new FormControl('', Validators.required),
+    Wards: new FormControl('', Validators.required),
+    Hamlet: new FormControl('', Validators.required),
     Address: new FormControl('', Validators.required),
     Note: new FormControl(),
   })
@@ -70,7 +77,7 @@ export class ShoppingCartComponent implements OnInit {
     payment: new FormControl(),
   })
 
-  constructor(private api: ApiService,private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+  constructor(public api: ApiService,private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
 
   public Quantity: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
@@ -91,9 +98,6 @@ export class ShoppingCartComponent implements OnInit {
     this.Voucher.getApi('Customer/' + this.Voucher.Controller + '/findVoucherByAmount').subscribe((rs) => {
       this.listVoucher = rs.data;
     })
-    this.api.getApi('api/test/getAuth').subscribe((rs)=>{
-      let x = rs;
-    });
     this.key.map((x: any) => {
       let data: any = localStorage.getItem(x);
       let value = JSON.parse(data);
@@ -154,6 +158,22 @@ export class ShoppingCartComponent implements OnInit {
       }
     })
   }
+
+  ProvinceChange(event: any){
+    this.InfomationCustomer.value.Address = "";
+    this.listDistrict = this.listProvince.find((x)=> x.Id == event).Districts;
+    this.InfomationCustomer.value.Address =  this.listProvince.find((x)=> x.Id == event).Name + this.InfomationCustomer.value.Address;
+  }
+  DistrictChange(event: any){
+    this.listWards = this.listDistrict.find((x)=> x.Id == event).Wards;
+    this.InfomationCustomer.value.Address = this.listDistrict.find((x)=> x.Id == event).Name  + ', ' + this.InfomationCustomer.value.Address;
+  }
+  WardsChange(event: any){
+    this.InfomationCustomer.value.Address = this.listWards.find((x)=> x.Id == event).Name  + ', ' + this.InfomationCustomer.value.Address;
+  }
+  HamletChange(event: any){
+    this.InfomationCustomer.value.Address = event.target.value + ', ' + this.InfomationCustomer.value.Address;
+  }
   activate(event:any): void{
     if(event.index == 0){
       this.step_1 = true;
@@ -191,7 +211,7 @@ export class ShoppingCartComponent implements OnInit {
     } else if (this.step_2) {
       this.BillObj.statusshipping = "Đang xử lý";
       this.BillObj.username = String(sessionStorage.getItem('USERNAME'));
-      if (this.Payment.value.payment == "truck") {
+      if (this.Payment.value.payment == "cash") {
         this.isPayment = false;
         this.BillObj.payment = false;
         this.BillObj.transportFee = 30000;
@@ -207,6 +227,16 @@ export class ShoppingCartComponent implements OnInit {
       } else {
         this.isPayment = true;
         this.BillObj.payment = true;
+        this.BillObj.transportFee = 0;
+        this.BillObj.total = this.total;
+        this.BillObj.downtotal = this.toMoney;
+        this.dataSource.map((x)=>{
+          let sendRequest = {
+            id_quantity: x.IdQuantity,
+            bill_quantity: x.Quantity
+          }
+          this.BillObj.list_quantity.push(sendRequest);
+        })
       }
       this.api.postApi('api/bill/creat',this.BillObj).subscribe((rs)=>{
         if(rs.status){
@@ -333,6 +363,14 @@ export class ShoppingCartComponent implements OnInit {
       this.BillObj.voucher_id = event.id;
       this.BillObj.discount = event.discount;
       this.toMoney = Number(this.toMoney * (100 - event.discount))/100;
+    }
+  }
+  PaymentMethodChange(event: any): void{
+    if(event.target.value == "cash"){
+      this.isPayment = false;
+      this.toMoney = this.total;
+    }else{
+      this.isPayment = true
     }
   }
 }
