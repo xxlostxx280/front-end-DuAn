@@ -120,7 +120,7 @@
                 <ng-template kendoListViewItemTemplate let-card="dataItem" let-index="index">
                     <kendo-card-header class="k-hbox">
                         <div class="col-md-3">
-                            <img src="http://localhost:8080/manager/image/get/{{card.Product.image}}" width="80px" height="100px">
+                            <img src="{{card.Product.image}}" width="80px" height="100px">
                         </div>
                         <div class="col-md-6" style="padding: 0px;">
                             <div *ngIf="card.newPrice != 0">

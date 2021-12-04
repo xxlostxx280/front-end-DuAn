@@ -227,8 +227,6 @@ export class ProductDetailsComponent implements OnInit {
         localStorage.setItem(random1, JSON.stringify(this.QuantityObj));
         this.badge = localStorage.length;
         this.message.SendBadgeCart(this.badge);
-      }else{
-        this.api.Notification.notificationDefault(this.notificationTemplate);
       }
     } else {
       let same_cart = anotherProduct.filter((x) => {
@@ -250,11 +248,9 @@ export class ProductDetailsComponent implements OnInit {
           localStorage.setItem(random1, JSON.stringify(this.QuantityObj));
           this.badge = localStorage.length;
           this.message.SendBadgeCart(this.badge);
-        } else {
-          this.api.Notification.notificationDefault(this.notificationTemplate);
-        }
+        } 
       }else{
-        this.api.Notification.notificationDefault('Đã có sản phẩm này trong giỏ hàng của bạn')
+        this.api.Notification.notificationWarning('Đã có sản phẩm này trong giỏ hàng của bạn')
       }
     }
   }

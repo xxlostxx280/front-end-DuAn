@@ -44,7 +44,26 @@ export class HeaderComponent implements OnInit {
   public showLogin: boolean = true;
   public showAvatar: boolean = false;
   public badge = localStorage.length;
-  public menu: Array<any> = [];
+  public menu: Array<any> = [
+    {
+      text: "Trang chủ",
+      path: "",
+    },
+    {
+      text: "Giới thiệu",
+      path: "",
+    },
+    {
+      text: "Sản phẩm",
+      items: [
+        
+      ]
+    },
+    {
+      text: "Liên hệ",
+      path: ""
+    },
+  ];
 
   constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
@@ -110,6 +129,7 @@ export class HeaderComponent implements OnInit {
       menu_item.items = arr;
       this.items.push(menu_item);
     })
+    this.menu[2].items = this.items;
   }
   onSelect(e: any) {
     if (e.item.items == undefined) {

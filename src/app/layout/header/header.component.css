@@ -6,6 +6,7 @@
     display: none;
 }
 ::ng-deep .k-link.k-menu-link{
+    font-weight: 500;
     color: rgba(0, 0, 0, 0.87);
 }
 ::ng-deep .k-menu:not(.k-context-menu) > .k-item {
@@ -21,7 +22,6 @@
     background-color: rgba(0, 0, 0, 0.04);
     border-bottom: 1px solid #ddd;
     text-align: center;
-    padding: 5px 0px;
 }
 ::ng-deep .k-menu-group .k-item :hover, .k-menu-group .k-item.k-state-hover,
 .k-menu.k-context-menu .k-item :hover,

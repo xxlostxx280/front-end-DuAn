@@ -22,8 +22,7 @@ export class ListProductByCategoryComponent implements OnInit {
     let url = window.location.href;
     let name = url.replace('http://localhost:4200/collection/', '');
     this.api.Controller = "CategoryDetailController"
-    this.api.Read.Execute()
-      .subscribe((res) => {
+    this.api.Read.Execute().subscribe((res) => {
         for (let i = 0; i < res.length; i++) {
           this.removeVietnameseTones(res[i].name);
           if (this.content == name) {
@@ -31,9 +30,8 @@ export class ListProductByCategoryComponent implements OnInit {
             break;
           }
         }
-      }, (mess) => {
-        alert(mess)
       })
+    
   }
   getProduct(id: any): void {
     this.api.getApi('Customer/ProductController/collection/' + id).subscribe((res) => {

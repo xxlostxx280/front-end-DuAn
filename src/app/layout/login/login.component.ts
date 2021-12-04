@@ -35,7 +35,12 @@ export class LoginComponent implements OnInit {
         sessionStorage.setItem('USERNAME', res.data.username);
         sessionStorage.setItem('TOKEN', res.data.token);
         sessionStorage.setItem('USER_ID',res.data.id);
-        window.location.href = "/";
+        sessionStorage.setItem('ROLE',res.data.roles[0]);
+        if(sessionStorage.getItem('ROLE') == "ROLE_ADMIN" || sessionStorage.getItem('ROLE') == "ROLE_STAFF"){
+          window.location.href = "/manager/dashboard";
+        }else{
+          window.location.href = "/";
+        }
         this.loaderVisible = false;
       } else {
         this.loaderVisible = false;

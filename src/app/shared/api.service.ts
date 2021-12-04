@@ -126,11 +126,19 @@ export class ApiService {
         })
       }
     },
-    notificationDefault: function (content: any) {
+    notificationWarning: function (content: any) {
       this._.notificationService.show({
         content: content,
         animation: { type: "fade", duration: 800 },
         type: { style: 'warning', icon: true },
+        position: { horizontal: 'right', vertical: 'top' }
+      })
+    },
+    notificationSuccess: function(content: any){
+      this._.notificationService.show({
+        content: content,
+        animation: { type: "fade", duration: 800 },
+        type: { style: 'success', icon: true },
         position: { horizontal: 'right', vertical: 'top' }
       })
     }
@@ -270,12 +278,22 @@ export class ApiService {
     _: this,
     Execute: function () {
       if (sessionStorage.getItem('ROLE') == 'ADMIN' || this._.isManager == true) {
-        return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAll')
+        let getHeader = this._.getHeader();
+        if (getHeader instanceof HttpHeaders) { 
+          return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAll',{ headers: getHeader })
           .pipe(map((res: any) => {
             return res;
           }), tap(() => {
             this._.loading = false
           }))
+        }else{
+          return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAll')
+          .pipe(map((res: any) => {
+            return res;
+          }), tap(() => {
+            this._.loading = false
+          }))
+        }
       } else {
         return this._.http.get('http://localhost:8080/Customer/' + this._.Controller + '/findAll')
           .pipe(map((res: any) => {
@@ -360,34 +378,66 @@ export class ApiService {
       formData.append("deletedItems", JSON.stringify(this._.deletedItems));
       this._.Grid.oldState = grid.data.data;
       let url = "http://localhost:8080/Manager/" + this._.Controller + "/updateInline";
-      return this._.http.post(url, formData).pipe(map((res: any) => {
-        if (res.status) {
-          this._.Notification.notificationExecute(res);
-          this._.message.SendDataAfterUpdate(res);
-        } else {
-          this._.Notification.notificationExecute(res);
-        }
-        this.UpdateAfterGrid(res);
-        return res;
-      }), tap(() => {
-        this._.loading = false
-      }))
+      let getHeader = this._.getHeader();
+      if (getHeader instanceof HttpHeaders) {
+        return this._.http.post(url, formData,{ headers: getHeader }).pipe(map((res: any) => {
+          if (res.status) {
+            this._.Notification.notificationExecute(res);
+            this._.message.SendDataAfterUpdate(res);
+          } else {
+            this._.Notification.notificationExecute(res);
+          }
+          this.UpdateAfterGrid(res);
+          return res;
+        }), tap(() => {
+          this._.loading = false
+        }))
+      }else{
+        return this._.http.post(url, formData).pipe(map((res: any) => {
+          if (res.status) {
+            this._.Notification.notificationExecute(res);
+            this._.message.SendDataAfterUpdate(res);
+          } else {
+            this._.Notification.notificationExecute(res);
+          }
+          this.UpdateAfterGrid(res);
+          return res;
+        }), tap(() => {
+          this._.loading = false
+        }))
+      }
     },
     UpdateDataWindow: function (data: any) {
       this._.loading = true;
       let url = "http://localhost:8080/Manager/" + this._.Controller + "/saveAndFlush";
-      return this._.http.post(url, data).pipe(map((res: any) => {
-        if (res.status) {
-          res.type = this._.status;
-          this._.Notification.notificationExecute(res);
-        } else {
-          this._.Notification.notificationExecute(res);
-        }
-        this.UpdateAfterWindow(res);
-        return res;
-      }), tap(() => {
-        this._.loading = false
-      }))
+      let getHeader = this._.getHeader();
+      if (getHeader instanceof HttpHeaders) {
+        return this._.http.post(url, data,{ headers: getHeader }).pipe(map((res: any) => {
+          if (res.status) {
+            res.type = this._.status;
+            this._.Notification.notificationExecute(res);
+          } else {
+            this._.Notification.notificationExecute(res);
+          }
+          this.UpdateAfterWindow(res);
+          return res;
+        }), tap(() => {
+          this._.loading = false
+        }))
+      }else{
+        return this._.http.post(url, data).pipe(map((res: any) => {
+          if (res.status) {
+            res.type = this._.status;
+            this._.Notification.notificationExecute(res);
+          } else {
+            this._.Notification.notificationExecute(res);
+          }
+          this.UpdateAfterWindow(res);
+          return res;
+        }), tap(() => {
+          this._.loading = false
+        }))
+      }
     },
     UpdateAfterWindow: function (res: any) {
       if (res.type == "CREATE") {

@@ -1,2 +1,31 @@
-<p>Hello</p>
-<p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p><p>Hello</p>
+<kendo-tabstrip style="background-color: white;">
+    <kendo-tabstrip-tab title="Thống kê doanh thu ngày trong tháng" [selected]="true">
+        <ng-template kendoTabContent>
+            <span>Tháng: </span>&nbsp;
+            <kendo-datepicker #shortDate format="MM/yyyy" [value]="date" activeView="year" bottomView="year"
+                (valueChange)="onChange($event)">
+            </kendo-datepicker>
+            <kendo-chart>
+                <kendo-chart-title text="Doanh thu ngày trong tháng"></kendo-chart-title>
+                <kendo-chart-category-axis>
+                    <kendo-chart-category-axis-item [title]="{ text: 'Ngày' }">
+                    </kendo-chart-category-axis-item>
+                </kendo-chart-category-axis>
+                <kendo-chart-series>
+                    <kendo-chart-series-item type="line" [data]="chartDayOfMonth" field="total" categoryField="day">
+                    </kendo-chart-series-item>
+                </kendo-chart-series>
+            </kendo-chart>
+        </ng-template>
+    </kendo-tabstrip-tab>
+    <kendo-tabstrip-tab title="Thống kê doanh thu tháng trong năm">
+        <ng-template kendoTabContent>
+
+        </ng-template>
+    </kendo-tabstrip-tab>
+    <kendo-tabstrip-tab title="Thống kê doanh thu tháng trong năm">
+        <ng-template kendoTabContent>
+
+        </ng-template>
+    </kendo-tabstrip-tab>
+</kendo-tabstrip>

@@ -30,6 +30,8 @@ import { UploadsModule } from '@progress/kendo-angular-upload';
 import { EditorModule } from '@progress/kendo-angular-editor';
 import { ToolBarModule } from '@progress/kendo-angular-toolbar';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { ChartsModule } from '@progress/kendo-angular-charts';
+import 'hammerjs';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,7 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
     EditorModule,
     ToolBarModule,
     DateInputsModule,
+    ChartsModule,
     /////////////////////Share layout Default Module/////////
     DefaultModule,
     DefaultManagerModule,
