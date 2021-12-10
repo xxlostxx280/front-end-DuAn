@@ -20,6 +20,11 @@ export const items = [
         expanded: false,
       },
       {
+        text: 'Quản lý sự kiện',
+        path: 'quan-ly-event',
+        expanded: false,
+      },
+      {
         text: 'Quản lý voucher',
         path: 'quan-ly-voucher',
         expanded: false,

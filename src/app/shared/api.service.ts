@@ -141,6 +141,14 @@ export class ApiService {
         type: { style: 'success', icon: true },
         position: { horizontal: 'right', vertical: 'top' }
       })
+    },
+    notificationError: function(content: any){
+      this._.notificationService.show({
+        content: content,
+        animation: { type: "fade", duration: 800 },
+        type: { style: 'error', icon: true },
+        position: { horizontal: 'right', vertical: 'top' }
+      })
     }
   }
   public Grid = {

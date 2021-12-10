@@ -56,7 +56,7 @@ export class HeaderComponent implements OnInit {
     {
       text: "Sản phẩm",
       items: [
-        
+
       ]
     },
     {
@@ -76,13 +76,27 @@ export class HeaderComponent implements OnInit {
     this.api_2.Controller = 'CategoryDetailController';
     this.api.Read.Execute().subscribe((res) => {
       this.itemsParent = res;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     });
-    setTimeout(()=>{
+    setTimeout(() => {
       this.api_2.Read.Execute().subscribe((res) => {
         this.itemsChild = res;
         this.mapItems();
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
       })
-    },1000);
+    }, 1000);
     if (sessionStorage.getItem("USERNAME") != null) {
       this.showLogin = false;
       this.showAvatar = true;
@@ -103,6 +117,7 @@ export class HeaderComponent implements OnInit {
     sessionStorage.removeItem('TOKEN');
     this.showLogin = true;
     this.showAvatar = false;
+    window.location.href = "/login"
   }
 
   //convert categorydetail thành menu item

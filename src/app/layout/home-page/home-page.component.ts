@@ -17,11 +17,11 @@ export class HomePageComponent implements OnInit {
     { title: "Mountain", url: "https://cdn.shopify.com/s/files/1/2595/4890/files/main-banner-1_3b5bf70a-0c67-4a9a-a718-591a5e523437_1400x.progressive.png.jpg?v=1559885493" },
     { title: "Sky", url: "https://cdn.shopify.com/s/files/1/0064/5667/2338/files/August-website-banner-1_1024x1024.jpg?v=1618915575" },
   ];
-  public listProduct: Array<any> = [] ;
+  public listProduct: Array<any> = [];
   public listProductDiscount: Array<any> = [];
   public width = "100%";
   public height = "600px";
-  
+
   constructor(private api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) {
   }
@@ -34,24 +34,38 @@ export class HomePageComponent implements OnInit {
     this.Quantity.Controller = "QuantityController";
     this.Product.getApi('Customer/ProductController/home').subscribe((res) => {
       this.Product.dataSource = res.data;
+    }, (error) => {
+      if(error.status == 500){
+        let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
+        window.location.href = "/login/" +  id;
+      }else{
+        this.api.Notification.notificationError('');
+      }
     });
-    setTimeout(()=>{
+    setTimeout(() => {
       this.Quantity.Read.Execute().subscribe((res) => {
         this.Quantity.dataSource = res.data;
-        this.Product.dataSource.map((x)=>{
-          let arr = this.Quantity.dataSource.filter((val)=> val.product.id == x.id);
-          let arr_2 = this.Quantity.dataSource.filter((val)=> val.product.id == x.id && val.product.discount > 0)
-          if(arr.length > 0){
+        this.Product.dataSource.map((x) => {
+          let arr = this.Quantity.dataSource.filter((val) => val.product.id == x.id);
+          let arr_2 = this.Quantity.dataSource.filter((val) => val.product.id == x.id && val.product.discount > 0)
+          if (arr.length > 0) {
             this.listProduct.push(x);
           }
-          if(arr_2.length > 0){
+          if (arr_2.length > 0) {
             this.listProductDiscount.push(x);
           }
         })
-        this.listProduct.slice(0,8);
-        this.listProductDiscount.slice(0,8);
+        this.listProduct.slice(0, 8);
+        this.listProductDiscount.slice(0, 8);
+      }, (error) => {
+        if(error.status == 500){
+          let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
+          window.location.href = "/login/" +  id;
+        }else{
+          this.api.Notification.notificationError('');
+        }
       })
-    },2000)
+    }, 2000)
   }
 
 }

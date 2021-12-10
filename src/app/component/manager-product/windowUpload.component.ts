@@ -13,13 +13,10 @@ import { MessageService } from "src/app/shared/message.service";
     templateUrl: './windowUpload.component.html',
 })
 export class WindowUploadComponent implements OnInit {
+    @Input() public formGroup !: FormGroup;
     @Input() public dataSource: any;
     @Input() public status: String | undefined;
 
-    public formGroup = new FormGroup({
-        idProduct: new FormControl(),
-        files: new FormControl('',Validators.required)
-    })
     public imagePreview: any[] = [];
     public state: State = {
         filter: undefined,
@@ -27,18 +24,55 @@ export class WindowUploadComponent implements OnInit {
         take: 5,
         group: [],
         sort: [],
-      };
+    };
 
-    constructor(public api: ApiService){}
+    constructor(public api: ApiService) { }
 
     ngOnInit(): void {
-
+        this.api.Controller = "RestUploatImgController";
     }
-    saveHandler(event: any): void {
+    update(event: any): void {
         event.preventDefault();
-        
+        let formData = new FormData();
+        if (this.imagePreview.length > 0) {
+            for (let i = 0; i < this.imagePreview.length; i++) {
+                formData.append("files", this.imagePreview[i].rawFile);
+            }
+        }
+        formData.append("idPro", this.dataSource.id);
+        this.api.postApi(('Manager/' + this.api.Controller + "/upload"), formData).subscribe((rs) => {
+            let result = rs;
+        })
     }
     select(e: SelectEvent): void {
         this.imagePreview = e.files;
+    }
+    addHandler(event: any): void {
+        this.api.Create.Execute(null, event.sender.data.data);
+        event.sender.addRow(this.api.formGroup);
+    }
+    saveHandler(event: any) {
+        this.api.Grid.saveHandler(event);
+        event.sender.closeRow(event.rowIndex);
+    }
+
+    cellClickHandler(event: any): void {
+        this.api.Grid.cellClickHandler(event);
+    }
+    cellCloseHandler(event: any): void {
+        this.api.Grid.cellCloseHandler(event);
+    }
+
+    removeHandler(event: any): void {
+        this.api.Grid.removeHandler(event);
+        event.sender.cancelCell();
+    }
+
+    cancelChanges(grid: any): void {
+        grid.cancelCell();
+    }
+
+    cancelHandler(event: any): void {
+        event.sender.closeRow(event.rowIndex);
     }
 }

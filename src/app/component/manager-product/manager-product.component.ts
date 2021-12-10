@@ -23,7 +23,7 @@ export class ManagerProductComponent implements OnInit {
     filter: undefined,
     skip: 0,
     take: 5,
-    group: [{field: "categorydetail.category.name"}, { field: "categorydetail.name" },],
+    group: [{ field: "categorydetail.category.name" }, { field: "categorydetail.name" },],
     sort: [],
   };
   constructor(public api: ApiService, private message: MessageService, private formBuilder: FormBuilder) {
@@ -39,6 +39,13 @@ export class ManagerProductComponent implements OnInit {
       this.api.dataSource = rs.data;
       this.gridData = rs.data;
       this.loading = this.api.loading
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     })
     this.message.receivedDataAfterUpadte().subscribe((res) => {
       if (res.status) {
@@ -46,7 +53,7 @@ export class ManagerProductComponent implements OnInit {
       }
     })
   }
-  
+
   isHidden(columnName: string): boolean {
     return this.hiddenColumns.indexOf(columnName) > -1;
   }
@@ -74,11 +81,11 @@ export class ManagerProductComponent implements OnInit {
   dataStateChange(state: DataStateChangeEvent): void {
     this.state = state;
   }
-  UploadImage(event: any): void{
+  UploadImage(event: any): void {
     this.api.OpenWindow.top = -160;
     this.api.OpenWindow.left = 200;
     this.api.OpenWindow.Width = 500;
     this.api.OpenWindow.Height = 650;
-    this.api.OpenWindow.Execute(WindowUploadComponent,this.gridData.find((x)=> x.id == event),null);
+    this.api.OpenWindow.Execute(WindowUploadComponent, this.gridData.find((x) => x.id == event), null);
   }
 }

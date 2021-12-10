@@ -23,7 +23,7 @@ export class HistoryAndWalletComponent implements OnInit {
   public getCustomer: any;
   public tabStrip_1 = true;
 
-  constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+  constructor(private api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
 
   public Customer: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
@@ -33,11 +33,12 @@ export class HistoryAndWalletComponent implements OnInit {
 
   ngOnInit(): void {
     if (sessionStorage.getItem('TOKEN') == null || sessionStorage.getItem('TOKEN') == undefined) {
-      window.location.href = "";
+      alert("Chức năng này bắt buộc đăng nhập để được sử dụng")
+      window.location.href = "/login";
     } else {
-      if(sessionStorage.getItem("isRecharge") == "true"){
+      if (sessionStorage.getItem("isRecharge") == "true") {
         this.MamiPay.Notification.notificationSuccess('Nạp tiền thành công');
-        sessionStorage.setItem("isRecharge","false")
+        sessionStorage.setItem("isRecharge", "false")
       }
 
       this.Customer.isManager = true;
@@ -53,24 +54,46 @@ export class HistoryAndWalletComponent implements OnInit {
           this.listBillBought = rs.data.filter((x: any) => x.status == "KHACH_DA_NHAN_HANG" || x.status == "HUY");
           this.listBillBuying = rs.data.filter((x: any) => x.status != "KHACH_DA_NHAN_HANG" && x.status != "HUY");
         })
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
       })
-      this.MamiPay.getApi('Customer/' + this.MamiPay.Controller + '/mamipay').subscribe((rs)=>{
-        if(rs.data != null){
+      this.MamiPay.getApi('Customer/' + this.MamiPay.Controller + '/mamipay').subscribe((rs) => {
+        if (rs.data != null) {
           this.isWallet = true;
           this.myWallet = rs.data;
         }
-      })
-      this.History.getApi('Customer/HistoryManagerController').subscribe((rs)=>{
-        this.History.dataSource = rs.data;
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
       })
 
-      this.message.receivedDataAfterUpadte().subscribe((rs)=>{
-        this.listBillBuying.map((x,idx)=>{
-          if(x.id == rs.id){
-            this.listBillBuying.splice(idx,1);
+      this.History.getApi('Customer/HistoryManagerController').subscribe((rs) => {
+        this.History.dataSource = rs.data;
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
+      })
+
+      this.message.receivedDataAfterUpadte().subscribe((rs) => {
+        this.listBillBuying.map((x, idx) => {
+          if (x.id == rs.id) {
+            this.listBillBuying.splice(idx, 1);
             this.listBillBought.push(rs);
           }
-        })   
+        })
       })
     }
   }
@@ -87,23 +110,30 @@ export class HistoryAndWalletComponent implements OnInit {
   }
 
   /////Phần ví điện tử/////////////
-  createWallet(): void{
-    this.MamiPay.postApi('Customer/' + this.MamiPay.Controller + '/create','').subscribe((rs)=>{
+  createWallet(): void {
+    this.MamiPay.postApi('Customer/' + this.MamiPay.Controller + '/create', '').subscribe((rs) => {
       this.myWallet = rs.data;
       this.MamiPay.Notification.notificationExecute(rs.message);
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     })
   }
-  recharge(): void{
+  recharge(): void {
     this.MamiPay.OpenWindow.Width = 500;
     this.MamiPay.OpenWindow.top = 50;
     this.MamiPay.OpenWindow.left = 500;
     this.MamiPay.formGroup = this.formBuilder.group({
       amount: new FormControl(0),
       description: new FormControl(''),
-      bankcode: new FormControl({id: '',name: ''}),
+      bankcode: new FormControl({ id: '', name: '' }),
       language: new FormControl('vn'),
     })
-    sessionStorage.setItem('isRecharge',"true");
-    this.MamiPay.OpenWindow.Execute(WindowRechargeComponent,'','');
+    sessionStorage.setItem('isRecharge', "true");
+    this.MamiPay.OpenWindow.Execute(WindowRechargeComponent, '', '');
   }
 }

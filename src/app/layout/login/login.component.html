@@ -16,6 +16,7 @@
             </div>
         </div>
         <form [formGroup]="userForm" style="width: 550px;margin: 15px 0px;">
+            <p style="color: red;font-weight: 600;" *ngIf="isMessage"><i class="fa fa-times" aria-hidden="true"></i> {{msg}} !!</p>
             <div class="row" style="padding: 5px 0px;">
                 <label class="col-md-4 form-label">Tên đăng nhập: </label>
                 <div class="col-md-8">

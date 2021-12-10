@@ -23,21 +23,34 @@ export class ListProductByCategoryComponent implements OnInit {
     let name = url.replace('http://localhost:4200/collection/', '');
     this.api.Controller = "CategoryDetailController"
     this.api.Read.Execute().subscribe((res) => {
-        for (let i = 0; i < res.length; i++) {
-          this.removeVietnameseTones(res[i].name);
-          if (this.content == name) {
-            this.getProduct(res[i].id);
-            break;
-          }
+      for (let i = 0; i < res.length; i++) {
+        this.removeVietnameseTones(res[i].name);
+        if (this.content == name) {
+          this.getProduct(res[i].id);
+          break;
         }
-      })
-    
+      }
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
+    })
   }
   getProduct(id: any): void {
     this.api.getApi('Customer/ProductController/collection/' + id).subscribe((res) => {
       this.listProduct = res.data;
       this.total = res.data.length;
       this.pageData();
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     })
   }
   onPageChange(e: PageChangeEvent): void {

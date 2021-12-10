@@ -12,12 +12,7 @@ export class AuthGuard implements CanActivate {
     }
     canActivate() {
         if(this.auth.IsLoggedIn()){
-            if(sessionStorage.getItem('ROLE') != "ROLE_CUSTOMER"){
-                return true;
-            }else{
-                this.router.navigate(['pageNotFound']);
-                return false;
-            }
+            return true;
         }
         this.router.navigate(['login']);
         return false;

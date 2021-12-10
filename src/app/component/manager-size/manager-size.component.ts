@@ -4,7 +4,7 @@ import { FormBuilder } from '@angular/forms';
 import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
 import { DataStateChangeEvent, GridDataResult } from '@progress/kendo-angular-grid';
 import { NotificationService } from '@progress/kendo-angular-notification';
-import { GroupDescriptor, State,process, DataResult} from '@progress/kendo-data-query';
+import { GroupDescriptor, State, process, DataResult } from '@progress/kendo-data-query';
 import { Observable } from 'rxjs';
 import { ApiService } from 'src/app/shared/api.service';
 import { MessageService } from 'src/app/shared/message.service';
@@ -21,7 +21,7 @@ export class ManagerSizeComponent implements OnInit {
     filter: undefined,
     skip: 0,
     take: 10,
-    group: [{field: "typesize.name"}],
+    group: [{ field: "typesize.name" }],
     sort: [],
   };
 
@@ -41,22 +41,36 @@ export class ManagerSizeComponent implements OnInit {
     this.api.Read.Execute().subscribe((res) => {
       this.gridData = res.data;
       this.api.dataSource = res.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     })
     this.api_2.Read.Execute().subscribe((res) => {
       this.api_2.dataSource = res.data
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api_2.Notification.notificationError('');
+      }
     })
     this.message.receivedDataAfterUpadte().subscribe((rs) => {
       if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
         this.gridData = rs.data;
       } else {
-        this.api_2.dataSource  = rs.data;
+        this.api_2.dataSource = rs.data;
       }
     })
     this.message.receivedDataBehavior().subscribe((rs) => {
       if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
         this.gridData = rs;
       } else {
-        this.api_2.dataSource  = rs;
+        this.api_2.dataSource = rs;
       }
     })
   }
@@ -64,9 +78,9 @@ export class ManagerSizeComponent implements OnInit {
   TypeSize(id: number): any {
     return this.gridData.find(x => x.id === id);
   }
-  onTypeSizeChange(event: any): void{
-    this.api_2.formGroup.markAsDirty({onlySelf: true});
-    this.api_2.formGroup.value.typesize = this.gridData.find((x)=> x.id == event);
+  onTypeSizeChange(event: any): void {
+    this.api_2.formGroup.markAsDirty({ onlySelf: true });
+    this.api_2.formGroup.value.typesize = this.gridData.find((x) => x.id == event);
   }
 
   Update(grid: any): void {

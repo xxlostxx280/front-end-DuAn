@@ -22,15 +22,15 @@ export class ManagerQuantityComponent implements OnInit {
   public listTypeSize: Array<any> = [];
   public listSize: Array<any> = [];
   public listProperty: Array<any> = [];
-  
+
   public state: State = {
     filter: undefined,
     skip: 0,
     take: 5,
-    group: [{field: "product.name"}],
+    group: [{ field: "product.name" }],
     sort: [],
   };
-  
+
   constructor(private api: ApiService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder) {
   }
@@ -44,6 +44,13 @@ export class ManagerQuantityComponent implements OnInit {
     this.Quantity.Controller = "QuantityManagerController";
     this.Quantity.Read.Execute().subscribe((rs) => {
       this.gridData = rs.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.Quantity.Notification.notificationError('');
+      }
     })
     this.message.receivedDataAfterUpadte().subscribe((rs) => {
       if (rs.status) {
@@ -78,7 +85,7 @@ export class ManagerQuantityComponent implements OnInit {
   removeHandler(event: any) {
 
   }
-  
+
   dataStateChange(state: DataStateChangeEvent): void {
     this.state = state;
   }

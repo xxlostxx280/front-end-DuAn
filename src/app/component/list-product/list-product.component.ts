@@ -31,38 +31,52 @@ export class ListProductComponent implements OnInit {
     this.Quantity.Controller = "QuantityController";
     this.Product.Read.Execute().subscribe((res) => {
       this.Product.dataSource = res.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     });
     this.Quantity.Read.Execute().subscribe((res) => {
       this.Quantity.dataSource = res.data;
-      this.Product.dataSource.map((x)=>{
-        let arr = this.Quantity.dataSource.filter((val)=> val.product.id == x.id)
-        if(arr.length > 0){
+      this.Product.dataSource.map((x) => {
+        let arr = this.Quantity.dataSource.filter((val) => val.product.id == x.id)
+        if (arr.length > 0) {
           this.listProduct.push(x);
         }
       })
       this.total = this.listProduct.length;
       this.pageData();
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     })
-    this.message.receviedFilterProduct().subscribe((rs)=>{
+    this.message.receviedFilterProduct().subscribe((rs) => {
       this.dataSource = [];
-      if(rs == "all"){
-        this.Product.dataSource.map((x)=>{
-          let arr = this.Quantity.dataSource.filter((val)=> val.product.id == x.id)
-          if(arr.length > 0){
+      if (rs == "all") {
+        this.Product.dataSource.map((x) => {
+          let arr = this.Quantity.dataSource.filter((val) => val.product.id == x.id)
+          if (arr.length > 0) {
             this.dataSource.push(x);
           }
         })
       }
-      if(rs == "discount"){
-        this.Product.dataSource.map((x)=>{
-          let arr = this.Quantity.dataSource.filter((val)=> val.product.id == x.id && val.product.discount > 0)
-          if(arr.length > 0){
+      if (rs == "discount") {
+        this.Product.dataSource.map((x) => {
+          let arr = this.Quantity.dataSource.filter((val) => val.product.id == x.id && val.product.discount > 0)
+          if (arr.length > 0) {
             this.dataSource.push(x);
           }
         })
       }
-      if(rs == "new"){}
-      if(rs == "selling"){}
+      if (rs == "new") { }
+      if (rs == "selling") { }
     })
   }
   public onPageChange(e: PageChangeEvent): void {

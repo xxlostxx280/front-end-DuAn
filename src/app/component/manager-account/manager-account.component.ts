@@ -17,6 +17,13 @@ export class ManagerAccountComponent implements OnInit {
     this.api.Read.Execute().subscribe((rs) => {
       this.gridData = rs.data;
       this.api.dataSource = rs.data
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     })
     this.message.receivedDataBehavior().subscribe((rs) => {
       this.gridData = rs;

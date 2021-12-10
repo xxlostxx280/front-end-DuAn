@@ -4,6 +4,7 @@ import { DashboardComponent } from "../component/dashboard/dashboard.component";
 import { ManagerAccountComponent } from "../component/manager-account/manager-account.component";
 import { ManagerBillComponent } from "../component/manager-bill/manager-bill.component";
 import { ManagerCategoryComponent } from "../component/manager-category/manager-category.component";
+import { ManagerEventComponent } from "../component/manager-event/manager-event.component";
 import { ManagerProductComponent } from "../component/manager-product/manager-product.component";
 import { ManagerPropertyComponent } from "../component/manager-property/manager-property.component";
 import { ManagerQuantityComponent } from "../component/manager-quantity/manager-quantity.component";
@@ -77,6 +78,14 @@ const routes: Routes = [
             {
                 path: 'quan-ly-don-hang',
                 component: ManagerBillComponent,
+                canActivate: [AuthGuard],
+                data: {
+                    expectedRole: 'ROLE_ADMIN'
+                }                    
+            },
+            {
+                path: 'quan-ly-event',
+                component: ManagerEventComponent,
                 canActivate: [AuthGuard],
                 data: {
                     expectedRole: 'ROLE_ADMIN'

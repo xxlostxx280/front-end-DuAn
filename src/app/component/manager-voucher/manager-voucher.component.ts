@@ -14,17 +14,38 @@ import { MessageService } from 'src/app/shared/message.service';
 export class ManagerVoucherComponent implements OnInit {
 
   public listVoucher: Array<any> = [];
+  public listEvent: Array<any> = [];
 
   constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
 
   public Voucher: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Event: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
 
   ngOnInit(): void {
     this.Voucher.isManager = true;
+    this.Event.isManager = true;
+    this.Event.Controller = "EventManagerController";
     this.Voucher.Controller = "VoucherManagerController";
     this.Voucher.Read.Execute().subscribe((res) => {
       this.listVoucher = res.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.Voucher.Notification.notificationError('');
+      }
+    })
+    this.Event.Read.Execute().subscribe((res) => {
+      this.listEvent = res.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.Event.Notification.notificationError('');
+      }
     })
     this.message.receivedDataAfterUpadte().subscribe((rs) => {
       this.listVoucher = rs.data;
@@ -67,4 +88,12 @@ export class ManagerVoucherComponent implements OnInit {
     event.sender.closeRow(event.rowIndex);
   }
 
+  onEventChange(event: any): void{
+    this.Voucher.formGroup.markAsDirty({ onlySelf: true });
+    this.Voucher.formGroup.value.idevent = event;
+    this.Voucher.formGroup.value.event = this.listEvent.find((x) => x.id == event);
+  }
+  EventVoucher(id: number): any {
+    return this.listEvent.find(x => x.id === id);
+  }
 }

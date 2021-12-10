@@ -31,8 +31,8 @@ export class WindowProductComponent implements OnInit {
     constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
         private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, private api: ApiService) { }
 
-    public Category: ApiService = new ApiService(this.http,this.windowService,this.dialogService,this.notificationService,this.message,this.formBuilder);
-    public CategoryDetail: ApiService = new ApiService(this.http,this.windowService,this.dialogService,this.notificationService,this.message,this.formBuilder);
+    public Category: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+    public CategoryDetail: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
 
     ngOnInit(): void {
         this.Category.Controller = "CategoryManagerController";
@@ -42,10 +42,10 @@ export class WindowProductComponent implements OnInit {
         this.api.typeData = "popup";
         this.formGroup.addControl('category', new FormControl());
         if (this.status == "EDIT") {
-            if(this.formGroup.value.description != null){
+            if (this.formGroup.value.description != null) {
                 this.formGroup.controls.description.setValue(decodeURIComponent(this.dataSource.description.replace(/\+/g, " ")));
             }
-             if(this.formGroup.value.descriptionDetail != null){
+            if (this.formGroup.value.descriptionDetail != null) {
                 this.formGroup.controls.descriptionDetail.setValue(decodeURIComponent(this.dataSource.descriptionDetail.replace(/\+/g, " ")));
             }
         } else {
@@ -59,9 +59,23 @@ export class WindowProductComponent implements OnInit {
     getCategory(): void {
         this.Category.Read.Execute().subscribe((rs) => {
             this.category = rs.data;
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
         })
         this.CategoryDetail.Read.Execute().subscribe((rs) => {
             this.categoryDetail = rs.data;
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
         })
     }
 
@@ -69,10 +83,10 @@ export class WindowProductComponent implements OnInit {
         event.preventDefault();
         this.formGroup.removeControl('category');
         if (this.status == "EDIT") {
-            if(this.imagePreview.length > 0){
+            if (this.imagePreview.length > 0) {
                 this.addImage();
             }
-            else{
+            else {
                 this.formGroup.value.description = encodeURIComponent(this.formGroup.value.description).replace(/'/g, "%27");
                 this.formGroup.value.descriptionDetail = encodeURIComponent(this.formGroup.value.descriptionDetail).replace(/'/g, "%27");
                 this.addImage();
@@ -83,10 +97,10 @@ export class WindowProductComponent implements OnInit {
     }
     addImage(): void {
         const data = new FormData();
-        if(this.imagePreview.length > 0){
+        if (this.imagePreview.length > 0) {
             data.append("files", this.imagePreview[0].rawFile);
         }
-        data.append("Product",JSON.stringify(this.formGroup.value));
+        data.append("Product", JSON.stringify(this.formGroup.value));
         this.api.Update.Execute(data);
     }
     select(e: SelectEvent): void {

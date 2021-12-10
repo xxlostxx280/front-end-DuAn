@@ -71,15 +71,36 @@ export class WindowQuantityComponent implements OnInit {
                 this.dataSource.size = this.defaultItem;
                 this.formGroup.controls.size.setValue(this.defaultItem);
                 this.formGroup.controls.property.setValue(this.defaultItemProperty);
-            }else{
+            } else {
                 this.listSizeById = this.listSize.filter((x) => x.typesize.id == this.formGroup.value.size.typesize.id);
+            }
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.Size.Notification.notificationError('');
             }
         })
         this.Property.Read.Execute().subscribe((rs) => {
             this.listProperty = rs.data;
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.Property.Notification.notificationError('');
+            }
         })
         this.Product.Read.Execute().subscribe((rs) => {
             this.listProduct = rs.data;
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.Product.Notification.notificationError('');
+            }
         })
         this.formGroup.addControl('typesize', new FormControl());
         if (this.status == "CREATE") {
@@ -87,7 +108,7 @@ export class WindowQuantityComponent implements OnInit {
             this.dataSource.size = this.defaultItem;
             this.formGroup.controls.size.setValue(this.defaultItem);
             this.formGroup.controls.property.setValue(this.defaultItemProperty);
-        }else{
+        } else {
             this.formGroup.controls.product.setValue([this.formGroup.value.product]);
         }
     }

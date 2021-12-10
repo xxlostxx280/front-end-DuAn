@@ -16,7 +16,12 @@ const routes: Routes = [
     {
         path: 'login',
         component: LoginComponent,
-        pathMatch: 'full'
+        pathMatch: 'full',
+    },
+    {
+        path: 'login/:id',
+        component: LoginComponent,
+        pathMatch: 'full',
     },
     {
         path: 'register',

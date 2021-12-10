@@ -71,7 +71,7 @@ export class DialogLoginComponent {
         username: '',
         password: ''
     };
-    constructor(private api: ApiService, public notificationService: NotificationService,private messgae: MessageService,
+    constructor(private api: ApiService, public notificationService: NotificationService, private messgae: MessageService,
         private dialogService: DialogService) { }
     login(): void {
         this.accountModel.username = this.userForm.value.email;
@@ -80,11 +80,11 @@ export class DialogLoginComponent {
             if (res.status == true) {
                 sessionStorage.setItem('USERNAME', res.data.username);
                 sessionStorage.setItem('TOKEN', res.data.token);
-                sessionStorage.setItem('ROLE',res.data.roles);
+                sessionStorage.setItem('ROLE', res.data.roles);
                 this.dialog.close();
                 this.messgae.SendTokenAccount(res.status);
             } else {
-                if (res.message == "Mật khẩu sai"){
+                if (res.message == "Mật khẩu sai") {
                     this.notificationService.show({
                         appendTo: this.appendTo,
                         content: res.message,
@@ -93,7 +93,7 @@ export class DialogLoginComponent {
                         type: { style: "error", icon: true },
                     });
                 }
-                else{
+                else {
                     this.notificationService.show({
                         appendTo: this.appendTo,
                         content: res.message,
@@ -103,6 +103,13 @@ export class DialogLoginComponent {
                     });
                 }
             }
+        }, (error) => {
+            if(error.status == 500){
+                let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
+                window.location.href = "/login/" +  id;
+              }else{
+                this.api.Notification.notificationError('');
+              }
         })
     }
 }

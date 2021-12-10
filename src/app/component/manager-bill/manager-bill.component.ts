@@ -52,7 +52,11 @@ export class ManagerBillComponent implements OnInit {
     this.Bill.Controller = "BillManagerController";
     this.Bill.Read.Execute().subscribe((rs) => {
       this.gridData = rs.data;
+    }, (error) => {
+      alert('Bạn không có quyền dùng chức năng này')
+      window.location.href = "/login"
     })
+    
     this.message.receivedDataAfterUpadte().subscribe((rs)=>{
       this.gridData.map((val,idx)=>{
         if(val.id == rs.id){

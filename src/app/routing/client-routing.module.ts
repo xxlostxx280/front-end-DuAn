@@ -6,6 +6,7 @@ import { ListProductByCategoryComponent } from "../component/list-product-by-cat
 import { ListProductComponent } from "../component/list-product/list-product.component";
 import { ProductDetailsComponent } from "../component/product-details/product-details.component";
 import { DefaultComponent } from "../layout/default/default.component";
+import { AuthGuard } from "../shared/auth.guard";
 
 const routes: Routes = [
     {
@@ -39,6 +40,7 @@ const routes: Routes = [
     {
         path: 'history-and-wallet',
         component: HistoryAndWalletComponent,
+        canActivate: [AuthGuard],
     },
 ];
 @NgModule({

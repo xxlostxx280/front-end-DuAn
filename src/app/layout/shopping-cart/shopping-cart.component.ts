@@ -35,7 +35,7 @@ export class ShoppingCartComponent implements OnInit {
 
   public steps = [
     { label: "First step", index: 0 },
-    { label: "Second step", index: 1, disabled: true},
+    { label: "Second step", index: 1, disabled: true },
     { label: "Third step", index: 2, disabled: true },
   ];
   public current = 0;
@@ -77,7 +77,7 @@ export class ShoppingCartComponent implements OnInit {
     payment: new FormControl(),
   })
 
-  constructor(public api: ApiService,private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+  constructor(public api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
 
   public Quantity: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
@@ -94,9 +94,23 @@ export class ShoppingCartComponent implements OnInit {
     this.Voucher.Controller = "VoucherController";
     this.Quantity.Read.Execute().subscribe((rs) => {
       this.Quantity.dataSource = rs.data;
+    }, (error) => {
+      if(error.status == 500){
+        let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
+        window.location.href = "/login/" +  id;
+      }else{
+        this.api.Notification.notificationError('');
+      }
     })
     this.Voucher.getApi('Customer/' + this.Voucher.Controller + '/findVoucherByAmount').subscribe((rs) => {
       this.listVoucher = rs.data;
+    }, (error) => {
+      if(error.status == 500){
+        let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
+        window.location.href = "/login/" +  id;
+      }else{
+        this.api.Notification.notificationError('');
+      }
     })
     this.key.map((x: any) => {
       let data: any = localStorage.getItem(x);
@@ -105,9 +119,9 @@ export class ShoppingCartComponent implements OnInit {
     })
     this.dataSource.map((x) => {
       this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
-      if(x.Product.discount != null){
+      if (x.Product.discount != null) {
         this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity);
-      }else{
+      } else {
         this.toMoney = this.toMoney + Number(x.Product.price * x.Quantity);
       }
     })
@@ -129,9 +143,9 @@ export class ShoppingCartComponent implements OnInit {
       });
       if (same_cart.length == 2) {
         this.total = this.total - Number(parseInt(same_cart[0].Product.price) * parseInt(same_cart[0].Quantity));
-        if(same_cart[0].Product.discount != null){
+        if (same_cart[0].Product.discount != null) {
           this.toMoney = this.toMoney - Number(parseInt(same_cart[0].newPrice) * parseInt(same_cart[0].Quantity));
-        }else{
+        } else {
           this.toMoney = this.toMoney - Number(parseInt(same_cart[0].Product.price) * parseInt(same_cart[0].Quantity));
         }
         localStorage.removeItem(this.dataSource[0].Id);
@@ -149,9 +163,9 @@ export class ShoppingCartComponent implements OnInit {
         this.toMoney = 0;
         this.dataSource.map((x) => {
           this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
-          if(x.Product.discount != null){
+          if (x.Product.discount != null) {
             this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity)
-          }else{
+          } else {
             this.toMoney = this.toMoney + Number(x.Product.price * x.Quantity)
           }
         })
@@ -159,23 +173,23 @@ export class ShoppingCartComponent implements OnInit {
     })
   }
 
-  ProvinceChange(event: any){
+  ProvinceChange(event: any) {
     this.InfomationCustomer.value.Address = "";
-    this.listDistrict = this.listProvince.find((x)=> x.Id == event).Districts;
-    this.InfomationCustomer.value.Address =  this.listProvince.find((x)=> x.Id == event).Name + this.InfomationCustomer.value.Address;
+    this.listDistrict = this.listProvince.find((x) => x.Id == event).Districts;
+    this.InfomationCustomer.value.Address = this.listProvince.find((x) => x.Id == event).Name + this.InfomationCustomer.value.Address;
   }
-  DistrictChange(event: any){
-    this.listWards = this.listDistrict.find((x)=> x.Id == event).Wards;
-    this.InfomationCustomer.value.Address = this.listDistrict.find((x)=> x.Id == event).Name  + ', ' + this.InfomationCustomer.value.Address;
+  DistrictChange(event: any) {
+    this.listWards = this.listDistrict.find((x) => x.Id == event).Wards;
+    this.InfomationCustomer.value.Address = this.listDistrict.find((x) => x.Id == event).Name + ', ' + this.InfomationCustomer.value.Address;
   }
-  WardsChange(event: any){
-    this.InfomationCustomer.value.Address = this.listWards.find((x)=> x.Id == event).Name  + ', ' + this.InfomationCustomer.value.Address;
+  WardsChange(event: any) {
+    this.InfomationCustomer.value.Address = this.listWards.find((x) => x.Id == event).Name + ', ' + this.InfomationCustomer.value.Address;
   }
-  HamletChange(event: any){
+  HamletChange(event: any) {
     this.InfomationCustomer.value.Address = event.target.value + ', ' + this.InfomationCustomer.value.Address;
   }
-  activate(event:any): void{
-    if(event.index == 0){
+  activate(event: any): void {
+    if (event.index == 0) {
       this.step_1 = true;
       this.step_2 = false
       this.step_3 = false;
@@ -202,8 +216,8 @@ export class ShoppingCartComponent implements OnInit {
         this.BillObj.address = this.InfomationCustomer.value.Address;
         this.BillObj.note = this.InfomationCustomer.value.Note;
         this.current += 1;
-        this.steps.map((x)=>{
-          if(x.index == this.current){
+        this.steps.map((x) => {
+          if (x.index == this.current) {
             x.disabled = false;
           }
         })
@@ -217,7 +231,7 @@ export class ShoppingCartComponent implements OnInit {
         this.BillObj.transportFee = 30000;
         this.BillObj.total = this.total;
         this.BillObj.downtotal = this.toMoney;
-        this.dataSource.map((x)=>{
+        this.dataSource.map((x) => {
           let sendRequest = {
             id_quantity: x.IdQuantity,
             bill_quantity: x.Quantity
@@ -230,7 +244,7 @@ export class ShoppingCartComponent implements OnInit {
         this.BillObj.transportFee = 0;
         this.BillObj.total = this.total;
         this.BillObj.downtotal = this.toMoney;
-        this.dataSource.map((x)=>{
+        this.dataSource.map((x) => {
           let sendRequest = {
             id_quantity: x.IdQuantity,
             bill_quantity: x.Quantity
@@ -238,9 +252,9 @@ export class ShoppingCartComponent implements OnInit {
           this.BillObj.list_quantity.push(sendRequest);
         })
       }
-      this.api.postApi('api/bill/creat',this.BillObj).subscribe((rs)=>{
-        if(rs.status){
-          this.dataSource.map((x)=>{
+      this.api.postApi('api/bill/creat', this.BillObj).subscribe((rs) => {
+        if (rs.status) {
+          this.dataSource.map((x) => {
             localStorage.removeItem(x.Id);
           })
           this.dataSource = [];
@@ -251,6 +265,13 @@ export class ShoppingCartComponent implements OnInit {
           this.current += 1;
           this.message.SendBadgeCart(localStorage.length);
         }
+      }, (error) => {
+        if(error.status == 500){
+          let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
+          window.location.href = "/login/" +  id;
+        }else{
+          this.api.Notification.notificationError('');
+        }
       })
     }
   }
@@ -258,9 +279,9 @@ export class ShoppingCartComponent implements OnInit {
   removeCardItem(e: any, data: any, index: any): void {
     let removeItem = JSON.parse(String(localStorage.getItem(data)));
     this.total = this.total - Number(parseInt(removeItem.Product.price) * parseInt(removeItem.Quantity));
-    if(removeItem.Product.discount != null){
+    if (removeItem.Product.discount != null) {
       this.toMoney = this.toMoney - Number(parseInt(removeItem.newPrice) * parseInt(removeItem.Quantity))
-    }else{
+    } else {
       this.toMoney = this.toMoney - Number(parseInt(removeItem.Product.price) * parseInt(removeItem.Quantity))
     }
     localStorage.removeItem(data);
@@ -346,30 +367,30 @@ export class ShoppingCartComponent implements OnInit {
     this.QuantityObj.Quantity = value;
   }
   selectVoucher(event: any): void {
-    if(event.discount == undefined){
+    if (event.discount == undefined) {
       this.toMoney = 0;
       this.total = 0;
       this.BillObj.voucher_id = '';
       this.BillObj.discount = '';
       this.dataSource.map((x) => {
         this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
-        if(x.Product.discount != null){
+        if (x.Product.discount != null) {
           this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity)
-        }else{
+        } else {
           this.toMoney = this.toMoney + Number(x.Product.price * x.Quantity)
         }
       })
-    }else{
+    } else {
       this.BillObj.voucher_id = event.id;
       this.BillObj.discount = event.discount;
-      this.toMoney = Number(this.toMoney * (100 - event.discount))/100;
+      this.toMoney = Number(this.toMoney * (100 - event.discount)) / 100;
     }
   }
-  PaymentMethodChange(event: any): void{
-    if(event.target.value == "cash"){
+  PaymentMethodChange(event: any): void {
+    if (event.target.value == "cash") {
       this.isPayment = false;
       this.toMoney = this.total;
-    }else{
+    } else {
       this.isPayment = true
     }
   }

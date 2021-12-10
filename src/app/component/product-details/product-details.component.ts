@@ -42,7 +42,7 @@ export class ProductDetailsComponent implements OnInit {
     name: "Choose...",
     id: null,
   };
-  
+
   public config: SwiperOptions = {
     freeMode: true,
     pagination: { clickable: true },
@@ -73,7 +73,7 @@ export class ProductDetailsComponent implements OnInit {
   };
   public thumbsSwiper: any;
 
-  constructor(private api: ApiService,private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+  constructor(private api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) {
   }
   public Product: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
@@ -96,31 +96,55 @@ export class ProductDetailsComponent implements OnInit {
     this.Image.Controller = "ImageController";
 
     this.Product.getApi('Customer/' + this.Product.Controller + '/findProductById/' + id).subscribe((res) => {
-      if(res.data.discount != null){
+      if (res.data.discount != null) {
         this.isDiscount = true;
-        this.newPrice = Number(res.data.price * (100 - res.data.discount))/100;
+        this.newPrice = Number(res.data.price * (100 - res.data.discount)) / 100;
         this.QuantityObj.newPrice = this.newPrice;
       }
       let description = res.data.description;
       let descriptionDetail = res.data.descriptionDetail;
       this.infoProduct = res.data;
-      if(this.infoProduct.description != null){
+      if (this.infoProduct.description != null) {
         this.infoProduct.description = decodeURIComponent(description.replace(/\+/g, ""));
-      }else if(this.infoProduct.descriptionDetail != null){
+      } else if (this.infoProduct.descriptionDetail != null) {
         this.infoProduct.descriptionDetail = decodeURIComponent(descriptionDetail.replace(/\+/g, " "));
       }
       this.QuantityObj.Product = res.data;
+    }, (error) => {
+      alert('Bạn không có quyền dùng chức năng này')
+      window.location.href = "/login"
     })
     this.Product.getApi('Customer/' + this.Product.Controller + '/GetProductByCategory/' + id).subscribe((res) => {
       this.listProductByCategory = res.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     })
 
     this.TypeSize.Read.Execute().subscribe((res) => {
       this.listTypeSize = res.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     });
 
     this.Quantity.Read.Execute().subscribe((rs) => {
       this.Quantity.dataSource = rs.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     })
     this.Quantity.getApi('Customer/' + this.Quantity.Controller + '/findQuantityByProduct/' + id).subscribe((res) => {
       this.listProductByQuantity = res.data;
@@ -149,12 +173,15 @@ export class ProductDetailsComponent implements OnInit {
 
           ///List size theo màu sản phẩm/////
           this.listSizeByQuantity = [];
-          let SizeByProperty = this.listProductByQuantity.filter((x)=> x.idproperty == this.listProperty[0].idproperty);
-          SizeByProperty.map((x)=>{
+          let SizeByProperty = this.listProductByQuantity.filter((x) => x.idproperty == this.listProperty[0].idproperty);
+          SizeByProperty.map((x) => {
             this.listSizeByQuantity.push(x.size);
           })
           this.QuantityObj.Size = this.listSizeByQuantity[0];
           this.formGroup.controls.size.setValue(this.listSizeByQuantity[0]);
+        }, (error) => {
+          alert('Bạn không có quyền dùng chức năng này')
+          window.location.href = "/login"
         })
         this.Size.Read.Execute().subscribe((rs) => {
           this.listProductByQuantity.map((val: any, idx: any) => {
@@ -177,11 +204,28 @@ export class ProductDetailsComponent implements OnInit {
           })
           this.QuantityObj.Size = this.listSize[0];
           this.formGroup.controls.size.setValue(this.listSize[0]);
+        }, (error) => {
+          alert('Bạn không có quyền dùng chức năng này')
+          window.location.href = "/login"
         })
+      }
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
       }
     })
     this.Image.getApi('Customer/' + this.Image.Controller + '/findByProduct/' + id).subscribe((res) => {
       this.listImageProduct = res.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     })
   }
 
@@ -191,8 +235,8 @@ export class ProductDetailsComponent implements OnInit {
     this.QuantityObj.Property = property[0];
 
     /////Khi tìm sản phẩm theo màu sắc danh mục size sẽ select mảng đầu tiên////////
-    let SizeByProperty = this.listProductByQuantity.filter((x)=> x.idproperty == e.idproperty);
-    SizeByProperty.map((x)=>{
+    let SizeByProperty = this.listProductByQuantity.filter((x) => x.idproperty == e.idproperty);
+    SizeByProperty.map((x) => {
       this.listSizeByQuantity.push(x.size);
     })
     this.QuantityObj.Size = this.listSizeByQuantity[0];
@@ -248,8 +292,8 @@ export class ProductDetailsComponent implements OnInit {
           localStorage.setItem(random1, JSON.stringify(this.QuantityObj));
           this.badge = localStorage.length;
           this.message.SendBadgeCart(this.badge);
-        } 
-      }else{
+        }
+      } else {
         this.api.Notification.notificationWarning('Đã có sản phẩm này trong giỏ hàng của bạn')
       }
     }

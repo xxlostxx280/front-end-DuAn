@@ -61,6 +61,13 @@ export class RegisterComponent implements OnInit {
           type: { style: "success", icon: true },
         });
         this.loaderVisible = false;
+      }, (error) => {
+        if(error.status == 500){
+          let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
+          window.location.href = "/login/" +  id;
+        }else{
+          this.api.Notification.notificationError('');
+        }
       })
     }
   }

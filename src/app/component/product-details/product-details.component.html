@@ -4,14 +4,14 @@
         <div class="col-md-5" style="border-color: 2px solid #dee2e6">
             <swiper style="--swiper-navigation-color: #fff;--swiper-pagination-color: #fff;height: 500px;"
                 [spaceBetween]="10" [navigation]="true" [thumbs]="{ swiper: thumbsSwiper }" class="mySwiper2">
-                <ng-template swiperSlide><img src="http://localhost:8080/manager/image/get/{{infoProduct.image}}" width="100%" height="500px" /></ng-template>
+                <ng-template swiperSlide><img src="{{infoProduct.image}}" width="100%" height="500px" /></ng-template>
                 <ng-template swiperSlide *ngFor="let image of listImageProduct">
                     <img src="{{image.file}}" width="100%" height="550px" />
                 </ng-template>
             </swiper>
             <swiper (swiper)="thumbsSwiper = $event" [spaceBetween]="5" [slidesPerView]="4" [freeMode]="true"
                 style="height: 100px;margin: 10px 0px" [watchSlidesProgress]="true" class="mySwiper">
-                <ng-template swiperSlide><img src="http://localhost:8080/manager/image/get/{{infoProduct.image}}" width="100%" height="120px" /></ng-template>
+                <ng-template swiperSlide><img src="{{infoProduct.image}}" width="100%" height="120px" /></ng-template>
                 <ng-template swiperSlide *ngFor="let image of listImageProduct">
                     <img src="{{image.file}}" width="100%" height="120px" />
                 </ng-template>

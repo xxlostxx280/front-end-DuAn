@@ -23,7 +23,7 @@ export class ManagerCategoryComponent implements OnInit {
     filter: undefined,
     skip: 0,
     take: 10,
-    group: [{field: "category.name"}],
+    group: [{ field: "category.name" }],
     sort: [],
   };
 
@@ -43,9 +43,23 @@ export class ManagerCategoryComponent implements OnInit {
     this.api.Read.Execute().subscribe((res) => {
       this.gridData = res.data;
       this.api.dataSource = res.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
     })
     this.api_2.Read.Execute().subscribe((res) => {
       this.api_2.dataSource = res.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api_2.Notification.notificationError('');
+      }
     })
     this.message.receivedDataAfterUpadte().subscribe((rs) => {
       if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
@@ -67,9 +81,9 @@ export class ManagerCategoryComponent implements OnInit {
   Category(id: number): any {
     return this.gridData.find(x => x.id === id);
   }
-  onCategoryChange(event: any): void{
-    this.api_2.formGroup.markAsDirty({onlySelf: true});
-    this.api_2.formGroup.value.category = this.gridData.find((x)=> x.id == event);
+  onCategoryChange(event: any): void {
+    this.api_2.formGroup.markAsDirty({ onlySelf: true });
+    this.api_2.formGroup.value.category = this.gridData.find((x) => x.id == event);
   }
 
   Update(grid: any): void {

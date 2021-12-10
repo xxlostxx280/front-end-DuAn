@@ -34,6 +34,7 @@ import { ManagerAccountComponent } from "src/app/component/manager-account/manag
 import { ManagerBillComponent } from "src/app/component/manager-bill/manager-bill.component";
 import { WindowBillComponent } from "src/app/component/manager-bill/windowBill.component";
 import { ManagerCategoryComponent } from "src/app/component/manager-category/manager-category.component";
+import { ManagerEventComponent } from "src/app/component/manager-event/manager-event.component";
 import { ManagerProductComponent } from "src/app/component/manager-product/manager-product.component";
 import { WindowProductComponent } from "src/app/component/manager-product/windowProduct.component";
 import { WindowUploadComponent } from "src/app/component/manager-product/windowUpload.component";
@@ -58,6 +59,7 @@ import { DefaultManagerComponent } from "./default-manager.component";
         ManagerAccountComponent,
         ManagerVoucherComponent,
         ManagerBillComponent,
+        ManagerEventComponent,
         ///////Popup của component cha//////
         WindowProductComponent,
         WindowQuantityComponent,

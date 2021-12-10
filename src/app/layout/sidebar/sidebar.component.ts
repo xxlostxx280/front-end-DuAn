@@ -54,7 +54,7 @@ export class SidebarComponent implements OnInit {
 
   private queryItems(): void {
     this.api.Read.Execute()
-      .subscribe(res => {
+      .subscribe((res) => {
         this.categoriesView = res.map((item: any) => {
           const data = <PanelBarItemModel><unknown>{
             id: item.id,
@@ -65,8 +65,13 @@ export class SidebarComponent implements OnInit {
           return data;
         })
         this.panelItem = res;
-      }, (mess) => {
-        alert(mess)
+      }, (error) => {
+        if(error.status == 500){
+          let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
+          window.location.href = "/login/" +  id;
+        }else{
+          this.api.Notification.notificationError('');
+        }
       });
   }
   private queryChildItems(data: any): void {
@@ -77,8 +82,13 @@ export class SidebarComponent implements OnInit {
           return <PanelBarItemModel>{ id: result.id, title: result.name };
         })
         this.categoriesChild.push(res);
-      }, (mess) => {
-        alert(mess)
+      }, (error) => {
+        if(error.status == 500){
+          let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
+          window.location.href = "/login/" +  id;
+        }else{
+          this.api.Notification.notificationError('');
+        }
       })
   }
   stateChange(data: Array<PanelBarItemModel>): boolean {

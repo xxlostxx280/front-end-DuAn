@@ -14,13 +14,13 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.Controller = "StatisController";
-    this.getDataDayOfMonth(this.date.getMonth(),this.date.getFullYear());
+    this.getDataDayOfMonth(this.date.getMonth(), this.date.getFullYear());
   }
-  getDataDayOfMonth(month: any,year: any): void{
-    this.api.getApi('Manager/' + this.api.Controller + '/getEveryDayOfTheMonth?month='+ month +'&year=' + year)
+  getDataDayOfMonth(month: any, year: any): void {
+    this.api.getApi('Manager/' + this.api.Controller + '/getEveryDayOfTheMonth?month=' + month + '&year=' + year)
       .subscribe((rs) => {
         this.chartDayOfMonth = [];
-        rs.data.map((val:any,idx: any)=>{
+        rs.data.map((val: any, idx: any) => {
           let day = new Date(val.day).getDate();
           let chartDayOfMonth = {
             day: day,
@@ -28,10 +28,17 @@ export class DashboardComponent implements OnInit {
           }
           this.chartDayOfMonth.push(chartDayOfMonth);
         })
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
       })
   }
-  onChange(event: any): void{
+  onChange(event: any): void {
     let e = event;
-    this.getDataDayOfMonth(event.getMonth(),event.getFullYear());
+    this.getDataDayOfMonth(event.getMonth(), event.getFullYear());
   }
 }

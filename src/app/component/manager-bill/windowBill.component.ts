@@ -28,88 +28,133 @@ export class WindowBillComponent implements OnInit {
 
     constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
         private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, private api: ApiService) { }
-    
+
     public OrderDetail: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
     public statusShipping: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
     ngOnInit(): void {
         this.OrderDetail.isManager = true;
         this.OrderDetail.Controller = "OrderDetailManagerController";
         this.statusShipping.Controller = "BillManagerController";
-        this.OrderDetail.getApi('Manager/' + this.OrderDetail.Controller + '/' + this.formGroup.value.id).subscribe((rs)=>{
+        this.OrderDetail.getApi('Manager/' + this.OrderDetail.Controller + '/' + this.formGroup.value.id).subscribe((rs) => {
             this.listOrderDetail = rs;
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
         })
         this.statusShipping.getApi(('Manager/' + this.statusShipping.Controller + '/shiping/' + this.formGroup.value.id))
-        .subscribe((rs)=>{
-            this.listStatus = rs.data;
-        })
-        this.formGroup.controls.payment.disable({emitEvent: true});
+            .subscribe((rs) => {
+                this.listStatus = rs.data;
+            }, (error) => {
+                if (error.status == 500) {
+                    let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                    window.location.href = "/login/" + id;
+                } else {
+                    this.api.Notification.notificationError('');
+                }
+            })
+        this.formGroup.controls.payment.disable({ emitEvent: true });
         this.changeButton();
     }
-    getDate(getDate: any){
+    getDate(getDate: any) {
         let value = new Date(getDate);
         return value;
     }
-    cancel(): void{
-        this.api.getApi('Manager/BillManagerController/cancel/' + this.formGroup.value.id).subscribe((rs)=>{
-            if(rs.status){
+    cancel(): void {
+        this.api.getApi('Manager/BillManagerController/cancel/' + this.formGroup.value.id).subscribe((rs) => {
+            if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
             }
-        })
-    }
-    confirm(): void{
-        this.api.getApi('Manager/BillManagerController/confirm/' + this.formGroup.value.id).subscribe((rs)=>{
-            if(rs.status){
-                this.message.SendDataAfterUpdate(rs.data);
-                this.api.Notification.notificationExecute(rs);
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
             }
         })
     }
-    ship(): void{
-        this.api.getApi('Manager/BillManagerController/ship/' + this.formGroup.value.id).subscribe((rs)=>{
-            if(rs.status){
+    confirm(): void {
+        this.api.getApi('Manager/BillManagerController/confirm/' + this.formGroup.value.id).subscribe((rs) => {
+            if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
             }
-        })
-    }
-    received(): void{
-        this.api.getApi('Manager/BillManagerController/received/' + this.formGroup.value.id).subscribe((rs)=>{
-            if(rs.status){
-                this.message.SendDataAfterUpdate(rs.data);
-                this.api.Notification.notificationExecute(rs);
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
             }
         })
     }
-    refund(): void{
-        this.api.getApi('Manager/BillManagerController/refund/' + this.formGroup.value.id).subscribe((rs)=>{
-            if(rs.status){
+    ship(): void {
+        this.api.getApi('Manager/BillManagerController/ship/' + this.formGroup.value.id).subscribe((rs) => {
+            if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
             }
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
         })
     }
-    changeButton(): void{
-        if(this.formGroup.value.status == "HUY"){
+    received(): void {
+        this.api.getApi('Manager/BillManagerController/received/' + this.formGroup.value.id).subscribe((rs) => {
+            if (rs.status) {
+                this.message.SendDataAfterUpdate(rs.data);
+                this.api.Notification.notificationExecute(rs);
+            }
+        }, (error) => {
+            alert('Bạn không có quyền dùng chức năng này')
+            window.location.href = "/login"
+        })
+    }
+    refund(): void {
+        this.api.getApi('Manager/BillManagerController/refund/' + this.formGroup.value.id).subscribe((rs) => {
+            if (rs.status) {
+                this.message.SendDataAfterUpdate(rs.data);
+                this.api.Notification.notificationExecute(rs);
+            }
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
+        })
+    }
+    changeButton(): void {
+        if (this.formGroup.value.status == "HUY") {
             this.isToolbar = false;
         }
-        if(this.formGroup.value.status == "CHUA_XAC_NHAN"){
+        if (this.formGroup.value.status == "CHUA_XAC_NHAN") {
             this.isReceived = false;
             this.isShip = false;
             this.isRefund = false;
         }
-        if(this.formGroup.value.status == "DA_XAC_NHAN_VA_DONG_GOI"){
+        if (this.formGroup.value.status == "DA_XAC_NHAN_VA_DONG_GOI") {
             this.isConfirm = false;
             this.isReceived = false;
             this.isRefund = false;
         }
-        if(this.formGroup.value.status == "DA_GIAO_BEN_VAN_CHUYEN"){
+        if (this.formGroup.value.status == "DA_GIAO_BEN_VAN_CHUYEN") {
             this.isShip = false;
             this.isCancel = false;
             this.isConfirm = false;
             this.isRefund = false;
         }
-        if(this.formGroup.value.status == "KHACH_DA_NHAN_HANG"){
+        if (this.formGroup.value.status == "KHACH_DA_NHAN_HANG") {
             this.isReceived = false;
             this.isShip = false;
             this.isCancel = false;

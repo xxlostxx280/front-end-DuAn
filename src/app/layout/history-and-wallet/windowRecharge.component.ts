@@ -130,18 +130,32 @@ export class WindowRechargeComponent implements OnInit {
         this.Customer.Read.Execute().subscribe((rs) => {
             this.listCustomer = rs.data;
             this.getCustomer = this.listCustomer.find((x) => x.idaccount == sessionStorage.getItem('USER_ID'));
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
         })
     }
 
     recharge(): void {
         let data = {
-            amount : this.formGroup.value.amount,
+            amount: this.formGroup.value.amount,
             description: this.formGroup.value.description,
             bankcode: this.formGroup.value.bankcode.id,
-            language:  this.formGroup.value.language,
+            language: this.formGroup.value.language,
         }
         this.VnPay.postApi('Customer/' + this.VnPay.Controller + '/vnpay', data).subscribe((rs) => {
             window.location.href = rs.data;
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
         })
     }
 }

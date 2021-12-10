@@ -45,7 +45,7 @@ export class ChangePasswordComponent implements OnInit {
         this.step_1 = false;
         this.step_2 = true;
         this.loaderVisible = false;
-      }else{
+      } else {
         this.loaderVisible = false;
         this.notificationService.show({
           appendTo: this.appendTo,
@@ -54,6 +54,13 @@ export class ChangePasswordComponent implements OnInit {
           position: { horizontal: "right", vertical: "top" },
           type: { style: "warning", icon: true },
         });
+      }
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
       }
     })
   }
@@ -75,6 +82,13 @@ export class ChangePasswordComponent implements OnInit {
           position: { horizontal: "right", vertical: "top" },
           type: { style: "warning", icon: true },
         });
+      }
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
       }
     })
   }
