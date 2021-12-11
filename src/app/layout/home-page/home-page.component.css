@@ -35,3 +35,6 @@
 .thu-nghiem-zoom img{display:block;transition: all .3s ease;}
 .thu-nghiem-zoom img:hover{transform: scale(1.5);}
 .thu-nghiem-zoom p{display:block;overflow: hidden;}
+.dat1{
+    background-color: #f1f2f6;
+}
