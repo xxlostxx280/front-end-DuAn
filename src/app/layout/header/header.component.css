@@ -106,6 +106,8 @@ body {
 }
 .dn{
   /* color: red; */
+  /* font-size: 13px;
+  font-weight: bold */
 }
 .button {
   width: 120px;
@@ -153,4 +155,7 @@ body {
 .button.type1.type1:hover:after, .button.type1.type1:hover:before {
   width: 100%;
   height: 100%;
+}
+#menu1{
+  
 }
