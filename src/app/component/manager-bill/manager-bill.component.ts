@@ -53,8 +53,12 @@ export class ManagerBillComponent implements OnInit {
     this.Bill.Read.Execute().subscribe((rs) => {
       this.gridData = rs.data;
     }, (error) => {
-      alert('Bạn không có quyền dùng chức năng này')
-      window.location.href = "/login"
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.Bill.Notification.notificationError('');
+      }
     })
     
     this.message.receivedDataAfterUpadte().subscribe((rs)=>{
@@ -63,6 +67,9 @@ export class ManagerBillComponent implements OnInit {
           this.gridData[idx] = rs; 
         }
       })
+    })
+    this.message.receivedDataBehavior().subscribe((rs) => {
+      this.gridData = rs;
     })
   }
 

@@ -270,8 +270,9 @@ export class ShoppingCartComponent implements OnInit {
           let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
           window.location.href = "/login/" +  id;
         }else{
-          this.api.Notification.notificationError('');
+          this.api.Notification.notificationError(error.error.message);
         }
+        this.api.loading = false;
       })
     }
   }

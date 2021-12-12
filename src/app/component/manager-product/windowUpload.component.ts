@@ -18,18 +18,24 @@ export class WindowUploadComponent implements OnInit {
     @Input() public status: String | undefined;
 
     public imagePreview: any[] = [];
+    public listImage: Array<any> = [];
     public state: State = {
         filter: undefined,
         skip: 0,
-        take: 5,
+        take: 10,
         group: [],
         sort: [],
     };
 
-    constructor(public api: ApiService) { }
-
+    constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+        private notificationService: NotificationService, private formBuilder: FormBuilder) { }
+    public Image: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+    
     ngOnInit(): void {
-        this.api.Controller = "RestUploatImgController";
+        this.Image.Controller = "RestUploatImgController";
+        this.Image.getApi('manager/image/list/' + this.dataSource.id).subscribe((rs) => {
+            this.listImage = rs.data;
+        })
     }
     update(event: any): void {
         event.preventDefault();
@@ -40,7 +46,7 @@ export class WindowUploadComponent implements OnInit {
             }
         }
         formData.append("idPro", this.dataSource.id);
-        this.api.postApi(('Manager/' + this.api.Controller + "/upload"), formData).subscribe((rs) => {
+        this.Image.postApi(('manager/image/upload'), formData).subscribe((rs) => {
             let result = rs;
         })
     }
@@ -48,23 +54,23 @@ export class WindowUploadComponent implements OnInit {
         this.imagePreview = e.files;
     }
     addHandler(event: any): void {
-        this.api.Create.Execute(null, event.sender.data.data);
-        event.sender.addRow(this.api.formGroup);
+        this.Image.Create.Execute(null, event.sender.data.data);
+        event.sender.addRow(this.Image.formGroup);
     }
     saveHandler(event: any) {
-        this.api.Grid.saveHandler(event);
+        this.Image.Grid.saveHandler(event);
         event.sender.closeRow(event.rowIndex);
     }
 
     cellClickHandler(event: any): void {
-        this.api.Grid.cellClickHandler(event);
+        this.Image.Grid.cellClickHandler(event);
     }
     cellCloseHandler(event: any): void {
-        this.api.Grid.cellCloseHandler(event);
+        this.Image.Grid.cellCloseHandler(event);
     }
 
     removeHandler(event: any): void {
-        this.api.Grid.removeHandler(event);
+        this.Image.Grid.removeHandler(event);
         event.sender.cancelCell();
     }
 

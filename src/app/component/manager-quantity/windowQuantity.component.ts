@@ -14,7 +14,7 @@ import { MessageService } from "src/app/shared/message.service";
 export class WindowQuantityComponent implements OnInit {
     @Input() public dataSource: any;
     @Input() public formGroup !: FormGroup;
-    @Input() public status: String | undefined;
+    @Input() public status!: any;
 
     public listTypeSize: Array<any> = [];
     public listProperty: Array<any> = [];
@@ -63,6 +63,13 @@ export class WindowQuantityComponent implements OnInit {
         this.Product.Controller = "ProductManagerController";
         this.TypeSize.Read.Execute().subscribe((rs) => {
             this.listTypeSize = rs.data;
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.Size.Notification.notificationError('');
+            }
         })
         this.Size.Read.Execute().subscribe((rs) => {
             this.listSize = rs.data;
@@ -122,6 +129,7 @@ export class WindowQuantityComponent implements OnInit {
         this.listSizeById = this.listSize.filter((x) => x.typesize.id == event.id);
     }
     saveHandler(event: any): void {
+        let formData = new FormData();
         let request = {
             product: '',
             property: '',
@@ -132,6 +140,8 @@ export class WindowQuantityComponent implements OnInit {
         request.property = this.formGroup.value.property;
         request.quantity = this.formGroup.value.quantity;
         request.size = this.formGroup.value.size;
-        this.Quantity.Update.Execute(request);
-    }
+        formData.append('quantityDTO',JSON.stringify(request));
+        formData.append('status',this.status);
+        this.api.Update.Execute(formData);
+    } 
 }

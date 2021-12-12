@@ -38,6 +38,20 @@ export class ManagerSizeComponent implements OnInit {
     this.api.Controller = "TypeSizeManagerController";
     this.api_2.Controller = "SizeManagerController";
     this.api_2.Grid.isGrouping = true; // Xem dữ liệu có đc group ko ??
+    this.Read();
+    this.message.receivedDataAfterUpadte().subscribe((rs) => {
+      this.Read();
+    })
+    this.message.receivedDataBehavior().subscribe((rs) => {
+      if (JSON.stringify(this.api.Grid.newState) == JSON.stringify(rs)) {
+        this.gridData = rs;
+      } else {
+        this.api_2.dataSource = rs;
+      }
+    })
+  }
+
+  Read(): void{
     this.api.Read.Execute().subscribe((res) => {
       this.gridData = res.data;
       this.api.dataSource = res.data;
@@ -59,20 +73,6 @@ export class ManagerSizeComponent implements OnInit {
         this.api_2.Notification.notificationError('');
       }
     })
-    this.message.receivedDataAfterUpadte().subscribe((rs) => {
-      if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
-        this.gridData = rs.data;
-      } else {
-        this.api_2.dataSource = rs.data;
-      }
-    })
-    this.message.receivedDataBehavior().subscribe((rs) => {
-      if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
-        this.gridData = rs;
-      } else {
-        this.api_2.dataSource = rs;
-      }
-    })
   }
 
   TypeSize(id: number): any {
@@ -80,6 +80,7 @@ export class ManagerSizeComponent implements OnInit {
   }
   onTypeSizeChange(event: any): void {
     this.api_2.formGroup.markAsDirty({ onlySelf: true });
+    this.api_2.formGroup.value.idtypesize = event;
     this.api_2.formGroup.value.typesize = this.gridData.find((x) => x.id == event);
   }
 

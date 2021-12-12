@@ -288,14 +288,14 @@ export class ApiService {
       if (sessionStorage.getItem('ROLE') == 'ADMIN' || this._.isManager == true) {
         let getHeader = this._.getHeader();
         if (getHeader instanceof HttpHeaders) { 
-          return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAll',{ headers: getHeader })
+          return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAllByIsDeleteFalse',{ headers: getHeader })
           .pipe(map((res: any) => {
             return res;
           }), tap(() => {
             this._.loading = false
           }))
         }else{
-          return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAll')
+          return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAllByIsDeleteFalse')
           .pipe(map((res: any) => {
             return res;
           }), tap(() => {
@@ -303,7 +303,7 @@ export class ApiService {
           }))
         }
       } else {
-        return this._.http.get('http://localhost:8080/Customer/' + this._.Controller + '/findAll')
+        return this._.http.get('http://localhost:8080/Customer/' + this._.Controller + '/findAllByIsDeleteFalse')
           .pipe(map((res: any) => {
             return res;
           }))
@@ -448,15 +448,15 @@ export class ApiService {
       }
     },
     UpdateAfterWindow: function (res: any) {
-      if (res.type == "CREATE") {
+      if (this._.status == "CREATE") {
         this._.dataSource = this._.dataSource.concat(res.data);
-      } else if (res.type == "EDIT") {
+      } else if (this._.status == "EDIT") {
         const index = this._.dataSource.findIndex(x => x.id === res.data.id);
         let newState = this._.dataSource.map((value, idx) => {
           return idx === index ? res.data : value;
         });
         this._.dataSource = newState;
-      } else if (res.type == "DELETE") {
+      } else if (this._.status == "DELETE") {
         const index = this._.dataSource.findIndex(x => x.id === res.data.id);
         let newState = this._.dataSource.filter((value, idx) => {
           return idx !== index;

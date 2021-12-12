@@ -4,7 +4,7 @@
         <p class="card-category"> Here is a subtitle for this table</p>
     </div>
     <div class="card-body">
-        <kendo-grid #grid [data]="gridData" style="height: 450px; width: 1150px;" [pageSize]="20"
+        <kendo-grid #grid [kendoGridBinding]="gridData" style="height: 450px; width: 1150px;" [pageSize]="20"
             (edit)="editHandler($event)" [sortable]="true" [pageable]="true" [sortable]="true" [navigable]="true"
             [resizable]="true" (cellClose)="cellCloseHandler($event)" (cellClick)="cellClickHandler($event)" 
             filterable="menu">

@@ -124,7 +124,6 @@ export class ProductDetailsComponent implements OnInit {
         this.api.Notification.notificationError('');
       }
     })
-
     this.TypeSize.Read.Execute().subscribe((res) => {
       this.listTypeSize = res.data;
     }, (error) => {
@@ -135,7 +134,6 @@ export class ProductDetailsComponent implements OnInit {
         this.api.Notification.notificationError('');
       }
     });
-
     this.Quantity.Read.Execute().subscribe((rs) => {
       this.Quantity.dataSource = rs.data;
     }, (error) => {
@@ -217,7 +215,7 @@ export class ProductDetailsComponent implements OnInit {
         this.api.Notification.notificationError('');
       }
     })
-    this.Image.getApi('Customer/' + this.Image.Controller + '/findByProduct/' + id).subscribe((res) => {
+    this.Image.getApi('manager/image/list/' + id).subscribe((res) => {
       this.listImageProduct = res.data;
     }, (error) => {
       if (error.status == 500) {
@@ -250,6 +248,9 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   addSoppingCart(): void {
+    if( this.QuantityObj.Quantity < 0){
+      return this.Quantity.Notification.notificationWarning("Không được nhập số âm");
+    }
     this.dataSource = [];
     let key = Object.keys(localStorage);
     let charset: string =

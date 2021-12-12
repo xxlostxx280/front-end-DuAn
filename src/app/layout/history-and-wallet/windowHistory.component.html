@@ -7,7 +7,7 @@
     <kendo-tabstrip>
         <kendo-tabstrip-tab title="Thông tin đơn hàng" [selected]="true">
             <ng-template kendoTabContent>
-                <kendo-toolbar>
+                <kendo-toolbar *ngIf="showToolBar">
                     <kendo-toolbar-button text="Hủy đơn" (click)="cancel()" *ngIf="isCancel"></kendo-toolbar-button>
                     <kendo-toolbar-button text="Hoàn hàng" (click)="refund()" *ngIf="isRefund"></kendo-toolbar-button>
                 </kendo-toolbar>

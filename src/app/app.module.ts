@@ -32,10 +32,14 @@ import { ToolBarModule } from '@progress/kendo-angular-toolbar';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { ChartsModule } from '@progress/kendo-angular-charts';
 import 'hammerjs';
+import { IntroduceComponent } from './component/introduce/introduce.component';
+import { ContactComponent } from './component/contact/contact.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    IntroduceComponent,
+    ContactComponent,
   ],
   imports: [
     FontAwesomeModule,

@@ -18,6 +18,18 @@ const routes: Routes = [
                 component: ListProductComponent
             },
             {
+                path: 'Sale',
+                component: ListProductComponent
+            },
+            {
+                path: 'New',
+                component: ListProductComponent
+            },
+            {
+                path: 'Highlights',
+                component: ListProductComponent
+            },
+            {
                 path: 'collection/:id/:id',
                 component: ListProductByCategoryComponent,
             },

@@ -22,7 +22,7 @@ export class ManagerProductComponent implements OnInit {
   public state: State = {
     filter: undefined,
     skip: 0,
-    take: 5,
+    take: 10,
     group: [{ field: "categorydetail.category.name" }, { field: "categorydetail.name" },],
     sort: [],
   };
@@ -49,7 +49,7 @@ export class ManagerProductComponent implements OnInit {
     })
     this.message.receivedDataAfterUpadte().subscribe((res) => {
       if (res.status) {
-        this.gridData = this.api.dataSource;
+        this.gridData = res.data;
       }
     })
   }
@@ -82,10 +82,10 @@ export class ManagerProductComponent implements OnInit {
     this.state = state;
   }
   UploadImage(event: any): void {
-    this.api.OpenWindow.top = -160;
-    this.api.OpenWindow.left = 200;
-    this.api.OpenWindow.Width = 500;
-    this.api.OpenWindow.Height = 650;
+    this.api.OpenWindow.top = -190;
+    this.api.OpenWindow.left = 100;
+    this.api.OpenWindow.Width = 900;
+    this.api.OpenWindow.Height = 700;
     this.api.OpenWindow.Execute(WindowUploadComponent, this.gridData.find((x) => x.id == event), null);
   }
 }

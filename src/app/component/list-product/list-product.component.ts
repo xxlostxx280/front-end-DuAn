@@ -29,6 +29,7 @@ export class ListProductComponent implements OnInit {
   ngOnInit(): void {
     this.Product.Controller = "ProductController";
     this.Quantity.Controller = "QuantityController";
+    
     this.Product.Read.Execute().subscribe((res) => {
       this.Product.dataSource = res.data;
     }, (error) => {
@@ -42,7 +43,7 @@ export class ListProductComponent implements OnInit {
     this.Quantity.Read.Execute().subscribe((res) => {
       this.Quantity.dataSource = res.data;
       this.Product.dataSource.map((x) => {
-        let arr = this.Quantity.dataSource.filter((val) => val.product.id == x.id)
+        let arr = this.Quantity.dataSource.filter((val) => val.product.id == x.id && val.quantity > 0)
         if (arr.length > 0) {
           this.listProduct.push(x);
         }
@@ -57,6 +58,7 @@ export class ListProductComponent implements OnInit {
         this.api.Notification.notificationError('');
       }
     })
+    
     this.message.receviedFilterProduct().subscribe((rs) => {
       this.dataSource = [];
       if (rs == "all") {

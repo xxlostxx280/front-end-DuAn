@@ -124,12 +124,12 @@ export class WindowRechargeComponent implements OnInit {
     public VnPay: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
 
     ngOnInit(): void {
+        sessionStorage.setItem('isRecharge', "true");
         this.VnPay.Controller = "VnpayController";
         this.Customer.isManager = true;
-        this.Customer.Controller = "CustomersManagerController";
-        this.Customer.Read.Execute().subscribe((rs) => {
-            this.listCustomer = rs.data;
-            this.getCustomer = this.listCustomer.find((x) => x.idaccount == sessionStorage.getItem('USER_ID'));
+        this.Customer.Controller = "CustomerController";
+        this.Customer.getApi('Customer/' + this.Customer.Controller + '/' + sessionStorage.getItem('Account')).subscribe((rs) => {
+            this.getCustomer = rs.data;
         }, (error) => {
             if (error.status == 500) {
                 let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
@@ -141,6 +141,7 @@ export class WindowRechargeComponent implements OnInit {
     }
 
     recharge(): void {
+        this.formGroup.value.description = "NAP TIEN " + sessionStorage.getItem('USERNAME');
         let data = {
             amount: this.formGroup.value.amount,
             description: this.formGroup.value.description,

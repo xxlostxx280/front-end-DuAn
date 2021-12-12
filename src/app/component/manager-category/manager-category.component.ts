@@ -40,6 +40,20 @@ export class ManagerCategoryComponent implements OnInit {
     this.api.Controller = "CategoryManagerController";
     this.api_2.Controller = "CategoryDetailManagerController";
     this.api_2.Grid.isGrouping = true;
+    this.Read();
+    this.message.receivedDataAfterUpadte().subscribe((rs) => {
+      this.Read();
+    })
+    this.message.receivedDataBehavior().subscribe((rs) => {
+      if (JSON.stringify(this.api.Grid.newState) == JSON.stringify(rs)) {
+        this.gridData = rs;
+      } else {
+        this.api_2.dataSource = rs;
+      }
+    })
+  }
+
+  Read(): void{
     this.api.Read.Execute().subscribe((res) => {
       this.gridData = res.data;
       this.api.dataSource = res.data;
@@ -59,21 +73,6 @@ export class ManagerCategoryComponent implements OnInit {
         window.location.href = "/login/" + id;
       } else {
         this.api_2.Notification.notificationError('');
-      }
-    })
-    this.message.receivedDataAfterUpadte().subscribe((rs) => {
-      if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
-        this.gridData = rs.data;
-        this.api.dataSource = rs.data;
-      } else {
-        this.api_2.dataSource = rs.data;
-      }
-    })
-    this.message.receivedDataBehavior().subscribe((rs) => {
-      if (JSON.stringify(this.api.Grid.oldState) == JSON.stringify(this.gridData)) {
-        this.gridData = rs;
-      } else {
-        this.api_2.dataSource = rs;
       }
     })
   }

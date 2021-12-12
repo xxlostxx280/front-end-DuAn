@@ -17,27 +17,44 @@ export class WindowHistoryComponent implements OnInit {
     @Input() public formGroup !: FormGroup;
     @Input() public status: String | undefined;
 
+    public showToolBar = true;
     public listOrderDetail: Array<any> = [];
     public listStatus: Array<any> = [];
     public isCancel = false;
     public isRefund = false;
 
     constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
-        private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, private api: ApiService) { }
+        private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, public api: ApiService) { }
 
     public OrderDetail: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
     public statusShipping: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
     ngOnInit(): void {
-        this.OrderDetail.isManager = true;
-        this.OrderDetail.Controller = "OrderDetailManagerController";
-        this.statusShipping.Controller = "BillManagerController";
-        this.OrderDetail.getApi('Manager/' + this.OrderDetail.Controller + '/' + this.formGroup.value.id).subscribe((rs) => {
+        this.OrderDetail.Controller = "OrderDetailController";
+        this.statusShipping.Controller = "BillController";
+        this.OrderDetail.getApi('Customer/' + this.OrderDetail.Controller + '/' + this.formGroup.value.id).subscribe((rs) => {
             this.listOrderDetail = rs;
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
         })
-        this.statusShipping.getApi(('Manager/' + this.statusShipping.Controller + '/shiping/' + this.formGroup.value.id))
-            .subscribe((rs) => {
-                this.listStatus = rs.data;
-            })
+        this.statusShipping.getApi(('api/bill/shiping/' + this.formGroup.value.id)).subscribe((rs) => {
+            this.listStatus = rs.data;
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
+        })
+        if(this.formGroup.value.status == "KHACH_DA_NHAN_HANG" || this.formGroup.value.status == "HUY" || 
+        this.formGroup.value.status == "DA_XAC_NHAN_VA_DONG_GOI"){
+            this.showToolBar = false;
+        }
         this.formGroup.controls.payment.disable({ emitEvent: true });
         this.changeButton();
     }
@@ -57,17 +74,20 @@ export class WindowHistoryComponent implements OnInit {
     }
 
     cancel(): void {
-        this.api.getApi('Manager/BillManagerController/cancel/' + this.formGroup.value.id).subscribe((rs) => {
+        this.api.loading = true;
+        this.api.getApi('api/bill/cancel/' + this.formGroup.value.id).subscribe((rs) => {
             if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
             }
+            this.api.loading = false;
         }, (error) => {
             if (error.status == 500) {
                 let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
                 window.location.href = "/login/" + id;
             } else {
-                this.api.Notification.notificationError('');
+                this.api.Notification.notificationError(error.message);
             }
+            this.api.loading = false;
         })
     }
     refund(): void {

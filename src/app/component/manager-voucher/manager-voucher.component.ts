@@ -2,7 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
+import { DataStateChangeEvent } from '@progress/kendo-angular-grid';
 import { NotificationService } from '@progress/kendo-angular-notification';
+import { State } from '@progress/kendo-data-query';
 import { ApiService } from 'src/app/shared/api.service';
 import { MessageService } from 'src/app/shared/message.service';
 
@@ -15,7 +17,13 @@ export class ManagerVoucherComponent implements OnInit {
 
   public listVoucher: Array<any> = [];
   public listEvent: Array<any> = [];
-
+  public state: State = {
+    filter: undefined,
+    skip: 0,
+    take: 10,
+    group: [],
+    sort: [],
+  };
   constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
 
@@ -39,6 +47,7 @@ export class ManagerVoucherComponent implements OnInit {
     })
     this.Event.Read.Execute().subscribe((res) => {
       this.listEvent = res.data;
+      this.Event.dataSource = res.data;
     }, (error) => {
       if (error.status == 500) {
         let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
@@ -54,7 +63,14 @@ export class ManagerVoucherComponent implements OnInit {
       this.listVoucher = rs;
     })
   }
-
+  EventVoucher(id: number): any {
+    return this.listEvent.find(x => x.id === id);
+  }
+  onEventChange(event: any): void{
+    this.Voucher.formGroup.markAsDirty({ onlySelf: true });
+    this.Voucher.formGroup.value.idevent = event;
+    this.Voucher.formGroup.value.event = this.listEvent.find((x) => x.id == event);
+  }
   Update(grid: any): void {
     this.Voucher.Update.Execute(grid);
   }
@@ -88,12 +104,7 @@ export class ManagerVoucherComponent implements OnInit {
     event.sender.closeRow(event.rowIndex);
   }
 
-  onEventChange(event: any): void{
-    this.Voucher.formGroup.markAsDirty({ onlySelf: true });
-    this.Voucher.formGroup.value.idevent = event;
-    this.Voucher.formGroup.value.event = this.listEvent.find((x) => x.id == event);
-  }
-  EventVoucher(id: number): any {
-    return this.listEvent.find(x => x.id === id);
+  dataStateChange(state: DataStateChangeEvent): void {
+    this.state = state;
   }
 }

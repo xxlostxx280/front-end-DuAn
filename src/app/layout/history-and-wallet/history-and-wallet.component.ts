@@ -15,7 +15,6 @@ import { WindowRechargeComponent } from './windowRecharge.component';
 })
 export class HistoryAndWalletComponent implements OnInit {
 
-  public listCustomer: Array<any> = [];
   public listBillBought: Array<any> = [];
   public listBillBuying: Array<any> = [];
   public myWallet: any;
@@ -23,7 +22,7 @@ export class HistoryAndWalletComponent implements OnInit {
   public getCustomer: any;
   public tabStrip_1 = true;
 
-  constructor(private api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+  constructor(public api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
 
   public Customer: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
@@ -40,62 +39,56 @@ export class HistoryAndWalletComponent implements OnInit {
         this.MamiPay.Notification.notificationSuccess('Nạp tiền thành công');
         sessionStorage.setItem("isRecharge", "false")
       }
-
-      this.Customer.isManager = true;
-      this.Customer.Controller = "CustomersManagerController";
+      this.Customer.Controller = "CustomerController";
       this.Bill.Controller = "BillController";
       this.MamiPay.Controller = "MamiPayController";
       this.History.Controller = "HistoryManagerController"
-
-      this.Customer.Read.Execute().subscribe((rs) => {
-        this.listCustomer = rs.data;
-        this.getCustomer = this.listCustomer.find((x) => x.idaccount == sessionStorage.getItem('USER_ID'));
-        this.Bill.getApi('api/bill/' + this.getCustomer.id).subscribe((rs) => {
-          this.listBillBought = rs.data.filter((x: any) => x.status == "KHACH_DA_NHAN_HANG" || x.status == "HUY");
-          this.listBillBuying = rs.data.filter((x: any) => x.status != "KHACH_DA_NHAN_HANG" && x.status != "HUY");
-        })
-      }, (error) => {
-        if (error.status == 500) {
-          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
-          window.location.href = "/login/" + id;
-        } else {
-          this.api.Notification.notificationError('');
-        }
-      })
-      this.MamiPay.getApi('Customer/' + this.MamiPay.Controller + '/mamipay').subscribe((rs) => {
-        if (rs.data != null) {
-          this.isWallet = true;
-          this.myWallet = rs.data;
-        }
-      }, (error) => {
-        if (error.status == 500) {
-          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
-          window.location.href = "/login/" + id;
-        } else {
-          this.api.Notification.notificationError('');
-        }
-      })
-
-      this.History.getApi('Customer/HistoryManagerController').subscribe((rs) => {
-        this.History.dataSource = rs.data;
-      }, (error) => {
-        if (error.status == 500) {
-          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
-          window.location.href = "/login/" + id;
-        } else {
-          this.api.Notification.notificationError('');
-        }
-      })
-
+      this.Read();
       this.message.receivedDataAfterUpadte().subscribe((rs) => {
-        this.listBillBuying.map((x, idx) => {
-          if (x.id == rs.id) {
-            this.listBillBuying.splice(idx, 1);
-            this.listBillBought.push(rs);
-          }
-        })
+        this.Bill.windowRef.close();
+        this.Read();
       })
     }
+  }
+
+  Read(): void {
+    this.Customer.getApi('Customer/' + this.Customer.Controller + '/' + sessionStorage.getItem('Account')).subscribe((rs) => {
+      this.getCustomer = rs.data;
+      this.Bill.getApi('api/bill/' + this.getCustomer.id).subscribe((rs) => {
+        this.listBillBought = rs.data.filter((x: any) => x.status == "KHACH_DA_NHAN_HANG" || x.status == "HUY" || x.status == "DA_XAC_NHAN_VA_DONG_GOI");
+        this.listBillBuying = rs.data.filter((x: any) => x.status != "KHACH_DA_NHAN_HANG" && x.status != "HUY" && x.status != "DA_XAC_NHAN_VA_DONG_GOI");
+      })
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
+    })
+    this.MamiPay.getApi('Customer/' + this.MamiPay.Controller + '/mamipay').subscribe((rs) => {
+      if (rs.data != null) {
+        this.isWallet = true;
+        this.myWallet = rs.data;
+      }
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
+    })
+    this.History.getApi('Customer/HistoryManagerController').subscribe((rs) => {
+      this.History.dataSource = rs.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
+    })
   }
 
   getDate(getDate: any) {
@@ -125,6 +118,7 @@ export class HistoryAndWalletComponent implements OnInit {
   }
   recharge(): void {
     this.MamiPay.OpenWindow.Width = 500;
+    this.MamiPay.OpenWindow.Height = 425;
     this.MamiPay.OpenWindow.top = 50;
     this.MamiPay.OpenWindow.left = 500;
     this.MamiPay.formGroup = this.formBuilder.group({
@@ -133,7 +127,6 @@ export class HistoryAndWalletComponent implements OnInit {
       bankcode: new FormControl({ id: '', name: '' }),
       language: new FormControl('vn'),
     })
-    sessionStorage.setItem('isRecharge', "true");
     this.MamiPay.OpenWindow.Execute(WindowRechargeComponent, '', '');
   }
 }

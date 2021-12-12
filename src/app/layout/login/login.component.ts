@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit,AfterViewInit{
     this.accountModel.password = this.userForm.value.password;
     this.api.postApi('api/auth/login', this.accountModel).subscribe((res) => {
       if (res.status == true) {
+        sessionStorage.setItem('Account',res.data.id);
         sessionStorage.setItem('USERNAME', res.data.username);
         sessionStorage.setItem('TOKEN', res.data.token);
         sessionStorage.setItem('USER_ID', res.data.id);

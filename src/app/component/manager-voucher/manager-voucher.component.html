@@ -6,8 +6,9 @@
     <div class="card-body">
         <kendo-grid #grid [kendoGridBinding]="listVoucher" [height]="450" [pageSize]="20" [sortable]="true"
             [pageable]="true" [sortable]="true" (cellClose)="cellCloseHandler($event)"
-            (cellClick)="cellClickHandler($event)" (cancel)="cancelHandler($event)" (save)="saveHandler($event)"
-            (remove)="removeHandler($event)" (add)="addHandler($event)" [navigable]="true">
+            (dataStateChange)="dataStateChange($event)" (cellClick)="cellClickHandler($event)"
+            (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
+            (add)="addHandler($event)" [navigable]="true">
             <ng-template kendoGridToolbarTemplate>
                 <button iconClass="fa fa-plus" kendoGridAddCommand>Add new</button>
                 <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
@@ -22,11 +23,11 @@
                     {{ value }}
                 </ng-template>
                 <ng-template kendoGridCellTemplate let-dataItem>
-                    {{ EventVoucher(dataItem.id)?.name }}
+                    {{ EventVoucher(dataItem.event.id)?.name }}
                 </ng-template>
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem">
-                    <kendo-dropdownlist [data]="listEvent" textField="name" valueField="id"
-                        [valuePrimitive]="true" (valueChange)="onEventChange($event)">
+                    <kendo-dropdownlist [data]="listEvent" textField="name" valueField="id" [valuePrimitive]="true"
+                        (valueChange)="onEventChange($event)">
                     </kendo-dropdownlist>
                 </ng-template>
             </kendo-grid-column>

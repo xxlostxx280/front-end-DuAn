@@ -26,30 +26,30 @@ export class ManagerQuantityComponent implements OnInit {
   public state: State = {
     filter: undefined,
     skip: 0,
-    take: 5,
+    take: 10,
     group: [{ field: "product.name" }],
     sort: [],
   };
 
-  constructor(private api: ApiService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+  constructor(public api: ApiService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder) {
   }
-  public Quantity: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
 
   ngOnInit(): void {
-    this.Quantity.isManager = true;
-    this.Quantity.typeData = "popup";
-    this.Quantity.OpenWindow.Width = 650;
-    this.Quantity.OpenWindow.left = 120;
-    this.Quantity.Controller = "QuantityManagerController";
-    this.Quantity.Read.Execute().subscribe((rs) => {
+    this.api.isManager = true;
+    this.api.typeData = "popup";
+    this.api.OpenWindow.Width = 650;
+    this.api.OpenWindow.left = 120;
+    this.api.OpenWindow.top = -150;
+    this.api.Controller = "QuantityManagerController";
+    this.api.Read.Execute().subscribe((rs) => {
       this.gridData = rs.data;
     }, (error) => {
       if (error.status == 500) {
         let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
         window.location.href = "/login/" + id;
       } else {
-        this.Quantity.Notification.notificationError('');
+        this.api.Notification.notificationError('');
       }
     })
     this.message.receivedDataAfterUpadte().subscribe((rs) => {
@@ -77,10 +77,10 @@ export class ManagerQuantityComponent implements OnInit {
 
   ///////////////////Các chức năng /////////////////
   addHanler(event: any) {
-    this.Quantity.Create.Execute(WindowQuantityComponent, this.gridData[0]);
+    this.api.Create.Execute(WindowQuantityComponent, this.gridData[0]);
   }
   editHandler(event: any) {
-    this.Quantity.Edit.Execute(WindowQuantityComponent, event);
+    this.api.Edit.Execute(WindowQuantityComponent, event);
   }
   removeHandler(event: any) {
 
