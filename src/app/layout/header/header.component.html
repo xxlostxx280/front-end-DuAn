@@ -66,13 +66,13 @@
                             alt="Logo" width="100%" height="100%">
                     </a>
                 </div>
-                <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;">
-                    <kendo-menu [items]="menu" (select)="onSelect($event)"></kendo-menu>
+                <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;" >
+                    <kendo-menu [items]="menu" (select)="onSelect($event)" id="menu1"></kendo-menu>
                 </div>
                 <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;">
                     <div class="row">
                         <!-- <div class="col-md-8" style="text-align: right;">
-                            <kendo-textbox placeholder="Search..." [clearButton]="true">
+                            <kendo-textbox placeholder="Search..." [clearButton]="true" >
                                 <ng-template kendoTextBoxPrefixTemplate>
                                     <button kendoButton look="clear" icon="search"></button>
                                     <kendo-textbox-separator></kendo-textbox-separator>

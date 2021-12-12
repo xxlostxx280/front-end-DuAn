@@ -4,7 +4,9 @@
         <div class="col-md-5" style="border-color: 2px solid #dee2e6">
             <swiper style="--swiper-navigation-color: #fff;--swiper-pagination-color: #fff;height: 500px;"
                 [spaceBetween]="10" [navigation]="true" [thumbs]="{ swiper: thumbsSwiper }" class="mySwiper2">
-                <ng-template swiperSlide><img src="{{infoProduct.image}}" width="100%" height="500px" /></ng-template>
+                <ng-template swiperSlide>
+                    <img src="{{infoProduct.image}}" width="100%" height="500px" />
+                </ng-template>
                 <ng-template swiperSlide *ngFor="let image of listImageProduct">
                     <img src="{{image.url}}" width="100%" height="550px" />
                 </ng-template>
