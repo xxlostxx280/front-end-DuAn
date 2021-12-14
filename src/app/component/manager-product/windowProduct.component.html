@@ -5,7 +5,7 @@
 </style>
 <form [formGroup]="formGroup">
     <kendo-toolbar>
-        <kendo-toolbar-button text="Save" (click)="saveHandler($event)"></kendo-toolbar-button>
+        <kendo-toolbar-button text="Thêm" (click)="saveHandler($event)"></kendo-toolbar-button>
     </kendo-toolbar>
     <div class="row">
         <div class="col-md-6">
@@ -76,7 +76,7 @@
                         <span class="list-title">
                             {{
                             formGroup.value.image != null
-                            ? "Files currently bound to the model:"
+                            ? "Bạn hãy chon 1 ảnh cho sản phẩm:"
                             : "No files are currently bound to the model"
                             }}
                         </span>&nbsp;

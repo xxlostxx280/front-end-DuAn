@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header card-header-danger">
-        <h4 class="card-title ">Simple Table</h4>
-        <p class="card-category"> Here is a subtitle for this table</p>
+        <h4 class="card-title ">Quản lý số lượng</h4>
+        <!-- <p class="card-category"> Here is a subtitle for this table</p> -->
     </div>
     <div class="card-body">
         <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="state.take!" [skip]="state.skip!"
@@ -9,7 +9,7 @@
             [columnMenu]="{ filter: true }" (dataStateChange)="dataStateChange($event)" (edit)="editHandler($event)"
             (add)="addHanler($event)" (remove)="removeHandler($event)">
             <ng-template kendoGridToolbarTemplate>
-                <button kendoGridAddCommand>Add new</button>
+                <button kendoGridAddCommand>Thêm mới</button>
             </ng-template>
             <kendo-grid-column field="product.name" title="Tên sản phẩm" [width]="300" [hidden]=true>
             </kendo-grid-column>
@@ -19,10 +19,10 @@
             </kendo-grid-column>
             <kendo-grid-column field="size.name" title="Size" [width]="120">
             </kendo-grid-column>
-            <kendo-grid-command-column title="Command" [width]="220">
+            <kendo-grid-command-column title="Tùy chỉnh" [width]="220">
                 <ng-template kendoGridCellTemplate>
-                    <button kendoGridEditCommand [primary]="true">Edit</button>
-                    <button kendoGridRemoveCommand>Remove</button>
+                    <button kendoGridEditCommand [primary]="true">Chỉnh sửa</button>
+                    <button kendoGridRemoveCommand>Xóa</button>
                 </ng-template>
             </kendo-grid-command-column>
         </kendo-grid>

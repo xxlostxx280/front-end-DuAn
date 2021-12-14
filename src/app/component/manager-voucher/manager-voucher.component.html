@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header card-header-danger">
-        <h4 class="card-title ">Simple Table</h4>
-        <p class="card-category"> Here is a subtitle for this table</p>
+        <h4 class="card-title ">Quản lý voucher</h4>
+        <!-- <p class="card-category"> Here is a subtitle for this table</p> -->
     </div>
     <div class="card-body">
         <kendo-grid #grid [kendoGridBinding]="listVoucher" [height]="450" [pageSize]="20" [sortable]="true"
@@ -10,9 +10,9 @@
             (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
             (add)="addHandler($event)" [navigable]="true">
             <ng-template kendoGridToolbarTemplate>
-                <button iconClass="fa fa-plus" kendoGridAddCommand>Add new</button>
+                <button iconClass="fa fa-plus" kendoGridAddCommand>Thêm mới</button>
                 <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
-                    Update
+                   Chỉnh sửa
                 </button>
             </ng-template>
             <kendo-grid-column field="name" title="Tên voucher"></kendo-grid-column>
@@ -31,11 +31,11 @@
                     </kendo-dropdownlist>
                 </ng-template>
             </kendo-grid-column>
-            <kendo-grid-command-column title="command" [width]="220">
+            <kendo-grid-command-column title="Tùy chỉnh" [width]="220">
                 <ng-template kendoGridCellTemplate let-isNew="isNew">
-                    <button kendoGridRemoveCommand>Remove</button>
-                    <button kendoGridSaveCommand>Add</button>
-                    <button kendoGridCancelCommand>Cancel</button>
+                    <button kendoGridRemoveCommand>Xóa</button>
+                    <button kendoGridSaveCommand>Thêm</button>
+                    <button kendoGridCancelCommand>Hủy</button>
                 </ng-template>
             </kendo-grid-command-column>
         </kendo-grid>

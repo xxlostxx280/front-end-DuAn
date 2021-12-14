@@ -1,5 +1,5 @@
 <kendo-toolbar>
-    <kendo-toolbar-button text="Save" (click)="update($event)"></kendo-toolbar-button>
+    <kendo-toolbar-button text="Thêm" (click)="update($event)"></kendo-toolbar-button>
 </kendo-toolbar>
 <div class="row" style="margin: 10px 0px;">
     <div class="col-md-5">
@@ -15,9 +15,9 @@
                     <img src="{{dataItem.url}}" width="100%" height="100px">
                 </ng-template>
             </kendo-grid-column>
-            <kendo-grid-command-column title="command" [width]="220">
+            <kendo-grid-command-column title="Tùy chỉnh" [width]="220">
                 <ng-template kendoGridCellTemplate let-isNew="isNew">
-                    <button kendoGridRemoveCommand>Remove</button>
+                    <button kendoGridRemoveCommand>Xóa</button>
                     <button kendoGridSaveCommand>Add</button>
                     <button kendoGridCancelCommand>Cancel</button>
                 </ng-template>
