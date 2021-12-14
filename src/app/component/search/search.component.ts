@@ -1,21 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { ApiService } from 'src/app/shared/api.service';
-import { PageChangeEvent, PagerSettings } from "@progress/kendo-angular-listview";
-import { MessageService } from 'src/app/shared/message.service';
 import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
 import { NotificationService } from '@progress/kendo-angular-notification';
-import { FormBuilder } from '@angular/forms';
+import { PageChangeEvent } from '@progress/kendo-angular-pager';
+import { ApiService } from 'src/app/shared/api.service';
+import { MessageService } from 'src/app/shared/message.service';
 
 @Component({
-  selector: 'app-list-product',
-  templateUrl: './list-product.component.html',
-  styleUrls: ['./list-product.component.css']
+  selector: 'app-search',
+  templateUrl: './search.component.html',
+  styleUrls: ['./search.component.css']
 })
-export class ListProductComponent implements OnInit {
+export class SearchComponent implements OnInit {
+
+  public searchFor: any;
   public listProduct: Array<any> = [];
   public dataSource: any = [];
-  public pageSize = 20;
+  public pageSize = 12;
   public skip = 0;
   public pagedDestinations = [];
   public total = 0;
@@ -43,24 +45,20 @@ export class ListProductComponent implements OnInit {
   ];
   public selectedValue = 0;
   public contains: any;
-  constructor(private api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+
+  constructor(public api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) {
   }
   public Product: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
   public Quantity: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
 
   ngOnInit(): void {
+    let id = window.location.href.replace(window.location.origin + "/search/", "");
+    this.searchFor = decodeURIComponent(id.replace(/\+/g,  " "));
     this.Product.Controller = "ProductController";
     this.Quantity.Controller = "QuantityController";
-    this.Read();
-    this.message.receviedFilterProduct().subscribe((rs) => {
-    })
-  }
-  Read(): void {
-    this.listProduct = [];
-    this.Quantity.loading = true;
-    this.Product.Read.Execute().subscribe((res) => {
-      this.Product.dataSource = res.data;
+    this.Product.getApi('Customer/' + this.Product.Controller + "/findByNameLike/" + id).subscribe((rs) => {
+      this.api.dataSource = rs.data;
     }, (error) => {
       if (error.status == 500) {
         let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
@@ -68,13 +66,18 @@ export class ListProductComponent implements OnInit {
       } else {
         this.api.Notification.notificationError('');
       }
-    });
-    setTimeout(()=>{
+    })
+    this.Read();
+  }
+  Read() {
+    setTimeout(() => {
+      this.api.loading = true;
       this.Quantity.Read.Execute().subscribe((res) => {
+        this.listProduct = [];
         this.Quantity.dataSource = res.data;
         switch (this.selectedValue) {
           case 0:
-            this.Product.dataSource.map((x) => {
+            this.api.dataSource.map((x) => {
               let arr = this.Quantity.dataSource.filter((val) => val.product.id == x.id && val.quantity > 0)
               if (arr.length > 0) {
                 this.listProduct.push(x);
@@ -82,7 +85,7 @@ export class ListProductComponent implements OnInit {
             })
             break;
           case 1:
-            this.Product.dataSource.map((x) => {
+            this.api.dataSource.map((x) => {
               let arr = this.Quantity.dataSource.filter((val) => val.product.id == x.id && val.product.discount > 0 && val.quantity > 0)
               if (arr.length > 0) {
                 this.listProduct.push(x);
@@ -90,17 +93,17 @@ export class ListProductComponent implements OnInit {
             })
             break;
           case 2:
-            this.Product.dataSource.map((x) => {
-              let arr = this.Quantity.dataSource.filter((val) =>{
+            this.api.dataSource.map((x) => {
+              let arr = this.Quantity.dataSource.filter((val) => {
                 let price = 0;
-                if(val.product.discount == undefined || val.product.discount == 0){
-                  price = val.product.price ; 
-                }else{
-                  price = Number(val.product.price * val.product.discount/100) ; 
+                if (val.product.discount == undefined || val.product.discount == 0) {
+                  price = val.product.price;
+                } else {
+                  price = Number(val.product.price * val.product.discount / 100);
                 }
-                if( val.product.id == x.id && price >= 250000 && price <= 500000 && val.quantity > 0){
+                if (val.product.id == x.id && price >= 250000 && price <= 500000 && val.quantity > 0) {
                   return x;
-                }else{
+                } else {
                   return null;
                 }
               })
@@ -110,17 +113,17 @@ export class ListProductComponent implements OnInit {
             })
             break;
           case 3:
-            this.Product.dataSource.map((x) => {
-              let arr = this.Quantity.dataSource.filter((val) =>{
+            this.api.dataSource.map((x) => {
+              let arr = this.Quantity.dataSource.filter((val) => {
                 let price = 0;
-                if(val.product.discount == undefined || val.product.discount == 0){
-                  price = val.product.price ; 
-                }else{
-                  price = Number(val.product.price * val.product.discount/100) ; 
+                if (val.product.discount == undefined || val.product.discount == 0) {
+                  price = val.product.price;
+                } else {
+                  price = Number(val.product.price * val.product.discount / 100);
                 }
-                if( val.product.id == x.id && price >= 500000 && price <= 750000 && val.quantity > 0){
+                if (val.product.id == x.id && price >= 500000 && price <= 750000 && val.quantity > 0) {
                   return x;
-                }else{
+                } else {
                   return null;
                 }
               })
@@ -130,17 +133,17 @@ export class ListProductComponent implements OnInit {
             })
             break;
           case 4:
-            this.Product.dataSource.map((x) => {
-              let arr = this.Quantity.dataSource.filter((val) =>{
+            this.api.dataSource.map((x) => {
+              let arr = this.Quantity.dataSource.filter((val) => {
                 let price = 0;
-                if(val.product.discount == undefined || val.product.discount == 0){
-                  price = val.product.price ; 
-                }else{
-                  price = Number(val.product.price * val.product.discount/100) ; 
+                if (val.product.discount == undefined || val.product.discount == 0) {
+                  price = val.product.price;
+                } else {
+                  price = Number(val.product.price * val.product.discount / 100);
                 }
-                if( val.product.id == x.id && price >= 750000 && price <= 1000000 && val.quantity > 0){
+                if (val.product.id == x.id && price >= 750000 && price <= 1000000 && val.quantity > 0) {
                   return x;
-                }else{
+                } else {
                   return null;
                 }
               })
@@ -152,7 +155,7 @@ export class ListProductComponent implements OnInit {
         }
         this.total = this.listProduct.length;
         this.pageData();
-        this.Quantity.loading = false;
+        this.api.loading = false;
       }, (error) => {
         if (error.status == 500) {
           let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
@@ -161,13 +164,12 @@ export class ListProductComponent implements OnInit {
           this.api.Notification.notificationError('');
         }
       })
-    },1000)
+    }, 1000)
   }
-
-  onChangeHandler(event: any): void{
+  onChangeHandler(event: any): void {
     this.api.loading = true;
     this.contains = event.target.value;
-    if(this.contains == ""){
+    if (this.contains == "") {
       return this.Read();
     }
     this.dataSource = this.listProduct.filter((x) => x.name.includes(this.contains)).slice(
@@ -176,8 +178,8 @@ export class ListProductComponent implements OnInit {
     );
     this.api.loading = false;
   }
-  search(): void{
-    if(this.contains == ""){
+  search(): void {
+    if (this.contains == "") {
       return this.Read();
     }
     this.dataSource = this.listProduct.filter((x) => x.name.includes(this.contains)).slice(
@@ -185,22 +187,19 @@ export class ListProductComponent implements OnInit {
       this.skip + this.pageSize
     );;
   }
-
-  changeStatus(event: any): void {
-    this.selectedValue = event;
-    this.Read();
-  }
-
-  public onPageChange(e: PageChangeEvent): void {
+  onPageChange(e: PageChangeEvent): void {
     this.skip = e.skip;
     this.pageSize = e.take;
     this.pageData();
   }
-
-  private pageData(): void {
+  pageData(): void {
     this.dataSource = this.listProduct.slice(
       this.skip,
       this.skip + this.pageSize
     );
+  }
+  changeStatus(event: any): void {
+    this.selectedValue = event;
+    this.Read();
   }
 }

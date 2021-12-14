@@ -52,103 +52,88 @@
             display: block;
         }
     }
+
+    ::ng-deep .k-drawer-items {
+        margin: 0px !important;
+        background: white;
+        width: 300px;
+        position: fixed;
+        height: 100%;
+    }
 </style>
-<header>
-    <!--     Fonts and icons     -->
-    <link rel="stylesheet" type="text/css"
-        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-    <div style="background-color: white;padding: 10px 0px;">
-        <div class="container-lg" id="menu">
-            <div class="row">
-                <div class="col-md-2">
-                    <a class="logo" href="">
-                        <img src="https://mebe-04.web4s.vn/uploads/plugin/setting/3/balo-amp-tui-xach-evevon-footer-logo.png"
-                            alt="Logo" width="100%" height="100%">
-                    </a>
-                </div>
-                <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;" >
-                    <kendo-menu [items]="menu" (select)="onSelect($event)" id="menu1"></kendo-menu>
-                </div>
-                <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;">
-                    <div class="row">
-                        <!-- <div class="col-md-8" style="text-align: right;">
-                            <kendo-textbox placeholder="Search..." [clearButton]="true" >
-                                <ng-template kendoTextBoxPrefixTemplate>
-                                    <button kendoButton look="clear" icon="search"></button>
-                                    <kendo-textbox-separator></kendo-textbox-separator>
-                                </ng-template>
-                            </kendo-textbox>
-                        </div> -->
-                        <div class="col-md-8" style="text-align: right;">
-                            <div class="input-group no-border">
-                                <input type="text" value="" class="form-control" placeholder="Search...">
-                                <button type="submit" class="btn btn-white " id="dat">
-                                    <i class="material-icons">search</i>
-                                </button>
-                            </div>
+<link rel="stylesheet" type="text/css"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+<div style="background-color: white;padding: 10px 0px;">
+    <div class="container-lg" id="menu">
+        <div class="row">
+            <div class="col-md-2">
+                <a class="logo" href="">
+                    <img src="https://mebe-04.web4s.vn/uploads/plugin/setting/3/balo-amp-tui-xach-evevon-footer-logo.png"
+                        alt="Logo" width="100%" height="100%">
+                </a>
+            </div>
+            <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;">
+                <kendo-menu [items]="menu" (select)="onSelect($event)" id="menu1"></kendo-menu>
+            </div>
+            <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;">
+                <div class="row">
+                    <div class="col-md-8" style="text-align: right;">
+                        <div class="input-group no-border">
+                            <input type="text" value="" class="form-control" placeholder="Search..."
+                                (change)="changeFilterName($event)">
+                            <button type="submit" class="btn btn-white " id="dat" (click)="searchProduct()">
+                                <i class="material-icons">search</i>
+                            </button>
                         </div>
-                        <!--  -->
-                        <div class="col-md-2" style="text-align: center;">
-                            <a href="/my-cart" style="text-decoration: none;color: rgb(10, 10, 10);">
-                                <button kendoButton icon="cart" look="clear" style="margin-top: 10px;padding: 0px;">
-                                    <kendo-badge style="background: #f1c969;border-color: #f1c969">
-                                        {{badge}}
-                                    </kendo-badge>
-                                </button>
-                            </a>
+                    </div>
+                    <!--  -->
+                    <div class="col-md-2" style="text-align: center;">
+                        <a href="/my-cart" style="text-decoration: none;color: rgb(10, 10, 10);">
+                            <button kendoButton icon="cart" look="clear" style="margin-top: 10px;padding: 0px;">
+                                <kendo-badge style="background: #f1c969;border-color: #f1c969">
+                                    {{badge}}
+                                </kendo-badge>
+                            </button>
+                        </a>
+                    </div>
+                    <div class="col-md-2" style="text-align: center;">
+                        <button type="button" class="btn btn-outline-secondary mr-2" look="clear" placement="bottom"
+                            kendoButton iconClass="fa fa-user fa-fw" [ngbPopover]="popContent" *ngIf="showAvatar"
+                            style="padding: 0px;"></button>
+                        <div class="container">
+                            <button class="button type1" *ngIf="showLogin" (click)="openLogin()">
+                                <div class="dn"> Đăng nhập</div>
+                            </button>
                         </div>
-                        <div class="col-md-2" style="text-align: center;">
-                            <button type="button" class="btn btn-outline-secondary mr-2" look="clear" placement="bottom"
-                                kendoButton iconClass="fa fa-user fa-fw" [ngbPopover]="popContent" *ngIf="showAvatar"
-                                style="padding: 0px;"></button>
-                            <div class="container">                              
-                                <button class="button type1" *ngIf="showLogin" (click)="openLogin()">
-                                    <div class="dn"> Đăng nhập</div>
-                                </button>
-                            </div>
-                            <ng-template #popContent>
-                                <li style="border-bottom: 1px solid #DADDE1;padding: 10px 0px;font-size: 15px;">
-                                    <a href="/account">Thông tin tài khoản</a>
-                                </li>
-                                <li style="border-bottom: 1px solid #DADDE1;padding: 10px 0px;font-size: 15px;">
-                                    <a href="/history-and-wallet">Ví của tôi</a>
-                                </li>
-                                <li>
-                                    <button kendoButton (click)="signOut()" look="clear" style="font-size: 13px;
+                        <ng-template #popContent>
+                            <li style="border-bottom: 1px solid #DADDE1;padding: 10px 0px;font-size: 15px;">
+                                <a href="/account">Thông tin tài khoản</a>
+                            </li>
+                            <li style="border-bottom: 1px solid #DADDE1;padding: 10px 0px;font-size: 15px;">
+                                <a href="/history-and-wallet">Ví của tôi</a>
+                            </li>
+                            <li>
+                                <button kendoButton (click)="signOut()" look="clear" style="font-size: 13px;
                                     padding: 0;margin-top: 10px;">Đăng xuất</button>
-                                </li>
-                            </ng-template>
-                        </div>
+                            </li>
+                        </ng-template>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- <div class="container-fluid" style="background: #f6f6f6;margin: 15px 0px 0px 0px;">
+    </div>
+    <!-- <div class="container-fluid" style="background: #f6f6f6;margin: 15px 0px 0px 0px;">
             <kendo-breadcrumb [items]="breadcrumb" style="background: #f6f6f6;"></kendo-breadcrumb>
         </div> -->
-        <!-- <div class="container-fluid" id="menu_reponseive">
-            <div class="panelbar-wrapper">
-                <kendo-panelbar>
-                    <kendo-panelbar-item title="My Web Site" icon="folder" [expanded]="true">
-                        <kendo-panelbar-item title="images" icon="folder" [expanded]="true">
-                            <kendo-panelbar-item title="logo.png" icon="image"></kendo-panelbar-item>
-                            <kendo-panelbar-item title="body-back.png" icon="image"></kendo-panelbar-item>
-                            <kendo-panelbar-item title="my-photo.png" icon="image"></kendo-panelbar-item>
-                        </kendo-panelbar-item>
-                        <kendo-panelbar-item title="resources" icon="folder" [expanded]="true">
-                            <kendo-panelbar-item title="pdf" icon="folder">
-                                <kendo-panelbar-item title="prices.pdf" icon="pdf"></kendo-panelbar-item>
-                                <kendo-panelbar-item title="brochure.pdf" icon="pdf"></kendo-panelbar-item>
-                            </kendo-panelbar-item>
-                            <kendo-panelbar-item title="zip" icon="folder"></kendo-panelbar-item>
-                        </kendo-panelbar-item>
-                        <kendo-panelbar-item title="about.html" icon="file"></kendo-panelbar-item>
-                        <kendo-panelbar-item title="contacts.html" icon="file"></kendo-panelbar-item>
-                        <kendo-panelbar-item title="index.html" icon="file"></kendo-panelbar-item>
-                        <kendo-panelbar-item title="portfolio.html" icon="file"></kendo-panelbar-item>
-                    </kendo-panelbar-item>
-                </kendo-panelbar>
-            </div>
-        </div> -->
+    <div class="container-fluid" id="menu_reponseive">
+        <kendo-drawer-container>
+            <kendo-drawer #drawer [mode]="expandMode" [(expanded)]="expanded" [items]="items_2" [autoCollapse]="true"
+                style="transform: none;">
+            </kendo-drawer>
+            <kendo-drawer-content>
+                <button class="k-button" (click)="drawer.toggle()" kendoButton iconClass="fa fa-bars"
+                    style="background: none;border: none;box-shadow: none;font-size: 20px;"></button>
+            </kendo-drawer-content>
+        </kendo-drawer-container>
     </div>
-</header>
+</div>
