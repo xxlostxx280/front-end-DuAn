@@ -35,7 +35,6 @@
                 " *ngIf="!isDiscount">
                     {{infoProduct.price}}₫
                 </p>
-                <div innerHTML="{{infoProduct.description}}"></div>
                 <div class="row" style="margin: 15px 0px;">
                     <span class="col-md-2 col-sm-2" style="padding: 0px;">Màu sắc</span>
                     <form [formGroup]="formGroup" class="row col-md-10">
@@ -46,6 +45,7 @@
                         </div>
                     </form>
                 </div>
+                <div innerHTML="{{infoProduct.description}}"></div>
             </div>
             <form [formGroup]="formGroup" style="margin: 20px 0px;">
                 <div class="row">

@@ -22,6 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SwiperModule } from "swiper/angular";
 import { NotificationModule } from "@progress/kendo-angular-notification";
 import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
+import { SearchComponent } from "src/app/component/search/search.component";
 
 @NgModule({
     declarations: [
@@ -29,6 +30,7 @@ import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
         ListProductByCategoryComponent,
         ListProductComponent,
         ProductDetailsComponent,
+        SearchComponent
     ],
     imports: [
         NotificationModule,

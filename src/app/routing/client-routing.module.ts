@@ -7,6 +7,7 @@ import { ListProductComponent } from "../component/list-product/list-product.com
 import { ProductDetailsComponent } from "../component/product-details/product-details.component";
 import { DefaultComponent } from "../layout/default/default.component";
 import { AuthGuard } from "../shared/auth.guard";
+import { SearchComponent } from "../component/search/search.component";
 
 const routes: Routes = [
     {
@@ -16,22 +17,6 @@ const routes: Routes = [
             {
                 path: '',
                 component: ListProductComponent
-            },
-            {
-                path: 'Sale',
-                component: ListProductComponent
-            },
-            {
-                path: 'New',
-                component: ListProductComponent
-            },
-            {
-                path: 'Highlights',
-                component: ListProductComponent
-            },
-            {
-                path: 'collection/:id/:id',
-                component: ListProductByCategoryComponent,
             },
             {
                 path: 'info/:id',
@@ -48,6 +33,10 @@ const routes: Routes = [
                 component: ListProductByCategoryComponent
             }
         ]
+    },
+    {
+        path: 'search/:id',
+        component: SearchComponent,
     },
     {
         path: 'history-and-wallet',

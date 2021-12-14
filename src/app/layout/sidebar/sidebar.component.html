@@ -11,12 +11,20 @@
         line-height: 1.5;
         text-transform: uppercase;
     }
-    .k-label{
+
+    .k-label {
         padding: 0px 10px;
     }
-    li{
+
+    li {
         list-style: none;
         margin: 10px 0px;
+    }
+
+    @media only screen and (max-width: 800px) {
+        .layout {
+            display: none;
+        }
     }
 </style>
 <div class="layout">
@@ -25,30 +33,5 @@
         <kendo-panelbar [expandMode]="kendoPanelBarExpandMode" [items]="categoriesView"
             (stateChange)="stateChange($event)" [selectable]="false" style="border: none;">
         </kendo-panelbar>
-    </div>
-    <div class="panelbar-wrapper">
-        <h3 class="NH-titleSidebar">Trạng thái </h3>
-        <ul>
-            <li>
-                <input type="radio" name="status" value="all" #all [(ngModel)]="model.status" kendoRadioButton
-                    (change)="changeStatus()" checked/>
-                <label class="k-label" [for]="all">Tất cả</label>
-            </li>
-            <li>
-                <input type="radio" name="status" value="discount" #discount [(ngModel)]="model.status" kendoRadioButton
-                    (change)="changeStatus()" />
-                <label class="k-label" [for]="discount">Giảm giá</label>
-            </li>
-            <li>
-                <input type="radio" name="status" value="new" #new [(ngModel)]="model.status" kendoRadioButton
-                    (change)="changeStatus()" />
-                <label class="k-label" [for]="new">Hàng mới về</label>
-            </li>
-            <li>
-                <input type="radio" name="status" value="selling" #selling [(ngModel)]="model.status" kendoRadioButton
-                    (change)="changeStatus()" />
-                <label class="k-label" [for]="selling">Hàng bán chạy </label>
-            </li>
-        </ul>
     </div>
 </div>

@@ -37,21 +37,6 @@ export class SidebarComponent implements OnInit {
     this.queryItems();
   }
 
-  changeStatus(): void{
-    if(this.model.status == "all"){
-      this.message.SendFilterProduct(this.model.status);
-    }
-    if(this.model.status == "discount"){
-      this.message.SendFilterProduct(this.model.status)
-    }
-    if(this.model.status == "new"){
-      this.message.SendFilterProduct(this.model.status)
-    }
-    if(this.model.status == "selling"){
-      this.message.SendFilterProduct(this.model.status)
-    }
-  }
-
   private queryItems(): void {
     this.api.Read.Execute()
       .subscribe((res) => {

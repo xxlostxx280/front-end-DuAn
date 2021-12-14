@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, Injectable, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
+import { DrawerItem, DrawerMode } from '@progress/kendo-angular-layout';
 import { BreadCrumbItem } from '@progress/kendo-angular-navigation';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { Align } from '@progress/kendo-angular-popup';
@@ -17,9 +18,12 @@ import { MessageService } from 'src/app/shared/message.service';
   providedIn: 'root'
 })
 export class HeaderComponent implements OnInit {
+  public expanded = false;
+  public expandMode: DrawerMode = "overlay";
   public items: Array<any> = []; // menu item router
   public itemsParent: Array<any> = []; // menu items cha 
   public itemsChild: Array<any> = []; // menu items con
+  public productByName: any;
   public menu_item = {
     text: '',
     path: '',
@@ -65,6 +69,19 @@ export class HeaderComponent implements OnInit {
     },
   ];
 
+  public items_2: Array<DrawerItem> = [
+    { text: "Inbox", icon: "k-i-inbox", selected: true },
+    { separator: true },
+    { text: "Notifications", icon: "k-i-bell" },
+    { text: "Calendar", icon: "k-i-calendar" },
+    { separator: true },
+    { text: "Attachments", icon: "k-i-hyperlink-email" },
+    { text: "Favourites", icon: "k-i-star-outline" },
+  ];
+
+  public onExpandModeChange(checked: boolean): void {
+    this.expandMode = checked ? "overlay" : "push";
+  }
   constructor(private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
 
@@ -119,7 +136,12 @@ export class HeaderComponent implements OnInit {
     this.showAvatar = false;
     window.location.href = "/login"
   }
-
+  changeFilterName(event: any): void{
+    this.productByName = event.target.value;
+  }
+  searchProduct(): void{
+    window.location.href = "/search/" + this.productByName;
+  }
   //convert categorydetail thành menu item
   mapItems(): void {
     this.itemsParent.map((x) => {
