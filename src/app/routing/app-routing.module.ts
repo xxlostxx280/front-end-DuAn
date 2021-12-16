@@ -1,6 +1,8 @@
 import { NgModule } from "@angular/core";
 import { ModuleWithProviders } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { ContactComponent } from "../component/contact/contact.component";
+import { IntroduceComponent } from "../component/introduce/introduce.component";
 import { ChangePasswordComponent } from "../layout/change-password/change-password.component";
 import { HomePageComponent } from "../layout/home-page/home-page.component";
 import { LoginComponent } from "../layout/login/login.component";
@@ -36,6 +38,16 @@ const routes: Routes = [
     {
         path: 'my-cart',
         component: ShoppingCartComponent,
+        pathMatch: 'full'
+    },
+    {
+        path: 'contact',
+        component: ContactComponent,
+        pathMatch: 'full'
+    },
+    {
+        path: 'introduce',
+        component: IntroduceComponent,
         pathMatch: 'full'
     }
 ];

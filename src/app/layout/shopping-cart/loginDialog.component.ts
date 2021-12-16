@@ -40,20 +40,6 @@ import { MessageService } from "src/app/shared/message.service";
                         <a href="">Quên mật khẩu ?</a>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <button type="submit" kendoButton iconClass="fa fa-facebook fa-fw"
-                            style="color: #fff !important;background-color: #3b5998 !important;border-color: #3b5998 !important;">
-                            Đăng nhập bằng facebook
-                        </button>
-                    </div>
-                    <div class="col-md-6">
-                        <button type="submit" kendoButton iconClass="fa fa-google fa-fw"
-                            style="color: #fff !important;background-color: #b53d2f !important;border-color: #b53d2f !important;">
-                            Đăng nhập bằng google
-                        </button>
-                    </div>
-                </div>
             </form>
         </div>
     `,
@@ -78,9 +64,11 @@ export class DialogLoginComponent {
         this.accountModel.password = this.userForm.value.password;
         this.api.postApi('api/auth/login', this.accountModel).subscribe((res) => {
             if (res.status == true) {
+                sessionStorage.setItem('Account', res.data.id);
                 sessionStorage.setItem('USERNAME', res.data.username);
                 sessionStorage.setItem('TOKEN', res.data.token);
-                sessionStorage.setItem('ROLE', res.data.roles);
+                sessionStorage.setItem('USER_ID', res.data.id);
+                sessionStorage.setItem('ROLE', res.data.roles[0]);
                 this.dialog.close();
                 this.messgae.SendTokenAccount(res.status);
             } else {
@@ -104,12 +92,12 @@ export class DialogLoginComponent {
                 }
             }
         }, (error) => {
-            if(error.status == 500){
-                let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
-                window.location.href = "/login/" +  id;
-              }else{
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
                 this.api.Notification.notificationError('');
-              }
+            }
         })
     }
 }

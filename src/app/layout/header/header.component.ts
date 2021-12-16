@@ -55,7 +55,7 @@ export class HeaderComponent implements OnInit {
     },
     {
       text: "Giới thiệu",
-      path: "",
+      path: "introduce",
     },
     {
       text: "Sản phẩm",
@@ -65,18 +65,8 @@ export class HeaderComponent implements OnInit {
     },
     {
       text: "Liên hệ",
-      path: ""
+      path: "contact"
     },
-  ];
-
-  public items_2: Array<DrawerItem> = [
-    { text: "Inbox", icon: "k-i-inbox", selected: true },
-    { separator: true },
-    { text: "Notifications", icon: "k-i-bell" },
-    { text: "Calendar", icon: "k-i-calendar" },
-    { separator: true },
-    { text: "Attachments", icon: "k-i-hyperlink-email" },
-    { text: "Favourites", icon: "k-i-star-outline" },
   ];
 
   public onExpandModeChange(checked: boolean): void {

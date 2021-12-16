@@ -65,7 +65,7 @@ export class ShoppingCartComponent implements OnInit {
   });
   public InfomationCustomer = new FormGroup({
     FullName: new FormControl('', Validators.required),
-    PhoneNumber: new FormControl('', Validators.required),
+    PhoneNumber: new FormControl('', [Validators.required,Validators.pattern("^[0-9]*$"),Validators.maxLength(10),Validators.minLength(10)]),
     Province: new FormControl('', Validators.required),
     District: new FormControl('', Validators.required),
     Wards: new FormControl('', Validators.required),
@@ -73,10 +73,15 @@ export class ShoppingCartComponent implements OnInit {
     Address: new FormControl('', Validators.required),
     Note: new FormControl(),
   })
+  public Address = new FormControl({
+    Province: new FormControl('', Validators.required),
+    District: new FormControl('', Validators.required),
+    Wards: new FormControl('', Validators.required),
+    Hamlet: new FormControl('', Validators.required),
+  })
   public Payment = new FormGroup({
     payment: new FormControl(),
   })
-
   constructor(public api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
 
@@ -176,17 +181,26 @@ export class ShoppingCartComponent implements OnInit {
   ProvinceChange(event: any) {
     this.InfomationCustomer.value.Address = "";
     this.listDistrict = this.listProvince.find((x) => x.Id == event).Districts;
-    this.InfomationCustomer.value.Address = this.listProvince.find((x) => x.Id == event).Name + this.InfomationCustomer.value.Address;
+    this.Address.value.Province = this.listProvince.find((x) => x.Id == event).Name;
+    this.InfomationCustomer.value.Address = ',' + this.Address.value.Province
   }
   DistrictChange(event: any) {
+    this.InfomationCustomer.value.Address = "";
     this.listWards = this.listDistrict.find((x) => x.Id == event).Wards;
-    this.InfomationCustomer.value.Address = this.listDistrict.find((x) => x.Id == event).Name + ', ' + this.InfomationCustomer.value.Address;
+    this.Address.value.District = this.listDistrict.find((x) => x.Id == event).Name
+    this.InfomationCustomer.value.Address = ',' +this.Address.value.District + ',' + this.Address.value.Province
   }
   WardsChange(event: any) {
+    this.InfomationCustomer.value.Address = "";
     this.InfomationCustomer.value.Address = this.listWards.find((x) => x.Id == event).Name + ', ' + this.InfomationCustomer.value.Address;
+    this.Address.value.Wards = this.listWards.find((x) => x.Id == event).Name;
+    this.InfomationCustomer.value.Address = this.Address.value.Wards + ',' + this.Address.value.District + ',' + this.Address.value.Province
   }
   HamletChange(event: any) {
-    this.InfomationCustomer.value.Address = event.target.value + ', ' + this.InfomationCustomer.value.Address;
+    this.InfomationCustomer.value.Address = "";
+    this.Address.value.Hamlet = event.target.value;
+    this.InfomationCustomer.value.Address = 
+      event.target.value + ', ' + this.Address.value.Wards + ', ' + this.Address.value.District +  ', ' + this.Address.value.Province ;
   }
   activate(event: any): void {
     if (event.index == 0) {
@@ -208,6 +222,9 @@ export class ShoppingCartComponent implements OnInit {
       const getInfoWindow = this.dialog.content.instance;
       getInfoWindow.dialog = this.dialog;
     } else if (this.step_1) {
+      if(!this.InfomationCustomer.touched){
+        alert('Mời bạn nhập đầy đủ thông tin')
+      }
       if (!this.InfomationCustomer.invalid) {
         this.step_1 = false;
         this.step_2 = true;
