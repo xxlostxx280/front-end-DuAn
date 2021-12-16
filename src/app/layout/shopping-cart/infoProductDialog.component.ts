@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { QuanityModel } from "src/app/component/product-details/quantity.model";
+import { ApiService } from "src/app/shared/api.service";
 import { MessageService } from "src/app/shared/message.service";
 @Component({
     selector: "window-info",
@@ -66,7 +67,7 @@ export class DialogInfoProductComponent implements OnInit {
         name: "Choose...",
         id: null,
     };
-    constructor(private message: MessageService) { }
+    constructor(private message: MessageService,private api: ApiService) { }
     @Input() public formGroup = new FormGroup({
         property: new FormControl(),
         size: new FormControl(),
@@ -88,6 +89,9 @@ export class DialogInfoProductComponent implements OnInit {
         this.QuantityObj.Quantity = value;
     }
     changeShoppingCard(value: any): void {
+        if(this.QuantityObj.Quantity < 0){
+            return this.api.Notification.notificationWarning('Không được nhập số lượng âm')
+        }
         let data = JSON.parse(String(localStorage.getItem(this.infoProduct.Id)));
         data.Quantity = this.QuantityObj.Quantity;
         data.Size = this.QuantityObj.Size;

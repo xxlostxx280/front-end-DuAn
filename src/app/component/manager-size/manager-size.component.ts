@@ -103,8 +103,17 @@ export class ManagerSizeComponent implements OnInit {
   }
   saveHandler(event: any) {
     if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {
+      if(!this.api.formGroup.controls.name.dirty){
+        return this.api.Notification.notificationWarning('Không được để trống tên loại size');
+      }
       this.api.Grid.saveHandler(event);
     } else {
+      if(!this.api_2.formGroup.controls.name.dirty){
+        return this.api_2.Notification.notificationWarning('Không được để trống tên size');
+      }
+      if(!this.api_2.formGroup.controls.typesize.dirty){
+        return this.api_2.Notification.notificationWarning('Không được để trống loại size');
+      }
       this.api_2.Grid.saveHandler(event);
     }
     event.sender.closeRow(event.rowIndex);
@@ -119,8 +128,17 @@ export class ManagerSizeComponent implements OnInit {
   }
   cellCloseHandler(event: any): void {
     if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {
+      if(!this.api.formGroup.controls.name.dirty){
+        return this.api.Notification.notificationWarning('Không được để trống tên loại size');
+      }
       this.api.Grid.cellCloseHandler(event);
     } else {
+      if(!this.api_2.formGroup.controls.name.dirty){
+        return this.api_2.Notification.notificationWarning('Không được để trống tên size');
+      }
+      if(!this.api_2.formGroup.controls.typesize.dirty){
+        return this.api_2.Notification.notificationWarning('Không được để trống loại size');
+      }
       this.api_2.Grid.cellCloseHandler(event);
     }
   }
