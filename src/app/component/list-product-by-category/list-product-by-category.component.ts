@@ -75,27 +75,6 @@ export class ListProductByCategoryComponent implements OnInit {
       }
     })
   }
-  onChangeHandler(event: any): void{
-    this.api.loading = true;
-    this.contains = event.target.value;
-    if(this.contains == ""){
-      return this.Read();
-    }
-    this.dataSource = this.listProduct.filter((x) => x.name.includes(this.contains)).slice(
-      this.skip,
-      this.skip + this.pageSize
-    );
-    this.api.loading = false;
-  }
-  search(): void{
-    if(this.contains == ""){
-      return this.Read();
-    }
-    this.dataSource = this.listProduct.filter((x) => x.name.includes(this.contains)).slice(
-      this.skip,
-      this.skip + this.pageSize
-    );;
-  }
   Read(): void {
     this.api.loading = true;
     this.api.getApi('Customer/ProductController/collection/' + this.getId).subscribe((res) => {
@@ -203,6 +182,27 @@ export class ListProductByCategoryComponent implements OnInit {
         }
       })
     },1000)
+  }
+  onChangeHandler(event: any): void{
+    this.api.loading = true;
+    this.contains = event.target.value;
+    if(this.contains == ""){
+      return this.Read();
+    }
+    this.dataSource = this.listProduct.filter((x) => x.name.includes(this.contains)).slice(
+      this.skip,
+      this.skip + this.pageSize
+    );
+    this.api.loading = false;
+  }
+  search(): void{
+    if(this.contains == ""){
+      return this.Read();
+    }
+    this.dataSource = this.listProduct.filter((x) => x.name.includes(this.contains)).slice(
+      this.skip,
+      this.skip + this.pageSize
+    );;
   }
   onPageChange(e: PageChangeEvent): void {
     this.skip = e.skip;

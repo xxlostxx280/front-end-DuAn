@@ -5,7 +5,7 @@
     </div>
     <div class="card-body">
         <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="state.take!" [skip]="state.skip!"
-            [sort]="state.sort!" [group]="state.group!" [pageable]="true" [sortable]="true" [height]="450"
+            [sort]="state.sort!" [group]="state.group!" [pageable]="true" [sortable]="true" [height]="500"
             [columnMenu]="{ filter: true }" (dataStateChange)="dataStateChange($event)" (edit)="editHandler($event)"
             (add)="addHanler($event)" (remove)="removeHandler($event)">
             <ng-template kendoGridToolbarTemplate>

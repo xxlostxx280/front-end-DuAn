@@ -40,7 +40,7 @@ export class ManagerQuantityComponent implements OnInit {
     this.api.typeData = "popup";
     this.api.OpenWindow.Width = 650;
     this.api.OpenWindow.left = 120;
-    this.api.OpenWindow.top = -150;
+    this.api.OpenWindow.top = -115;
     this.api.Controller = "QuantityManagerController";
     this.api.Read.Execute().subscribe((rs) => {
       this.gridData = rs.data;

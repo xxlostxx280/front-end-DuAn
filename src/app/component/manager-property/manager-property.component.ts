@@ -42,7 +42,16 @@ export class ManagerPropertyComponent implements OnInit {
     })
   }
 
+  Rules(): boolean{
+    if(this.api.formGroup.value.name == ""){
+      this.api.Notification.notificationWarning('Không được để trống tên màu');
+      return false;
+    }
+    return true;
+  }
+
   Update(grid: any): void {
+    if(!this.Rules()){return;}
     this.api.Update.Execute(grid);
   }
 
@@ -51,6 +60,7 @@ export class ManagerPropertyComponent implements OnInit {
     event.sender.addRow(this.api.formGroup);
   }
   saveHandler(event: any) {
+    if(!this.Rules()){return;}
     this.api.Grid.saveHandler(event);
     event.sender.closeRow(event.rowIndex);
   }
@@ -59,6 +69,7 @@ export class ManagerPropertyComponent implements OnInit {
     this.api.Grid.cellClickHandler(event);
   }
   cellCloseHandler(event: any): void {
+    if(!this.Rules()){return;}
     this.api.Grid.cellCloseHandler(event);
   }
 

@@ -62,14 +62,14 @@ export class ManagerProductComponent implements OnInit {
     return this.gridData.find(x => x.id === id);
   }
   addHanler(event: any) {
-    this.api.OpenWindow.top = -160;
+    this.api.OpenWindow.top = -115;
     this.api.OpenWindow.left = -60;
     this.api.OpenWindow.Width = 1200;
     this.api.OpenWindow.Height = 600;
     this.api.Create.Execute(WindowProductComponent, this.gridData[0]);
   }
   editHandler(event: any) {
-    this.api.OpenWindow.top = -160;
+    this.api.OpenWindow.top = -115;
     this.api.OpenWindow.left = -60;
     this.api.OpenWindow.Width = 1200;
     this.api.OpenWindow.Height = 600;

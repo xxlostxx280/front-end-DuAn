@@ -42,10 +42,12 @@
     ::ng-deep .popover-body {
         width: 200px;
     }
+
     ::ng-deep .k-drawer-wrapper {
         width: 300px;
     }
-    @media only screen and (max-width: 800px) {
+
+    @media only screen and (max-width: 1000px) {
         #menu {
             display: none;
         }
@@ -62,7 +64,8 @@
         position: fixed;
         height: 100%;
     }
-    ::ng-deep .k-drawer-wrapper{
+
+    ::ng-deep .k-drawer-wrapper {
         width: 300px !important;
     }
 </style>
@@ -87,7 +90,7 @@
                             <input type="text" value="" class="form-control" placeholder="Search..."
                                 (change)="changeFilterName($event)">
                             <button type="submit" class="btn btn-white " id="dat1" (click)="searchProduct()">
-                                <i class="material-icons">search</i>
+                                <i class="material-icons" style="background-color: #ffffff;">search</i>
                             </button>
                         </div>
                     </div>
@@ -107,15 +110,12 @@
                             style="padding: 0px;"></button>
                         <div class="container">
                             <button class="button type1" *ngIf="showLogin" (click)="openLogin()">
-                                <div class="dn"> Đăng nhập</div>
+                                <div class="dn" > Đăng nhập</div>
                             </button>
                         </div>
                         <ng-template #popContent>
                             <li style="border-bottom: 1px solid #DADDE1;padding: 10px 0px;font-size: 15px;">
                                 <a href="/account">Thông tin tài khoản</a>
-                            </li>
-                            <li style="border-bottom: 1px solid #DADDE1;padding: 10px 0px;font-size: 15px;">
-                                <a href="/history-and-wallet">Ví của tôi</a>
                             </li>
                             <li>
                                 <button kendoButton (click)="signOut()" look="clear" style="font-size: 13px;
@@ -127,18 +127,54 @@
             </div>
         </div>
     </div>
+    <!-- <kendo-breadcrumb [items]="breadcrumb" style="background: #ddd;"> </kendo-breadcrumb> -->
     <div class="container-fluid" id="menu_reponseive">
         <kendo-drawer-container>
-            <kendo-drawer #drawer [mode]="expandMode" [(expanded)]="expanded" [items]="menu" [autoCollapse]="true"
-                style="transform: none;">
-                <ng-template kendoDrawerHeaderTemplate >
+            <kendo-drawer #drawer [mode]="expandMode" [(expanded)]="expanded" [items]="pathDrawItems" [autoCollapse]="true"
+                style="transform: none;" (select)="onSelect($event)">
+                <ng-template kendoDrawerHeaderTemplate>
                     <img src="https://mebe-04.web4s.vn/uploads/plugin/setting/3/balo-amp-tui-xach-evevon-footer-logo.png"
                         alt="Logo" width="100%" height="100%">
                 </ng-template>
+                <ng-template kendoDrawerItemTemplate let-item>
+                    <div style="width: 100%;padding: 10px 20px;">
+                        <span>{{item.text }}</span>
+                        <span *ngIf="item.expanded && item.hasOwnProperty('children')"
+                            class="k-icon k-i-arrow-chevron-down" style="float: right;"></span>
+                        <span *ngIf="!item.expanded && item.hasOwnProperty('children')"
+                            class="k-icon k-i-arrow-chevron-right arrow-left" style="float: right;"></span>
+                    </div>
+                </ng-template>
             </kendo-drawer>
             <kendo-drawer-content>
-                <button class="k-button" (click)="drawer.toggle()" kendoButton iconClass="fa fa-bars"
-                    style="background: none;border: none;box-shadow: none;font-size: 20px;"></button>
+                <nav class="navbar navbar-expand-lg navbar-light" style="padding: 0px;">
+                    <button class="k-button" (click)="drawer.toggle()" kendoButton iconClass="fa fa-bars"
+                        style="background: none;border: none;box-shadow: none;font-size: 20px;"></button>
+                    <form class="form-inline my-2 my-lg-0">
+                        <a href="/my-cart" style="text-decoration: none;color: rgb(10, 10, 10);margin: 0px 10px;">
+                            <button kendoButton icon="cart" look="clear" style="margin-top: 10px;padding: 0px;">
+                                <kendo-badge style="background: #f1c969;border-color: #f1c969">
+                                    {{badge}}
+                                </kendo-badge>
+                            </button>
+                        </a>
+                        <button class="button type1" *ngIf="showLogin" (click)="openLogin()" style="margin-left: 20px;">
+                            <div class="dn"> Đăng nhập</div>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary " look="clear" kendoButton
+                            iconClass="fa fa-user fa-fw" [ngbPopover]="popContent" *ngIf="!showLogin"
+                            style="padding: 0px;margin: 10px 15px 0px 15px;"></button>
+                        <ng-template #popContent>
+                            <li style="border-bottom: 1px solid #DADDE1;padding-bottom: 10px;font-size: 15px;">
+                                <a href="/account">Thông tin tài khoản</a>
+                            </li>
+                            <li>
+                                <button kendoButton (click)="signOut()" look="clear" style="font-size: 13px;
+                                    padding: 0;margin-top: 10px;">Đăng xuất</button>
+                            </li>
+                        </ng-template>
+                    </form>
+                </nav>
             </kendo-drawer-content>
         </kendo-drawer-container>
     </div>

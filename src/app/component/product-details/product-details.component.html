@@ -1,7 +1,12 @@
 <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+<style>
+    label{
+        margin: 10px 0px;
+    }
+</style>
 <div>
     <div class="row" style="margin-bottom: 20px;">
-        <div class="col-md-5" style="border-color: 2px solid #dee2e6">
+        <div class="col-md-5 col-sm-6 col-12" style="border-color: 2px solid #dee2e6">
             <swiper style="--swiper-navigation-color: #fff;--swiper-pagination-color: #fff;height: 500px;"
                 [spaceBetween]="10" [navigation]="true" [thumbs]="{ swiper: thumbsSwiper }" class="mySwiper2">
                 <ng-template swiperSlide>
@@ -19,38 +24,43 @@
                 </ng-template>
             </swiper>
         </div>
-        <div class="col-md-7">
+        <div class="col-md-7 col-sm-6 col-12">
             <div>
                 <p
                     style="border-bottom: 2px solid #dee2e6;margin: 0px;padding-bottom: 15px;font-size: 25px;font-weight: 600;">
                     {{infoProduct.name}}
                 </p>
-                <p style="color: #ffc045;padding-top: 10px;font-size: 25px;font-weight: 600;font-family: Arial, Helvetica, sans-serif;" *ngIf="isDiscount">
-                    {{newPrice}}₫
-                    <small style="text-decoration-line: line-through;font-size: 16px;padding: 0px 15px;color: #ddd;font-family: Arial, Helvetica, sans-serif;">
-                        {{infoProduct.price}}₫
+                <p style="color: #ffc045;padding-top: 10px;font-size: 25px;font-weight: 600;font-family: Arial, Helvetica, sans-serif;"
+                    *ngIf="isDiscount">
+                    <small
+                    style="text-decoration-line: line-through;padding: 13px 15px;color: #888888;font-size: 22px;">
+                        {{infoProduct.price}} ₫
                     </small>
+                    {{newPrice}} ₫        
                 </p>
                 <p style="color: #ffc045;padding-top: 10px;font-size: 25px;font-weight: 600;font-family: Arial, Helvetica, sans-serif;
                 " *ngIf="!isDiscount">
-                    {{infoProduct.price}}₫
+                    {{infoProduct.price}} ₫
                 </p>
+                <div class="row">
+                    <label class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-4">Mô tả: </label>
+                    <div class="col-xl-10 col-lg-9 col-md-9 col-sm-8 col-8" innerHTML="{{infoProduct.description}}"></div>
+                </div>
                 <div class="row" style="margin: 15px 0px;">
-                    <span class="col-md-2 col-sm-2" style="padding: 0px;">Màu sắc</span>
-                    <form [formGroup]="formGroup" class="row col-md-10">
-                        <div *ngFor="let color of listProperty" class="col-md-2 col-sm-2">
+                    <label class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-4" style="padding: 0px;">Màu sắc</label>
+                    <form [formGroup]="formGroup" class="row col-xl-10 col-lg-9 col-md-9 col-sm-8 col-8">
+                        <div *ngFor="let color of listProperty" class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-6">
                             <input type="radio" name="property" value="{{color.idproperty}}" #{{color.idproperty}}
                                 formControlName="property" kendoRadioButton (change)="changeProperty(color)" />&nbsp;
                             <label class="k-label" [for]="color.name">{{color.name}}</label>
                         </div>
                     </form>
                 </div>
-                <div innerHTML="{{infoProduct.description}}"></div>
             </div>
             <form [formGroup]="formGroup" style="margin: 20px 0px;">
                 <div class="row">
-                    <label class="col-md-2 k-label">Chọn size</label>
-                    <div class="col-md-10">
+                    <label class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-4 k-label">Chọn size: </label>
+                    <div class="col-xl-10 col-lg-9 col-md-9 col-sm-8 col-8">
                         <kendo-dropdownlist [data]="listSizeByQuantity" textField="name" valueField="id"
                             formControlName="size" name="size" (valueChange)="changeSize($event)"
                             [defaultItem]="defaultItem" [filterable]="true">
@@ -58,13 +68,19 @@
                     </div>
                 </div>
             </form>
-            <div>
-                <kendo-numerictextbox format="0" [min]="1" [max]="100" (valueChange)="changeQuantity($event)"
-                    [value]="1">
-                </kendo-numerictextbox>
+            
+            <div class="row">
+                <label class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-4">Số lượng: </label>
+                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-4" style="float: left;">
+                    <kendo-numerictextbox format="0" [min]="1" [max]="100" (valueChange)="changeQuantity($event)"
+                        [value]="1" style="width: 100%;">
+                    </kendo-numerictextbox>
+                </div>     
+            </div>
+            <div id="them_sp">
                 <button kendoButton iconClass="fa fa-cart-plus" (click)="addSoppingCart()"
-                    style="background: #ffc045;color: white;font-size: 20px;margin: 0px 15px;">
-                    Thêm vào giỏ hàng
+                    style="background: #ffc045;color: white;font-size: 18px;width: 100%;">
+                    THÊM VÀO GIỎ HÀNG
                 </button>
             </div>
         </div>
@@ -72,9 +88,18 @@
     <h3 style="margin-top: 0;color: #333;font-weight: bold;line-height: 1.42857;">Sản phẩm cùng loại</h3>
     <swiper [config]="config" class="mySwiper" id="mySwiper">
         <ng-template swiperSlide *ngFor="let product of listProductByCategory">
-            <div class="img" class="thu-nghiem-zoom">
+            <div class="img" class="thu-nghiem-zoom" *ngIf="product.discount > 0">
                 <a href="/list-product/info/{{product.id}}">
                     <p>
+                        <span class="status-product" style="width: 48px;height: 50px;position: absolute;top: 20px; right: 30px;">SALE</span>
+                        <img class="img" src="{{product.image}}" width="100%" height="300px" />
+                    </p>
+                </a>
+            </div>
+            <div class="img" class="thu-nghiem-zoom" *ngIf="product.discount == 0 || product.discount == null">
+                <a href="/list-product/info/{{product.id}}">
+                    <p>
+                       
                         <img class="img" src="{{product.image}}" width="100%" height="300px" />
                     </p>
                 </a>
@@ -86,16 +111,17 @@
                     </a>
                 </div>
                 <div class="price">
-                    <p style="color: #ffc045;margin: 0;padding-top: 10px;font-family: Arial, Helvetica, sans-serif;" 
-                    *ngIf="product.discount == 0 || product.discount == null">
+                    <p style="color: #ffc045;margin: 0;padding-top: 10px;font-family: Arial, Helvetica, sans-serif;"
+                        *ngIf="product.discount == 0 || product.discount == null">
                         {{product.price|number :'1.0-3'}}₫
                     </p>
-                    <p style="color: #ffc045;margin: 0;padding-top: 10px;font-family: Arial, Helvetica, sans-serif;" 
-                    *ngIf="product.discount > 0">
-                        {{product.price * product.discount/100|number :'1.0-3'}}₫
-                        <small style="text-decoration-line: line-through;padding: 0px 15px;color: #ddd;font-family: Arial, Helvetica, sans-serif;">
-                            {{product.price | number :'1.0-3'}}₫
+                    <p style="color: #ffc045;margin: 0;padding-top: 10px;padding-right: 15px;font-family: Arial, Helvetica, sans-serif; font-size: 20px;"
+                        *ngIf="product.discount > 0">
+                        <small
+                        style="text-decoration-line: line-through;padding: 13px 15px;color: #888888;font-size: 20px;margin-left: -15px;">
+                            {{product.price | number :'1.0-3'}} ₫
                         </small>
+                        {{product.price * product.discount/100|number :'1.0-3'}} ₫                   
                     </p>
                 </div>
             </div>

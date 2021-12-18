@@ -48,13 +48,21 @@ export class ProductDetailsComponent implements OnInit {
     pagination: { clickable: true },
     breakpoints: {
       // when window width is >= 320px
+      320: {
+        slidesPerView: 1,
+        spaceBetween: 10
+      },
+      410: {
+        slidesPerView: 2,
+        spaceBetween: 10
+      },
       540: {
         slidesPerView: 2,
         spaceBetween: 10
       },
       // when window width is >= 480px
       720: {
-        slidesPerView: 2,
+        slidesPerView: 3,
         spaceBetween: 20
       },
       // when window width is >= 640px
@@ -295,6 +303,8 @@ export class ProductDetailsComponent implements OnInit {
           this.message.SendBadgeCart(this.badge);
         }
       } else {
+        same_cart[0].Quantity = this.QuantityObj.Quantity + same_cart[0].Quantity;
+        localStorage.setItem(same_cart[0].Id,JSON.stringify(same_cart[0]));
         this.api.Notification.notificationWarning('Đã có sản phẩm này trong giỏ hàng của bạn')
       }
     }

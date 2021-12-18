@@ -13,9 +13,9 @@
                         (save)="saveHandler($event)" (remove)="removeHandler($event)" (add)="addHandler($event)"
                         [navigable]="true">
                         <ng-template kendoGridToolbarTemplate>
-                            <button iconClass="fa fa-plus" kendoGridAddCommand>Thêm mới</button>
+                            <button iconClass="fa fa-plus" kendoGridAddCommand>THÊM MỚI</button>
                             <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
-                                Chỉnh sửa
+                                LƯU
                             </button>
                         </ng-template>
                         <kendo-grid-column field="name" title="Tên"></kendo-grid-column>
@@ -40,9 +40,9 @@
                         (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
                         (add)="addHandler($event)">
                         <ng-template kendoGridToolbarTemplate>
-                            <button iconClass="fa fa-plus" kendoGridAddCommand>Add new</button>
+                            <button iconClass="fa fa-plus" kendoGridAddCommand>THÊM MỚI</button>
                             <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
-                                Update
+                                LƯU
                             </button>
                         </ng-template>
                         <kendo-grid-column field="name" title="Tên" [width]="150"></kendo-grid-column>

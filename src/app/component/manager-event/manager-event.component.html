@@ -4,29 +4,35 @@
         <!-- <p class="card-category"> Here is a subtitle for this table</p> -->
     </div>
     <div class="card-body">
-        <kendo-grid #grid [kendoGridBinding]="gridData" [height]="450" [pageSize]="20" [pageable]="true"
+        <kendo-grid #grid [kendoGridBinding]="gridData" [height]="500" [pageSize]="20" [pageable]="true"
             [sortable]="true" (cellClose)="cellCloseHandler($event)" (cellClick)="cellClickHandler($event)"
             (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
             (add)="addHandler($event)" [navigable]="true">
             <ng-template kendoGridToolbarTemplate>
                 <button iconClass="fa fa-plus" kendoGridAddCommand>Thêm mới</button>
                 <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
-                    Chỉnh sửa
+                    LƯU
                 </button>
             </ng-template>
             <kendo-grid-column field="name" title="Tên"></kendo-grid-column>
             <kendo-grid-column field="startday" title="Ngày bắt đầu" format="dd/MM/yyyy">
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem">
-                    <kendo-datepicker format="dd/MM/yyyy" (ngModelChange)="getDate(dataItem.startday)"
+                    <kendo-datepicker #startday format="dd/MM/yyyy" (valueChange)="changeDayStart($event)"
                         [(ngModel)]="dataItem.startday">
                     </kendo-datepicker>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                    {{dataItem.startday | date: 'dd/MM/yyyy'}}
                 </ng-template>
             </kendo-grid-column>
             <kendo-grid-column field="endday" title="Ngày kết thúc" format="dd/MM/yyyy">
                 <ng-template kendoGridEditTemplate let-dataItem="dataItem">
-                    <kendo-datepicker format="dd/MM/yyyy" (ngModelChange)="getDate(dataItem.endday)"
+                    <kendo-datepicker format="dd/MM/yyyy" (valueChange)="changeDayEnd($event)"
                         [(ngModel)]="dataItem.endday">
                     </kendo-datepicker>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                    {{dataItem.endday | date: 'dd/MM/yyyy'}}
                 </ng-template>
             </kendo-grid-column>
             <kendo-grid-command-column title="Tùy chỉnh" [width]="220">

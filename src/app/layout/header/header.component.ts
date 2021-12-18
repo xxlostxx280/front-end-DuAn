@@ -19,36 +19,9 @@ import { MessageService } from 'src/app/shared/message.service';
 })
 export class HeaderComponent implements OnInit {
   public expanded = false;
-  public expandMode: DrawerMode = "overlay";
-  public items: Array<any> = []; // menu item router
-  public itemsParent: Array<any> = []; // menu items cha 
-  public itemsChild: Array<any> = []; // menu items con
-  public productByName: any;
-  public menu_item = {
-    text: '',
-    path: '',
-    child: {},
-  }
-  public breadcrumb: BreadCrumbItem[] = [
-    {
-      icon: "home",
-    },
-    {
-      text: "Item 2",
-      disabled: true,
-    },
-    {
-      text: "Item 3",
-    },
-    {
-      text: "Item 4",
-    },
-  ];
-  public url: string | undefined;
-  public showLogin: boolean = true;
-  public showAvatar: boolean = false;
-  public badge = localStorage.length;
-  public menu: Array<any> = [
+  public autoCollapse = true;
+  public pathDrawItems: Array<any> = [];
+  public drawItems: Array<any> = [
     {
       text: "Trang chủ",
       path: "",
@@ -59,13 +32,54 @@ export class HeaderComponent implements OnInit {
     },
     {
       text: "Sản phẩm",
-      items: [
+      children: [
 
       ]
     },
     {
       text: "Liên hệ",
       path: "contact"
+    },
+  ];
+  public draw_items: Array<any> = [];
+  public expandMode: DrawerMode = "overlay";
+  public listProduct: Array<any> = [];
+  public items: Array<any> = []; // menu item router
+  public itemsParent: Array<any> = []; // menu items cha 
+  public itemsChild: Array<any> = []; // menu items con
+  public productByName: any;
+  public url: string | undefined;
+  public showLogin: boolean = true;
+  public showAvatar: boolean = false;
+  public badge = localStorage.length;
+  public menu: Array<any> = [
+    {
+      text: "Trang chủ",
+      path: "",
+      expanded: false,
+    },
+    {
+      text: "Giới thiệu",
+      path: "introduce",
+      expanded: false,
+    },
+    {
+      text: "Sản phẩm",
+      items: [
+
+      ],
+      expanded: false,
+    },
+    {
+      text: "Liên hệ",
+      path: "contact",
+      expanded: false,
+    },
+  ];
+  public breadcrumb: BreadCrumbItem[] = [
+    {
+      text: "Trang chủ",
+      icon: "home",
     },
   ];
 
@@ -81,6 +95,9 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     this.api.Controller = 'CategoryController';
     this.api_2.Controller = 'CategoryDetailController';
+    this.api.getApi('Customer/ProductController/home').subscribe((rs) => {
+      this.listProduct = rs.data;
+    })
     this.api.Read.Execute().subscribe((res) => {
       this.itemsParent = res;
     }, (error) => {
@@ -115,6 +132,7 @@ export class HeaderComponent implements OnInit {
       this.showAvatar = true;
       this.showLogin = false;
     })
+    this.setBreadcrumb();
   }
   openLogin(): void {
     window.location.href = '/login';
@@ -126,13 +144,13 @@ export class HeaderComponent implements OnInit {
     this.showAvatar = false;
     window.location.href = "/login"
   }
-  changeFilterName(event: any): void{
+  changeFilterName(event: any): void {
     this.productByName = event.target.value;
   }
-  searchProduct(): void{
+  searchProduct(): void {
     window.location.href = "/search/" + this.productByName;
   }
-  //convert categorydetail thành menu item
+  //-------convert categorydetail thành menu item-------//
   mapItems(): void {
     this.itemsParent.map((x) => {
       let routeChild = this.itemsChild.filter((val) => val.category.id == x.id);
@@ -141,6 +159,12 @@ export class HeaderComponent implements OnInit {
         text: '',
         path: '',
         items: {},
+      }
+      let drawer_item = {
+        text: '',
+        path: '',
+        expanded: false,
+        children: {},
       }
       routeChild.map((val) => {
         this.removeVietnameseTones(val.name)
@@ -154,14 +178,50 @@ export class HeaderComponent implements OnInit {
       })
       menu_item.text = x.name;
       menu_item.items = arr;
+      drawer_item.text = x.name;
+      drawer_item.children = arr;
       this.items.push(menu_item);
+      this.draw_items.push(drawer_item);
     })
     this.menu[2].items = this.items;
+    this.drawItems[2].children = this.draw_items;
+    this.pathDrawItems = this.resetItems();
   }
-  onSelect(e: any) {
-    if (e.item.items == undefined) {
-      window.location.href = e.item.path;
+  //-------Breadcrumb-------//
+  setBreadcrumb() {
+    let url = window.location.href.replace(window.location.origin, '');
+  }
+  //-------DrawerItem-------//
+  onSelect(event: any): void {
+    this.autoCollapse = false;
+    if (!event.item.hasOwnProperty('children')) {
+      window.location.href = event.item.path
+    } else {
+      const text = event.item.text;
+      const newItems = this.pathDrawItems;
+      const index = newItems.findIndex((i:any) => i.text === text);
+      if(newItems[index].selected){
+        newItems[index].expanded = false;
+        newItems[index].selected = false;
+        this.pathDrawItems = this.resetItems();
+      }else{
+        newItems[index].selected = true;
+        if (!event.item.expanded) {
+          newItems[index].expanded = true;
+          this.addChildren(newItems, index, newItems[index].children);
+        }
+      }
     }
+  }
+  public addChildren(arr: any, index: any, children: Array<any>) {
+    arr.splice(index + 1, 0, ...children);
+  }
+  public resetItems(): Array<any> {
+    const arr: any[] = [];
+    this.drawItems.forEach((item) => {
+      arr.push(Object.assign({}, item));
+    });
+    return arr;
   }
   removeVietnameseTones(str: any): void {
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");

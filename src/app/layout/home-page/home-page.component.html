@@ -26,13 +26,20 @@
             <div class="col-md-3" *ngFor="let product of listProductDiscount" >
                 <div 
                     style="margin: 10px 0px; background: rgb(255, 255, 255); border: 1px solid white; border-radius: 10px 10px 10px 10px;">
-                    <div class="img" class="thu-nghiem-zoom" style="border-radius: 10px 10px 0px 0px;">
+                    <div class="img" class="thu-nghiem-zoom" style="border-radius: 10px 10px 0px 0px;" *ngIf="product.discount > 0">
+                        <a href="/list-product/info/{{product.id}}">
+                            <p>
+                               <span class="status-product" style="width: 48px;height: 50px;position: absolute;top: 20px; right: 30px;">SALE</span>
+                                <img class="img" src="{{product.image}}" width="100%" height="430px" />
+                            </p>
+                        </a>
+                    </div>
+                    <div class="img" class="thu-nghiem-zoom" style="border-radius: 10px 10px 0px 0px;" *ngIf="product.discount == 0 || product.discount == null">
                         <a href="/list-product/info/{{product.id}}">
                             <p>
                                 <img class="img" src="{{product.image}}" width="100%" height="430px" />
                             </p>
                         </a>
-    
                     </div>
                     <div class="fotder">
                         <div class="name">
@@ -71,7 +78,15 @@
             <div class="col-md-3" *ngFor="let product of listProduct">
                 <div
                     style="margin: 10px 0px; background: rgb(255, 255, 255); border: 1px solid white; border-radius: 10px 10px 10px 10px;">
-                    <div class="img" class="thu-nghiem-zoom">
+                    <div class="img" class="thu-nghiem-zoom"  *ngIf="product.discount > 0">
+                        <a href="/list-product/info/{{product.id}}">
+                            <p>
+                                <span class="status-product" style="width: 48px;height: 50px;position: absolute;top: 20px; right: 30px;">HOT</span>
+                                <img class="img" src="{{product.image}}" width="100%" height="430px" />
+                            </p>
+                        </a>
+                    </div>
+                    <div class="img" class="thu-nghiem-zoom" *ngIf="product.discount == 0 || product.discount == null">
                         <a href="/list-product/info/{{product.id}}">
                             <p>
                                 <img class="img" src="{{product.image}}" width="100%" height="430px" />
