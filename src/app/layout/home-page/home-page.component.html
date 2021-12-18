@@ -6,69 +6,87 @@
         </ng-template>
     </kendo-scrollview>
     <div class="row" style="margin: 10px 0px;">
-        <div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4" style="padding-left: 0px;">
             <img class="opacity" width="100%" height="450px"
                 src="https://ld-wp.template-help.com/woocommerce_64099/wp-content/uploads/2017/04/banner01.jpg">
         </div>
-        <div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
             <img class="opacity" width="100%" height="450px"
                 src="https://ld-wp.template-help.com/woocommerce_64099/wp-content/uploads/2017/04/banner02.jpg">
         </div>
-        <div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-xl-4" style="padding-right: 0px;">
             <img class="opacity" width="100%" height="450px"
                 src="https://ld-wp.template-help.com/woocommerce_64099/wp-content/uploads/2017/04/banner03.jpg">
         </div>
     </div>
     <div >
-        <h3 style="margin: 25px 0px;color: #333;font-weight: bold;line-height: 1.42857;text-align: center;font-size: 34px;">
-            Sản phẩm giảm giá</h3>
-        <div class="row" >
-            <div class="col-lg-3 col-md-4 col-sm-6 col-12" *ngFor="let product of listProductDiscount" style="margin-left: 10px;">
-                <div
+        <h3 style="margin: 25px 0px;color: #333;font-weight: bold;line-height: 1.42857;text-align: center;font-size: 34px; font-family: Arial, Helvetica, sans-serif;">
+            Sản phẩm giảm giá </h3>
+        <div class="row"  >
+            <div class="col-md-3" *ngFor="let product of listProductDiscount" >
+                <div 
                     style="margin: 10px 0px; background: rgb(255, 255, 255); border: 1px solid white; border-radius: 10px 10px 10px 10px;">
-                    <div class="img" class="thu-nghiem-zoom">
+                    <div class="img" class="thu-nghiem-zoom" style="border-radius: 10px 10px 0px 0px;" *ngIf="product.discount > 0">
+                        <a href="/list-product/info/{{product.id}}">
+                            <p>
+                               <span class="status-product" style="width: 48px;height: 50px;position: absolute;top: 20px; right: 30px;">SALE</span>
+                                <img class="img" src="{{product.image}}" width="100%" height="430px" />
+                            </p>
+                        </a>
+                    </div>
+                    <div class="img" class="thu-nghiem-zoom" style="border-radius: 10px 10px 0px 0px;" *ngIf="product.discount == 0 || product.discount == null">
                         <a href="/list-product/info/{{product.id}}">
                             <p>
                                 <img class="img" src="{{product.image}}" width="100%" height="430px" />
                             </p>
                         </a>
-    
                     </div>
-                    <div style="padding: 15px;" class="fotder">
+                    <div class="fotder">
                         <div class="name">
                             <a href="/list-product/info/{{product.id}}">{{product.name}}</a>
                         </div>
                         <div class="price">
-                            <p style="color: #ffc045;margin: 0;padding-top: 10px;"
+                            <p style="color: #ffc045;margin: 0;padding-top: 15px;font-size: 15px;"
                                 *ngIf="product.discount == 0 || product.discount == null">
-                                {{product.price|number :'1.0-3'}}đ
+                                {{product.price|number :'1.0-3'}} đ
                             </p>
-                            <p style="color: #ffc045;margin: 0;padding-top: 10px;" *ngIf="product.discount > 0">
-                                {{product.price * product.discount/100|number :'1.0-3'}}đ
-                            </p>
-                            <small style="text-decoration-line: line-through;padding: 10px 15px;color: #ddd;"
+                           
+                            <small style="text-decoration-line: line-through;padding: 13px 15px;color: #888888;font-size: 18px;"
                                 *ngIf="product.discount > 0">
-                                {{product.price|number :'1.0-3'}}đ
+                                {{product.price|number :'1.0-3'}} ₫
                             </small>
+                            <p style="color: #ffc045;margin: 0;padding-top: 12px;" 
+                            *ngIf="product.discount > 0">
+                                {{product.price * product.discount/100|number :'1.0-3'}} ₫
+                            </p>
+                       
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div style="text-align: center;margin: 15px 0px;padding: 15px 0px;border-bottom: 1px solid #ddd;">
-            <a href="/list-product" style="text-decoration: none;font-size: 25px;font-weight: bold;color: #ff6358;">Xem
+            <a href="/list-product" style="text-decoration: none;font-size: 25px;font-weight: bold;color: #ff6358; font-family: Arial, Helvetica, sans-serif;">Xem
                 thêm</a>
         </div>
     </div>
     <div >
         <h3
-            style="margin: 25px 0px;color: #333;font-weight: bold;line-height: 1.42857;text-align: center;font-size: 34px;">
+            style="margin: 25px 0px;color: #333;font-weight: bold;line-height: 1.42857;text-align: center;font-size: 34px; font-family: Arial, Helvetica, sans-serif;">
             Sản phẩm mới</h3>
         <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-6 col-12" *ngFor="let product of listProduct">
+            <div class="col-md-3" *ngFor="let product of listProduct">
                 <div
                     style="margin: 10px 0px; background: rgb(255, 255, 255); border: 1px solid white; border-radius: 10px 10px 10px 10px;">
-                    <div class="img" class="thu-nghiem-zoom">
+                    <div class="img" class="thu-nghiem-zoom"  *ngIf="product.discount > 0">
+                        <a href="/list-product/info/{{product.id}}">
+                            <p>
+                                <span class="status-product" style="width: 48px;height: 50px;position: absolute;top: 20px; right: 30px;">HOT</span>
+                                <img class="img" src="{{product.image}}" width="100%" height="430px" />
+                            </p>
+                        </a>
+                    </div>
+                    <div class="img" class="thu-nghiem-zoom" *ngIf="product.discount == 0 || product.discount == null">
                         <a href="/list-product/info/{{product.id}}">
                             <p>
                                 <img class="img" src="{{product.image}}" width="100%" height="430px" />
@@ -76,28 +94,30 @@
                         </a>
                     </div>
                     <div style="padding: 15px;" class="fotder">
-                        <div class="name">
+                        <div class="name" style="margin-top: -20px;">
                             <a href="/list-product/info/{{product.id}}">{{product.name}}</a>
                         </div>
                         <div class="price">
                             <p style="color: #ffc045;margin: 0;padding-top: 10px;"
                                 *ngIf="product.discount == 0 || product.discount == null">
-                                {{product.price|number :'1.0-3'}}₫
+                                {{product.price|number :'1.0-3'}} ₫
                             </p>
-                            <p style="color: #ffc045;margin: 0;padding-top: 10px;" *ngIf="product.discount > 0">
-                                {{product.price * product.discount/100|number :'1.0-3'}}₫
-                            </p>
-                            <small style="text-decoration-line: line-through;padding: 10px 15px;color: #ddd;"
+                            <small style="text-decoration-line: line-through;padding: 13px 15px;color: #888888;font-size: 18px;"
                                 *ngIf="product.discount > 0">
-                                {{product.price|number :'1.0-3'}}₫
+                                {{product.price|number :'1.0-3'}} ₫
                             </small>
+                            <p style="color: #ffc045;margin: 0;padding-top: 12px;" 
+                            *ngIf="product.discount > 0">
+                                {{product.price * product.discount/100|number :'1.0-3'}} ₫
+                            </p>
+                            
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div style="text-align: center;margin: 15px 0px;padding: 15px 0px;border-bottom: 1px solid #ddd;">
-            <a href="/list-product" style="text-decoration: none;font-size: 25px;font-weight: bold;color: #ff6358;">Xem
+            <a href="/list-product" style="text-decoration: none;font-size: 25px;font-weight: bold;color: #ff6358; font-family: Arial, Helvetica, sans-serif;">Xem
                 thêm</a>
         </div>
     </div>
