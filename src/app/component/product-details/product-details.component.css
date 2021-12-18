@@ -158,14 +158,3 @@ body {
   background: #1f253d;
   font-family: "Ubuntu", sans-serif;
 }
-#them_sp{
-  margin-top: 10px;
-  width: 250px;
-  font-size: 18px;
-  font-family: Arial, Helvetica, sans-serif;
-  box-shadow: 3px 3px #666;
-}
-#them_sp :hover{
-  box-shadow: 4px 4px #ffffff; 
-  /* border: 1px solid rgb(7, 7, 7); */
-}

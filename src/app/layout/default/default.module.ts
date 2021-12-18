@@ -23,8 +23,6 @@ import { SwiperModule } from "swiper/angular";
 import { NotificationModule } from "@progress/kendo-angular-notification";
 import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
 import { SearchComponent } from "src/app/component/search/search.component";
-import { ContactComponent } from "src/app/component/contact/contact.component";
-import { IntroduceComponent } from "src/app/component/introduce/introduce.component";
 
 @NgModule({
     declarations: [
@@ -32,9 +30,7 @@ import { IntroduceComponent } from "src/app/component/introduce/introduce.compon
         ListProductByCategoryComponent,
         ListProductComponent,
         ProductDetailsComponent,
-        SearchComponent,
-        ContactComponent,
-        IntroduceComponent
+        SearchComponent
     ],
     imports: [
         NotificationModule,
