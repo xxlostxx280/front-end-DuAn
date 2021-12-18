@@ -4,7 +4,7 @@
         <!-- <p class="card-category"> Here is a subtitle for this table</p> -->
     </div>
     <div class="card-body">
-        <kendo-grid #grid [kendoGridBinding]="listVoucher" [height]="450" [pageSize]="20" [sortable]="true"
+        <kendo-grid #grid [kendoGridBinding]="listVoucher" [height]="500" [pageSize]="20" [sortable]="true"
             [pageable]="true" [sortable]="true" (cellClose)="cellCloseHandler($event)"
             (dataStateChange)="dataStateChange($event)" (cellClick)="cellClickHandler($event)"
             (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
@@ -12,7 +12,7 @@
             <ng-template kendoGridToolbarTemplate>
                 <button iconClass="fa fa-plus" kendoGridAddCommand>Thêm mới</button>
                 <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
-                   Chỉnh sửa
+                   LƯU
                 </button>
             </ng-template>
             <kendo-grid-column field="name" title="Tên voucher"></kendo-grid-column>

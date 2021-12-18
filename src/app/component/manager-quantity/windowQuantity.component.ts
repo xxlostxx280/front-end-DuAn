@@ -49,6 +49,7 @@ export class WindowQuantityComponent implements OnInit {
     public Size: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
     public Property: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
     public Product: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+    
     ngOnInit(): void {
         this.Quantity.typeData = "popup"
         this.Quantity.isManager = true;
@@ -119,7 +120,34 @@ export class WindowQuantityComponent implements OnInit {
             this.formGroup.controls.product.setValue([this.formGroup.value.product]);
         }
     }
-
+    
+    Rules(): boolean{
+        if(this.formGroup.value.product == ""){
+            this.api.Notification.notificationWarning('Không được để trống sản phẩm');
+            return false;
+        }
+        if(this.formGroup.value.property == ""){
+            this.api.Notification.notificationWarning('Không được để trống màu sắc');
+            return false;
+        }
+        if(this.formGroup.value.quantity == ""){
+            this.api.Notification.notificationWarning('Không được để trống số lượng');
+            return false;
+        }
+        if(this.formGroup.value.quantity < 0){
+            this.api.Notification.notificationWarning('Số lượng không được nhỏ hơn 0');
+            return false;
+        }
+        if(this.formGroup.value.size.id == 0){
+            this.api.Notification.notificationWarning('Mời bạn chọn size');
+            return false;
+        }
+        if(this.formGroup.value.typesize.id == 0){
+            this.api.Notification.notificationWarning('Mời bạn chọn loại size');
+            return false;
+        }
+        return true;
+    }
     selectProperty(event: any): void {
 
     }
@@ -129,6 +157,7 @@ export class WindowQuantityComponent implements OnInit {
         this.listSizeById = this.listSize.filter((x) => x.typesize.id == event.id);
     }
     saveHandler(event: any): void {
+        if(!this.Rules()){return};
         let formData = new FormData();
         let request = {
             product: '',

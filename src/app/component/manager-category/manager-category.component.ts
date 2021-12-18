@@ -84,11 +84,31 @@ export class ManagerCategoryComponent implements OnInit {
     this.api_2.formGroup.markAsDirty({ onlySelf: true });
     this.api_2.formGroup.value.category = this.gridData.find((x) => x.id == event);
   }
+  Rules_Category(): boolean{
+    if(this.api.formGroup.value.name == ""){
+      this.api.Notification.notificationWarning('Không được để trống tên loại danh mục');
+      return false;
+    }
+    return true;
+  }
+  Rules_CategoryDetail(): boolean{
+    if(this.api_2.formGroup.value.name == ""){
+      this.api_2.Notification.notificationWarning('Không được để trống tên danh mục')
+      return false;
+    }
+    if(this.api_2.formGroup.value.category == ""){
+      this.api_2.Notification.notificationWarning('Không được để trống loại danh mục')
+      return false;
+    }
+    return true;
+  }
 
   Update(grid: any): void {
     if (JSON.stringify(grid.data.data) == JSON.stringify(this.gridData)) {
+      if(!this.Rules_Category()){return;}
       this.api.Update.Execute(grid);
     } else {
+      if(!this.Rules_CategoryDetail()){return;}
       this.api_2.Update.Execute(grid);
     }
   }
@@ -104,8 +124,10 @@ export class ManagerCategoryComponent implements OnInit {
   }
   saveHandler(event: any) {
     if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {
+      if(!this.Rules_Category()){return;}
       this.api.Grid.saveHandler(event);
     } else {
+      if(!this.Rules_CategoryDetail()){return;}
       this.api_2.Grid.saveHandler(event);
     }
     event.sender.closeRow(event.rowIndex);
@@ -120,8 +142,10 @@ export class ManagerCategoryComponent implements OnInit {
   }
   cellCloseHandler(event: any): void {
     if (JSON.stringify(event.sender.data.data) == JSON.stringify(this.gridData)) {
+      if(!this.Rules_Category()){return;}
       this.api.Grid.cellCloseHandler(event);
     } else {
+      if(!this.Rules_CategoryDetail()){return;}
       this.api_2.Grid.cellCloseHandler(event);
     }
   }
@@ -138,10 +162,10 @@ export class ManagerCategoryComponent implements OnInit {
   cancelChanges(grid: any): void {
     grid.cancelCell();
   }
-
   cancelHandler(event: any): void {
     event.sender.closeRow(event.rowIndex);
   }
+
   dataStateChange(state: DataStateChangeEvent): void {
     this.state = state;
   }

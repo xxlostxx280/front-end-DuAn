@@ -48,7 +48,28 @@ export class ManagerEventComponent implements OnInit {
     })
   }
 
+  Rules(): boolean{
+    if(this.api.formGroup.value.name == ""){
+      this.api.Notification.notificationWarning('Không được để trống tên sự kiện');
+      return false;
+    }
+    if(this.api.formGroup.value.startday == ""){
+      this.api.Notification.notificationWarning('Không được để trống ngày bắt đầu');
+      return false;
+    }
+    if(this.api.formGroup.value.endday == ""){
+      this.api.Notification.notificationWarning('Không được để trống ngày kết thúc');
+      return false;
+    }
+    if(Date.parse(this.api.formGroup.value.startday) > Date.parse(this.api.formGroup.value.endday)){
+      this.api.Notification.notificationWarning('Ngày bắt đầu phải nhỏ hơn ngày kết thúc');
+      return false;
+    }
+    return true;
+  }
+
   Update(grid: any): void {
+    if(!this.Rules()){return;}
     this.api.Update.Execute(grid);
   }
 
@@ -59,6 +80,7 @@ export class ManagerEventComponent implements OnInit {
     event.sender.addRow(this.api.formGroup);
   }
   saveHandler(event: any) {
+    if(!this.Rules()){return;}
     this.api.Grid.saveHandler(event);
     event.sender.closeRow(event.rowIndex);
   }
@@ -67,6 +89,7 @@ export class ManagerEventComponent implements OnInit {
     this.api.Grid.cellClickHandler(event);
   }
   cellCloseHandler(event: any): void {
+    if(!this.Rules()){return;}
     this.api.Grid.cellCloseHandler(event);
   }
 
@@ -83,15 +106,12 @@ export class ManagerEventComponent implements OnInit {
     event.sender.closeRow(event.rowIndex);
   }
 
-  onChangeDate(value: Date) {
-    // Update the JSON birthDate string date
-
-  }
-
-  getDate(getDate: any) {
+  changeDayStart(value: Date) {
     this.api.formGroup.markAsDirty({ onlySelf: true });
-    let value = new Date(getDate);
-    return value;
+    this.api.formGroup.value.startday = value.toString();
   }
-
+  changeDayEnd(value: Date){
+    this.api.formGroup.markAsDirty({ onlySelf: true });
+    this.api.formGroup.value.endday = value.toString();
+  }
 }

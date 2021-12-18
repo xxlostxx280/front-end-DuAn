@@ -12,15 +12,16 @@
     }
 </style>
 <div>
-    <div style="border-bottom: 1px solid #ddd;padding-bottom: 10px;margin: 0px 10px 10px 10px;" class="row">
-        <div class="col-md-9"  style="padding: 0px;">
-            <label style="font-weight: 600;">Trạng thái :</label>&nbsp;
+    <div class="row" style="border-bottom: 1px solid #ddd;padding-bottom: 10px;margin: 0px 10px 10px 10px;">
+        <label class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-4" style="font-weight: 600;">Trạng thái :</label>
+        <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-8">
             <kendo-dropdownlist [data]="status" textField="name" valueField="id" [valuePrimitive]="true"
-                [(ngModel)]="selectedValue" style="width: 250px;" (valueChange)="changeStatus($event)">
+                [(ngModel)]="selectedValue" (valueChange)="changeStatus($event)" style="width: 250px;">
             </kendo-dropdownlist>
         </div>
-        <div class="col-md-3" style="padding: 0px;">
-            <kendo-textbox placeholder="Search..." [clearButton]="true" style="width: 100%;" (change)="onChangeHandler($event)">
+        <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-12" >
+            <kendo-textbox placeholder="Search..." [clearButton]="true" style="width: 100%;"
+                (change)="onChangeHandler($event)">
                 <ng-template kendoTextBoxPrefixTemplate>
                     <button kendoButton look="clear" icon="search" (click)="search()"></button>
                     <kendo-textbox-separator></kendo-textbox-separator>
@@ -30,7 +31,7 @@
     </div>
     <div class="row">
         <div *ngIf="Quantity.loading" class="k-i-loading" style="z-index: 99999;"></div>
-        <div class="col-md-3 col-sm-6 col-xs-6" *ngFor="let product of dataSource">
+        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-12" *ngFor="let product of dataSource">
             <div style="margin-bottom: 10px;background: white; border: 1px solid white; ">
                 <div class="img" class="thu-nghiem-zoom">
                     <a href="/list-product/info/{{product.id}}">

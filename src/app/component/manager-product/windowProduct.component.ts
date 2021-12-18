@@ -79,7 +79,39 @@ export class WindowProductComponent implements OnInit {
         })
     }
 
+    Rules(): boolean {
+        if (this.formGroup.value.name == "" || this.formGroup.value.name == null) {
+            this.api.Notification.notificationWarning('Không được để trống tên sản phẩm');
+            return false;
+        }
+        if (this.formGroup.value.price == "" || this.formGroup.value.price == null) {
+            this.api.Notification.notificationWarning('Không được để trống giá sản phẩm');
+            return false;
+        }
+        if (this.formGroup.value.price < 0 || this.formGroup.value.price == null){
+            this.api.Notification.notificationWarning('Giá sản phẩm phải lớn hơn 0');
+            return false;
+        }
+        if (this.formGroup.value.category == "" || this.formGroup.value.category == null) {
+            this.api.Notification.notificationWarning('Không được để trống loại sản phẩm');
+            return false;
+        }
+        if (this.formGroup.value.categorydetail == "" || this.formGroup.value.categorydetail == null) {
+            this.api.Notification.notificationWarning('Không được để trống sản phẩm');
+            return false;
+        }
+        if (this.formGroup.value.description == "" || this.formGroup.value.description == null) {
+            this.api.Notification.notificationWarning('Không được để trống mô tả');
+            return false;
+        }
+        if (this.formGroup.value.discount < 0 || this.formGroup.value.discount == null) {
+            this.api.Notification.notificationWarning('Tỷ lệ giảm phải lớn hơn 0');
+            return false;
+        }
+        return true;
+    }
     saveHandler(event: any): void {
+        if (!this.Rules()){return;}
         event.preventDefault();
         this.formGroup.removeControl('category');
         if (this.status == "EDIT") {

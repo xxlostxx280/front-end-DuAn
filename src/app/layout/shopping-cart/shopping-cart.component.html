@@ -9,9 +9,26 @@
         color: #ddd;
         padding-right: 5px;
     }
+    #create_bill {
+        display: block;
+    }
+
+    #create_bill_reponseive {
+        display: none;
+    }
+    @media only screen and (max-width: 1000px) {
+        #create_bill {
+            display: none;
+
+        }
+
+        #create_bill_reponseive {
+            display: block;
+
+        }
+    }
 </style>
-<app-header>
-</app-header>
+<app-header></app-header>
 <div class="container">
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
         <kendo-stepper [steps]="steps" stepType="full" [(currentStep)]="current" [style.width.px]="570"
@@ -19,7 +36,7 @@
         </kendo-stepper>
     </div>
     <div class="row">
-        <div class="col-md-7" style="margin: 20px 0px;">
+        <div class="col-xl-7 col-lg-7 col-md-12 col-sm-12 col-12" style="margin: 20px 0px;">
             <div *ngIf="step_1">
                 <h3 style="color: #ef2b2b;font-weight: bold;text-align: center;font-size: 30px;padding: 10px 0px;">
                     Địa chỉ giao hàng
@@ -146,14 +163,14 @@
                 <i class="fa fa-check-circle" aria-hidden="true" style="color: limegreen;font-size: 80px;"></i>
                 <h3 style="margin: 15px 0px;font-weight: 600;">Bạn đã đặt hàng thành công</h3>
             </div>
-            <div style="float: right;" *ngIf="!step_3">
+            <div id="create_bill" style="float: right;margin: 10px 0px;" *ngIf="!step_3">
                 <button kendoButton iconClass="fa fa-check" (click)="buyProduct()"
                     style="background-color: #ef2b2b;color: white;font-size: 20px;">
                     Thanh toán đơn hàng
                 </button>
             </div>
         </div>
-        <div class="col-md-5" style="margin: 20px 0px;">
+        <div class="col-xl-5 col-lg-5 col-md-12 col-sm-12 col-12" style="margin: 20px 0px;">
             <kendo-listview [data]="dataSource" [height]="600">
                 <ng-template kendoListViewHeaderTemplate>
                     <h3 class="header-title"
@@ -161,18 +178,18 @@
                     </h3>
                 </ng-template>
                 <ng-template kendoListViewItemTemplate let-card="dataItem" let-index="index">
-                    <kendo-card-header class="k-hbox">
-                        <div class="col-md-3">
-                            <img src="{{card.Product.image}}" width="80px" height="100px">
+                    <kendo-card-header class="row k-hbox">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-3">
+                            <img src="{{card.Product.image}}" width="100%" height="125px">
                         </div>
-                        <div class="col-md-6" style="padding: 0px;">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-6" style="padding: 0px;">
                             <div *ngIf="card.newPrice != 0">
                                 <span style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;"
                                     *ngIf="card.newPrice != 0">
                                     {{card.newPrice}} VNĐ
                                 </span>
                                 <small
-                                    style="text-decoration-line: line-through;padding: 0px 15px;color: #ddd;">{{card.Product.price}}
+                                    style="text-decoration-line: line-through;padding: 0px 5px;color: #ddd;">{{card.Product.price}}
                                     VNĐ</small>
                             </div>
                             <div *ngIf="card.newPrice == 0">
@@ -186,15 +203,15 @@
                                 {{card.Product.name}}
                             </a>
                             <div class="form-group row">
-                                <label class="col-md-4 col-form-label">Số lượng</label>
-                                <div class="col-md-8">
+                                <label class="col-lg-6 col-md-6 col-sm-5">Số lượng</label>
+                                <div class="col-lg-6 col-md-6 col-sm-7">
                                     <kendo-numerictextbox format="0" [min]="0" [max]="100" style="width: 100%;"
                                         [value]="card.Quantity">
                                     </kendo-numerictextbox>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3" style="display: flex;justify-content: center;align-items: center;">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-3" style="display: flex;justify-content: center;align-items: center;">
                             <button kendoButton iconClass="fa fa-info-circle fa-fw" look="clear"
                                 style="color: #5ec232;font-size: 20px;"
                                 (click)="infoCardItem($event,card.Id,index)"></button><br />
@@ -206,9 +223,9 @@
                 </ng-template>
                 <ng-template kendoListViewFooterTemplate>
                     <div class="row" style="padding: 12px 16px;">
-                        <strong style="font-weight: 400;line-height: 1.68;color: #888;" class="col-md-3">Chọn voucher:
+                        <strong style="font-weight: 400;line-height: 1.68;color: #888;" class="col-md-3 col-4">Chọn voucher:
                         </strong>
-                        <div class="col-md-9">
+                        <div class="col-md-9 col-8">
                             <kendo-dropdownlist [data]="listVoucher" textField="name" valueField="id"
                                 [disabled]="!isPayment" style="float: right;width: 100%;" [defaultItem]="defaultVoucher"
                                 (valueChange)="selectVoucher($event)">
@@ -231,12 +248,15 @@
                     </div>
                 </ng-template>
             </kendo-listview>
+            <div id="create_bill_responsive" style="float: right;margin: 10px 0px;" *ngIf="!step_3">
+                <button kendoButton iconClass="fa fa-check" (click)="buyProduct()"
+                    style="background-color: #ef2b2b;color: white;font-size: 20px;">
+                    Thanh toán đơn hàng
+                </button>
+            </div>
         </div>
     </div>
     <div *ngIf="api.loading" class="k-i-loading"></div>
     <div kendoDialogContainer></div>
 </div>
-<header>
-
-</header>
 <app-footer></app-footer>

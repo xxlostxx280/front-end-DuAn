@@ -38,6 +38,9 @@ export class WindowUploadComponent implements OnInit {
         })
     }
     update(event: any): void {
+        if(this.imagePreview.length == 0){
+            return this.Image.Notification.notificationWarning('Không được để trống ảnh')
+        }
         event.preventDefault();
         let formData = new FormData();
         if (this.imagePreview.length > 0) {

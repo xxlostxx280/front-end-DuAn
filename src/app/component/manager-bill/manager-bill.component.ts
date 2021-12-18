@@ -83,7 +83,7 @@ export class ManagerBillComponent implements OnInit {
   }
 
   editHandler(event: any) {
-    this.Bill.OpenWindow.top = -160;
+    this.Bill.OpenWindow.top = -115;
     this.Bill.OpenWindow.left = -60;
     this.Bill.Edit.Execute(WindowBillComponent, event);
   }

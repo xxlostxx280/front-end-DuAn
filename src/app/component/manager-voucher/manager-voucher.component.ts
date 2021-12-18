@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
 import { DataStateChangeEvent } from '@progress/kendo-angular-grid';
 import { NotificationService } from '@progress/kendo-angular-notification';
@@ -71,39 +71,63 @@ export class ManagerVoucherComponent implements OnInit {
     this.Voucher.formGroup.value.idevent = event;
     this.Voucher.formGroup.value.event = this.listEvent.find((x) => x.id == event);
   }
+  Rule(): boolean{
+    if(this.Voucher.formGroup.value.name == ""){
+      this.Voucher.Notification.notificationWarning('Không được để trống tên voucher');
+      return false;
+    }
+    if(this.Voucher.formGroup.value.amount == ""){
+      this.Voucher.Notification.notificationWarning('Không được để trống số lượng');
+      return false;
+    }
+    if(this.Voucher.formGroup.value.amount < 0){
+      this.Voucher.Notification.notificationWarning('Số lượng phải lớn hơn 0');
+      return false;
+    }
+    if(this.Voucher.formGroup.value.discount == ""){
+      this.Voucher.Notification.notificationWarning('Không được để trống tỉ lệ giảm giá');
+      return false;
+    }
+    if(this.Voucher.formGroup.value.discount < 0){
+      this.Voucher.Notification.notificationWarning('Tỉ lệ giảm giá phải lớn hơn 0');
+      return false;
+    }
+    if(this.Voucher.formGroup.value.event == ""){
+      this.Voucher.Notification.notificationWarning('Không được để trống loại sự kiện');
+      return false;
+    }
+    return true;
+  }
   Update(grid: any): void {
+    if(!this.Rule()){return;}
     this.Voucher.Update.Execute(grid);
   }
-
   addHandler(event: any): void {
     this.Voucher.Create.Execute(null, event.sender.data.data);
     event.sender.addRow(this.Voucher.formGroup);
   }
   saveHandler(event: any) {
+    if(!this.Rule()){return;}
     this.Voucher.Grid.saveHandler(event);
     event.sender.closeRow(event.rowIndex);
   }
-
   cellClickHandler(event: any): void {
     this.Voucher.Grid.cellClickHandler(event);
   }
   cellCloseHandler(event: any): void {
+    if(!this.Rule()){return;}
     this.Voucher.Grid.cellCloseHandler(event);
   }
-
   removeHandler(event: any): void {
     this.Voucher.Grid.removeHandler(event);
     event.sender.cancelCell();
   }
-
   cancelChanges(grid: any): void {
     grid.cancelCell();
   }
-
   cancelHandler(event: any): void {
     event.sender.closeRow(event.rowIndex);
   }
-
   dataStateChange(state: DataStateChangeEvent): void {
     this.state = state;
   }

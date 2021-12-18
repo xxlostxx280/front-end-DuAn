@@ -39,7 +39,7 @@ const routes: Routes = [
         component: SearchComponent,
     },
     {
-        path: 'history-and-wallet',
+        path: 'account',
         component: HistoryAndWalletComponent,
         canActivate: [AuthGuard],
     },
