@@ -6,7 +6,7 @@
 </style>
 <app-header></app-header>
 <div class="container-fluid">
-    <h3 style="font-weight: 600;border-bottom: 2px solid #ddd;padding: 15px 0px;margin: 3px 0px;">Đăng nhập</h3>
+    <h3 style="font-weight: 600;border-bottom: 2px solid #ddd;padding: 15px 0px;margin: 3px 0px; text-align: center;">Đăng nhập</h3>
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;height: 50vh;">
         <div class="k-loading-panel" *ngIf="loaderVisible">
             <div class="k-loading-panel-mask"></div>
@@ -15,16 +15,16 @@
                 </kendo-loader>
             </div>
         </div>
-        <form [formGroup]="userForm" style="width: 550px;margin: 15px 0px;">
+        <form [formGroup]="userForm" style="width: 550px;margin: 28px;">
             <p style="color: red;font-weight: 600;" *ngIf="isMessage"><i class="fa fa-times" aria-hidden="true"></i> {{msg}} !!</p>
             <div class="row" style="padding: 5px 0px;">
-                <label class="col-md-4 form-label">Tên đăng nhập: </label>
+                <label class="col-md-4 form-label" style="margin-top: 10px;">Tên đăng nhập: </label>
                 <div class="col-md-8">
                     <input type="text" kendoTextBox placeholder="Tên đăng nhập hoặc email" style="width: 100%"
                         formControlName="username" name="username" />
                 </div>
             </div>
-            <div class="row" style="padding: 5px 0px;">
+            <div class="row" style="padding: 5px 0px;margin-top: 25px;">
                 <label class="col-md-4 form-label">Mật khẩu: </label>
                 <div class="col-md-8">
                     <input type="password" kendoTextBox placeholder="Mật khẩu" style="width: 100%"
@@ -33,10 +33,7 @@
             </div>
             <div style="margin: 15px 0px;" class="row">
                 <div class="col-md-4" style="padding: 0px;">
-                    <button type="submit" kendoButton iconClass="fa fa-sign-in fa-fw" (click)="getAccount()"
-                        style="color: #fff !important;background-color: #ffc045 !important;border-color: #ffc045 !important;">
-                        Đăng nhập
-                    </button>
+                   
                 </div>
                 <div class="col-md-4" style="text-align: center;">
                     <a href="/register">Đăng ký tài khoản ?</a>
@@ -44,6 +41,11 @@
                 <div class="col-md-4" style="text-align: center;">
                     <a href="/changePassword">Quên mật khẩu ?</a>
                 </div>
+                <br>
+                <button type="submit" kendoButton iconClass="fa fa-sign-in fa-fw" (click)="getAccount()"
+                style="color: #fff !important;background-color: #ffc045 !important;border-color: #ffc045 !important;">
+                Đăng nhập
+            </button>
             </div>
             <!-- <div class="row">
                 <div class="col-md-6">
