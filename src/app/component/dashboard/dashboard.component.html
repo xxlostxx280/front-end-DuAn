@@ -1,10 +1,12 @@
-<kendo-tabstrip style="background-color: white;">
+<div>
+    <span>Tháng: </span>&nbsp;
+    <kendo-datepicker #shortDate format="MM/yyyy" [value]="date" activeView="year" bottomView="year"
+        (valueChange)="onChangeDate($event)">
+    </kendo-datepicker>
+</div>
+<kendo-tabstrip style="background-color: white;" (tabSelect)="onSelect($event)">
     <kendo-tabstrip-tab title="Thống kê doanh thu ngày trong tháng" [selected]="true">
         <ng-template kendoTabContent>
-            <span>Tháng: </span>&nbsp;
-            <kendo-datepicker #shortDate format="MM/yyyy" [value]="date" activeView="year" bottomView="year"
-                (valueChange)="onChange($event)">
-            </kendo-datepicker>
             <kendo-chart>
                 <kendo-chart-title text="Doanh thu ngày trong tháng"></kendo-chart-title>
                 <kendo-chart-category-axis>
@@ -12,7 +14,8 @@
                     </kendo-chart-category-axis-item>
                 </kendo-chart-category-axis>
                 <kendo-chart-series>
-                    <kendo-chart-series-item type="line" [data]="chartDayOfMonth" field="total" categoryField="day">
+                    <kendo-chart-series-item *ngFor="let item of series" [data]="item.items" [name]="item.value"
+                        field="total" categoryField="day" type="line">
                     </kendo-chart-series-item>
                 </kendo-chart-series>
             </kendo-chart>
@@ -20,12 +23,41 @@
     </kendo-tabstrip-tab>
     <kendo-tabstrip-tab title="Thống kê doanh thu tháng trong năm">
         <ng-template kendoTabContent>
-
-        </ng-template>
-    </kendo-tabstrip-tab>
-    <kendo-tabstrip-tab title="Thống kê doanh thu tháng trong năm">
-        <ng-template kendoTabContent>
-
+            <kendo-chart>
+                <kendo-chart-title text="Doanh thu tháng trong năm"></kendo-chart-title>
+                <kendo-chart-category-axis>
+                    <kendo-chart-category-axis-item [title]="{ text: 'Tháng' }">
+                    </kendo-chart-category-axis-item>
+                </kendo-chart-category-axis>
+                <kendo-chart-series>
+                    <kendo-chart-series-item *ngFor="let item of series" [data]="item.items" [name]="item.value"
+                        field="total" categoryField="month" type="line">
+                    </kendo-chart-series-item>
+                </kendo-chart-series>
+            </kendo-chart>
         </ng-template>
     </kendo-tabstrip-tab>
 </kendo-tabstrip>
+<!-- <kendo-grid #grid [kendoGridBinding]="gridData" [height]="500" [pageSize]="20" [sortable]="true" [pageable]="true"
+    [sortable]="true" (cellClose)="cellCloseHandler($event)" (cellClick)="cellClickHandler($event)"
+    (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
+    (add)="addHandler($event)" [navigable]="true">
+    <ng-template kendoGridToolbarTemplate>
+        <button iconClass="fa fa-plus" kendoGridAddCommand>THÊM MỚI</button>
+        <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
+            LƯU
+        </button>
+    </ng-template>
+    <kendo-grid-column field="id" title="ID" [width]="100"></kendo-grid-column>
+    <kendo-grid-column field="email" title="Email" [width]="200"></kendo-grid-column>
+    <kendo-grid-column field="username" title="Tên đăng nhập" [width]="200"></kendo-grid-column>
+    <kendo-grid-column field="password" title="Mật khẩu" [width]="200"></kendo-grid-column>
+    <kendo-grid-column field="phone" title="SĐT" [width]="150"></kendo-grid-column>
+    <kendo-grid-command-column title="Tùy chỉnh" [width]="220">
+        <ng-template kendoGridCellTemplate let-isNew="isNew">
+            <button kendoGridRemoveCommand>Xóa</button>
+            <button kendoGridSaveCommand>Thêm</button>
+            <button kendoGridCancelCommand>Hủy</button>
+        </ng-template>
+    </kendo-grid-command-column>
+</kendo-grid> -->
