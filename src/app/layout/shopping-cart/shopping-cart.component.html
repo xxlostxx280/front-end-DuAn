@@ -9,12 +9,21 @@
         color: #ddd;
         padding-right: 5px;
     }
+
     #create_bill {
         display: block;
     }
 
-    #create_bill_reponseive {
+    #create_bill_responsive {
         display: none;
+    }
+    #item_address{
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0px;
+        cursor: pointer;
+    }
+    #item_address:hover{
+        color: darkorange;
     }
     @media only screen and (max-width: 1000px) {
         #create_bill {
@@ -22,9 +31,8 @@
 
         }
 
-        #create_bill_reponseive {
+        #create_bill_responsive {
             display: block;
-
         }
     }
 </style>
@@ -43,7 +51,8 @@
                 </h3>
                 <form [formGroup]="InfomationCustomer" class="row">
                     <div class="col-md-6">
-                        <div *ngIf="InfomationCustomer.controls['FullName']!.invalid && (InfomationCustomer.controls['FullName']!.dirty || InfomationCustomer.controls['FullName']!.touched)">
+                        <div
+                            *ngIf="InfomationCustomer.controls['FullName']!.invalid && (InfomationCustomer.controls['FullName']!.dirty || InfomationCustomer.controls['FullName']!.touched)">
                             <small class="text-danger" *ngIf="InfomationCustomer.get('FullName')!.hasError('required')">
                                 Không được để trống Họ tên
                             </small>
@@ -51,21 +60,26 @@
                         <kendo-textbox formControlName="FullName" type="text" placeholder="Họ và tên"></kendo-textbox>
                     </div>
                     <div class="col-md-6">
-                        <div *ngIf="InfomationCustomer.controls['PhoneNumber']!.invalid && (InfomationCustomer.controls['PhoneNumber']!.dirty || InfomationCustomer.controls['PhoneNumber']!.touched)">
-                            <small class="text-danger" *ngIf="InfomationCustomer.get('PhoneNumber')!.hasError('required')">
+                        <div
+                            *ngIf="InfomationCustomer.controls['PhoneNumber']!.invalid && (InfomationCustomer.controls['PhoneNumber']!.dirty || InfomationCustomer.controls['PhoneNumber']!.touched)">
+                            <small class="text-danger"
+                                *ngIf="InfomationCustomer.get('PhoneNumber')!.hasError('required')">
                                 Không được để trống SDT
                             </small>
-                            <small class="text-danger" *ngIf="InfomationCustomer.get('PhoneNumber')!.hasError('minlength')">
+                            <small class="text-danger"
+                                *ngIf="InfomationCustomer.get('PhoneNumber')!.hasError('minlength')">
                                 Độ dài phải là 10
                             </small>
-                            <small class="text-danger" *ngIf="InfomationCustomer.get('PhoneNumber')!.hasError('pattern')">
+                            <small class="text-danger"
+                                *ngIf="InfomationCustomer.get('PhoneNumber')!.hasError('pattern')">
                                 Chỉ được nhập từ 0-9
                             </small>
                         </div>
                         <kendo-textbox placeholder="Số điện thoại" formControlName="PhoneNumber"></kendo-textbox>
                     </div>
                     <div class="col-md-6" style="margin: 10px 0px;">
-                        <div *ngIf="InfomationCustomer.controls['Province']!.invalid && (InfomationCustomer.controls['Province']!.dirty || InfomationCustomer.controls['Province']!.touched)">
+                        <div
+                            *ngIf="InfomationCustomer.controls['Province']!.invalid && (InfomationCustomer.controls['Province']!.dirty || InfomationCustomer.controls['Province']!.touched)">
                             <small class="text-danger" *ngIf="InfomationCustomer.get('Province')!.hasError('required')">
                                 Không được để trống Tỉnh
                             </small>
@@ -76,7 +90,8 @@
                         </kendo-dropdownlist>
                     </div>
                     <div class="col-md-6" style="margin: 10px 0px;">
-                        <div *ngIf="InfomationCustomer.controls['District']!.invalid && (InfomationCustomer.controls['District']!.dirty || InfomationCustomer.controls['District']!.touched)">
+                        <div
+                            *ngIf="InfomationCustomer.controls['District']!.invalid && (InfomationCustomer.controls['District']!.dirty || InfomationCustomer.controls['District']!.touched)">
                             <small class="text-danger" *ngIf="InfomationCustomer.get('District')!.hasError('required')">
                                 Không được để trống Thành phố
                             </small>
@@ -87,7 +102,8 @@
                         </kendo-dropdownlist>
                     </div>
                     <div class="col-md-6" style="margin: 10px 0px;">
-                        <div *ngIf="InfomationCustomer.controls['Wards']!.invalid && (InfomationCustomer.controls['Wards']!.dirty || InfomationCustomer.controls['Wards']!.touched)">
+                        <div
+                            *ngIf="InfomationCustomer.controls['Wards']!.invalid && (InfomationCustomer.controls['Wards']!.dirty || InfomationCustomer.controls['Wards']!.touched)">
                             <small class="text-danger" *ngIf="InfomationCustomer.get('Wards')!.hasError('required')">
                                 Không được để trống Phường/Xã
                             </small>
@@ -98,7 +114,8 @@
                         </kendo-dropdownlist>
                     </div>
                     <div class="col-md-6" style="margin: 10px 0px;">
-                        <div *ngIf="InfomationCustomer.controls['Hamlet']!.invalid && (InfomationCustomer.controls['Hamlet']!.dirty || InfomationCustomer.controls['Hamlet']!.touched)">
+                        <div
+                            *ngIf="InfomationCustomer.controls['Hamlet']!.invalid && (InfomationCustomer.controls['Hamlet']!.dirty || InfomationCustomer.controls['Hamlet']!.touched)">
                             <small class="text-danger" *ngIf="InfomationCustomer.get('Hamlet')!.hasError('required')">
                                 Không được để trống Tổ/Xóm
                             </small>
@@ -106,14 +123,24 @@
                         <kendo-textbox placeholder="Tổ/Xóm" formControlName="Hamlet" (change)="HamletChange($event)">
                         </kendo-textbox>
                     </div>
-                    <div class="col-md-12">
-                        <div *ngIf="InfomationCustomer.controls['Address']!.invalid && (InfomationCustomer.controls['Address']!.dirty || InfomationCustomer.controls['Address']!.touched)">
+                    <div class="col-md-9">
+                        <div
+                            *ngIf="InfomationCustomer.controls['Address']!.invalid && (InfomationCustomer.controls['Address']!.dirty || InfomationCustomer.controls['Address']!.touched)">
                             <small class="text-danger" *ngIf="InfomationCustomer.get('Address')!.hasError('required')">
-                                Không được để trống Địa ch
+                                Không được để trống Địa chỉ
                             </small>
                         </div>
                         <kendo-textbox placeholder="Địa chỉ" formControlName="Address"
                             [(ngModel)]="InfomationCustomer.value.Address"></kendo-textbox>
+                    </div>
+                    <div class="col-md-3">
+                        <button kendoButton *ngIf="!opened" (click)="open()" style="width: 100%;">Địa chỉ đã dùng</button>
+                        <kendo-dialog title="Địa chỉ đã từng đặt" *ngIf="opened" (close)="close('cancel')"
+                            [minWidth]="250" [width]="450">
+                            <div #item *ngFor="let item of oldAddress" (click)="onChangeAddress(item)" id="item_address">
+                                <span>{{item}}</span>
+                            </div>
+                        </kendo-dialog>
                     </div>
                     <div class="col-md-12">
                         <kendo-textbox placeholder="Ghi chú" formControlName="Note"></kendo-textbox>
@@ -211,7 +238,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-3 col-md-3 col-sm-3 col-3" style="display: flex;justify-content: center;align-items: center;">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-3"
+                            style="display: flex;justify-content: center;align-items: center;">
                             <button kendoButton iconClass="fa fa-info-circle fa-fw" look="clear"
                                 style="color: #5ec232;font-size: 20px;"
                                 (click)="infoCardItem($event,card.Id,index)"></button><br />
@@ -223,7 +251,8 @@
                 </ng-template>
                 <ng-template kendoListViewFooterTemplate>
                     <div class="row" style="padding: 12px 16px;">
-                        <strong style="font-weight: 400;line-height: 1.68;color: #888;" class="col-md-3 col-4">Chọn voucher:
+                        <strong style="font-weight: 400;line-height: 1.68;color: #888;" class="col-md-3 col-4">Chọn
+                            voucher:
                         </strong>
                         <div class="col-md-9 col-8">
                             <kendo-dropdownlist [data]="listVoucher" textField="name" valueField="id"

@@ -80,8 +80,8 @@
                         alt="Logo" width="100%" height="100%">
                 </a>
             </div>
-            <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;">
-                <kendo-menu [items]="menu" (select)="onSelect($event)" id="menu1"></kendo-menu>
+            <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;background-color: #ffffff;">
+                <kendo-menu [items]="menu" (select)="onSelect($event)"></kendo-menu>
             </div>
             <div class="col-md-5" style="display: flex;flex-direction: column;justify-content: center;">
                 <div class="row">
@@ -89,8 +89,8 @@
                         <div class="input-group no-border">
                             <input type="text" value="" class="form-control" placeholder="Search..."
                                 (change)="changeFilterName($event)">
-                            <button type="submit" class="btn btn-white " id="dat" (click)="searchProduct()">
-                                <i class="material-icons">search</i>
+                            <button type="submit" class="btn btn-white " id="dat1" (click)="searchProduct()">
+                                <i class="material-icons" style="background-color: #ffffff;">search</i>
                             </button>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                             style="padding: 0px;"></button>
                         <div class="container">
                             <button class="button type1" *ngIf="showLogin" (click)="openLogin()">
-                                <div class="dn"> Đăng nhập</div>
+                                <div class="dn" > Đăng nhập</div>
                             </button>
                         </div>
                         <ng-template #popContent>

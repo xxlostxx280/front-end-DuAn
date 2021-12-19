@@ -17,6 +17,7 @@ import { ApiVietNam, BillModel } from './bill.model';
 })
 export class ShoppingCartComponent implements OnInit {
   @ViewChild("appendTo", { read: ViewContainerRef })
+  public opened = false;
   public appendTo: ViewContainerRef | undefined;
   public dataSource: Array<any> = [];
   public loading = false;
@@ -32,11 +33,12 @@ export class ShoppingCartComponent implements OnInit {
   public listProvince: Array<any> = ApiVietNam;
   public listDistrict: Array<any> = [];
   public listWards: Array<any> = [];
+  public oldAddress: Array<any> = [];
 
   public steps = [
-    { label: "First step", index: 0 },
-    { label: "Second step", index: 1, disabled: true },
-    { label: "Third step", index: 2, disabled: true },
+    { label: "Bước 1", index: 0 },
+    { label: "Bước 2", index: 1, disabled: true },
+    { label: "Bước 3", index: 2, disabled: true },
   ];
   public current = 0;
   public stepType = 'full';
@@ -51,21 +53,16 @@ export class ShoppingCartComponent implements OnInit {
   public listProductByQuantity: Array<any> = [];
   public listProperty: Array<any> = [];
   public listVoucher: Array<any> = [];
-  public defaultVoucher: any = {
-    name: "Choose...",
-    id: null,
-  };
-
   public QuantityObj: QuanityModel = new QuanityModel();
   public BillObj: BillModel = new BillModel();
-
+  
   public formGroup = new FormGroup({
     property: new FormControl(),
     size: new FormControl(),
   });
   public InfomationCustomer = new FormGroup({
     FullName: new FormControl('', Validators.required),
-    PhoneNumber: new FormControl('', [Validators.required,Validators.pattern("^[0-9]*$"),Validators.maxLength(10),Validators.minLength(10)]),
+    PhoneNumber: new FormControl('', [Validators.required, Validators.pattern("^[0-9]*$"), Validators.maxLength(10), Validators.minLength(10)]),
     Province: new FormControl('', Validators.required),
     District: new FormControl('', Validators.required),
     Wards: new FormControl('', Validators.required),
@@ -73,7 +70,7 @@ export class ShoppingCartComponent implements OnInit {
     Address: new FormControl('', Validators.required),
     Note: new FormControl(),
   })
-  public Address = new FormControl({
+  public Address = new FormGroup({
     Province: new FormControl('', Validators.required),
     District: new FormControl('', Validators.required),
     Wards: new FormControl('', Validators.required),
@@ -82,6 +79,11 @@ export class ShoppingCartComponent implements OnInit {
   public Payment = new FormGroup({
     payment: new FormControl(),
   })
+  public defaultVoucher: any = {
+    name: "Choose...",
+    id: null,
+  };
+
   constructor(public api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
 
@@ -89,6 +91,8 @@ export class ShoppingCartComponent implements OnInit {
   public Property: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
   public Size: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
   public Voucher: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Customer: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  public Account: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
 
   ngOnInit(): void {
     this.step_2 = false;
@@ -97,26 +101,62 @@ export class ShoppingCartComponent implements OnInit {
     this.Property.Controller = "PropertyController";
     this.Size.Controller = "SizeController";
     this.Voucher.Controller = "VoucherController";
+    this.Customer.Controller = "CustomerController";
+
     this.Quantity.Read.Execute().subscribe((rs) => {
       this.Quantity.dataSource = rs.data;
     }, (error) => {
-      if(error.status == 500){
-        let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
-        window.location.href = "/login/" +  id;
-      }else{
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
         this.api.Notification.notificationError('');
       }
     })
     this.Voucher.getApi('Customer/' + this.Voucher.Controller + '/findVoucherByAmount').subscribe((rs) => {
       this.listVoucher = rs.data;
     }, (error) => {
-      if(error.status == 500){
-        let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
-        window.location.href = "/login/" +  id;
-      }else{
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
         this.api.Notification.notificationError('');
       }
     })
+    this.Customer.getApi('Customer/' + this.Customer.Controller + '/' + sessionStorage.getItem('Account')).subscribe((rs) => {
+      let getAddress = rs.data.address.split(',');
+      this.InfomationCustomer.controls.FullName.setValue(rs.data.fullname);
+      this.InfomationCustomer.controls.Address.setValue(rs.data.address);
+      this.Address.controls.Province.setValue(rs.data);
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
+    })
+    this.Account.getApi('api/account/' + sessionStorage.getItem('Account')).subscribe((rs) => {
+      this.InfomationCustomer.controls.PhoneNumber.setValue(rs.data.phone);
+    },(error)=>{
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
+    })
+    this.api.getApi('api/bill/get-address').subscribe((rs)=>{
+      this.oldAddress = rs.data.slice(0,5);
+    },(error)=>{
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
+    })
+
     this.key.map((x: any) => {
       let data: any = localStorage.getItem(x);
       let value = JSON.parse(data);
@@ -188,7 +228,7 @@ export class ShoppingCartComponent implements OnInit {
     this.InfomationCustomer.value.Address = "";
     this.listWards = this.listDistrict.find((x) => x.Id == event).Wards;
     this.Address.value.District = this.listDistrict.find((x) => x.Id == event).Name
-    this.InfomationCustomer.value.Address = ',' +this.Address.value.District + ',' + this.Address.value.Province
+    this.InfomationCustomer.value.Address = ',' + this.Address.value.District + ',' + this.Address.value.Province
   }
   WardsChange(event: any) {
     this.InfomationCustomer.value.Address = "";
@@ -199,8 +239,8 @@ export class ShoppingCartComponent implements OnInit {
   HamletChange(event: any) {
     this.InfomationCustomer.value.Address = "";
     this.Address.value.Hamlet = event.target.value;
-    this.InfomationCustomer.value.Address = 
-      event.target.value + ', ' + this.Address.value.Wards + ', ' + this.Address.value.District +  ', ' + this.Address.value.Province ;
+    this.InfomationCustomer.value.Address =
+      event.target.value + ', ' + this.Address.value.Wards + ', ' + this.Address.value.District + ', ' + this.Address.value.Province;
   }
   activate(event: any): void {
     if (event.index == 0) {
@@ -222,7 +262,7 @@ export class ShoppingCartComponent implements OnInit {
       const getInfoWindow = this.dialog.content.instance;
       getInfoWindow.dialog = this.dialog;
     } else if (this.step_1) {
-      if(!this.InfomationCustomer.touched){
+      if (!this.InfomationCustomer.touched) {
         alert('Mời bạn nhập đầy đủ thông tin')
       }
       if (!this.InfomationCustomer.invalid) {
@@ -283,17 +323,16 @@ export class ShoppingCartComponent implements OnInit {
           this.message.SendBadgeCart(localStorage.length);
         }
       }, (error) => {
-        if(error.status == 500){
-          let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
-          window.location.href = "/login/" +  id;
-        }else{
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
           this.api.Notification.notificationError(error.error.message);
         }
         this.api.loading = false;
       })
     }
   }
-
   removeCardItem(e: any, data: any, index: any): void {
     let removeItem = JSON.parse(String(localStorage.getItem(data)));
     this.total = this.total - Number(parseInt(removeItem.Product.price) * parseInt(removeItem.Quantity));
@@ -314,7 +353,6 @@ export class ShoppingCartComponent implements OnInit {
       type: { style: "success", icon: true },
     });
   }
-
   infoCardItem(e: any, data: any, index: any): void {
     this.listSize = [];
     this.listProperty = [];
@@ -380,7 +418,6 @@ export class ShoppingCartComponent implements OnInit {
       }
     })
   }
-
   changeQuantity(value: any): void {
     this.QuantityObj.Quantity = value;
   }
@@ -411,5 +448,16 @@ export class ShoppingCartComponent implements OnInit {
     } else {
       this.isPayment = true
     }
+  }
+
+  close(status: any) {
+    console.log(`Dialog result: ${status}`);
+    this.opened = false;
+  }
+  open() {
+    this.opened = true;
+  }
+  onChangeAddress(item: any){
+    this.InfomationCustomer.value.Address = item;
   }
 }
