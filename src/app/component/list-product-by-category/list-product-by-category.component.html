@@ -64,10 +64,10 @@
                 </a>
             </div>
             <div style="padding: 15px 0px;">
-                <div class="name">
+                <p class="name" style="text-overflow: ellipsis;width: 200px; overflow: hidden;position: relative;white-space: nowrap;">
                     <a href="/list-product/info/{{product.id}}"
                         style="font-weight: bold;font-size: 16px;">{{product.name}}</a>
-                </div>
+                </p>
                 <div class="price">
                     <p style="color: #ffc045;margin: 0;padding-top: 10px;"
                         *ngIf="product.discount == 0 || product.discount == null">
