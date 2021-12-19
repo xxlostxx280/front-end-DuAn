@@ -18,7 +18,8 @@
             <kendo-grid-column field="name" title="Tên voucher"></kendo-grid-column>
             <kendo-grid-column field="amount" title="Số lượng"></kendo-grid-column>
             <kendo-grid-column field="discount" title="Phần trăm giảm"></kendo-grid-column>
-            <kendo-grid-column field="event.name" title="Sự kiện">
+            <kendo-grid-column field="minimumValue" title="Gía trị tối thiểu"></kendo-grid-column>
+            <kendo-grid-column field="event.name" title="Sự kiện"  [width]="300">
                 <ng-template kendoGridGroupHeaderTemplate let-value="value">
                     {{ value }}
                 </ng-template>
