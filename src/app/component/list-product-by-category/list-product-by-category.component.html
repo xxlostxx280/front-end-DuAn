@@ -63,22 +63,23 @@
                     </p>
                 </a>
             </div>
-            <div style="padding: 15px 0px;">
-                <p class="name" style="text-overflow: ellipsis;width: 200px; overflow: hidden;position: relative;white-space: nowrap;">
+            <div style="padding: 15px 0px;margin-left: 15px;">
+                <p class="name"
+                style="text-overflow: ellipsis;width: 200px; overflow: hidden;position: relative;white-space: nowrap;">
                     <a href="/list-product/info/{{product.id}}"
                         style="font-weight: bold;font-size: 16px;">{{product.name}}</a>
                 </p>
                 <div class="price">
                     <p style="color: #ffc045;margin: 0;padding-top: 10px;"
                         *ngIf="product.discount == 0 || product.discount == null">
-                        {{product.price|number :'1.0-3'}}₫
+                        {{product.price|number :'1.0-3'}} ₫
                     </p>
                     <p style="color: #ffc045;margin: 0;padding-top: 10px;" *ngIf="product.discount > 0">
-                        {{product.price * (1 - product.discount/100)|number :'1.0-3'}}₫
+                        {{product.price * (1 - product.discount/100)|number :'1.0-3'}} ₫
                     </p>
-                    <small style="text-decoration-line: line-through;padding: 10px 15px;color: #ddd;"
+                    <small style="text-decoration-line: line-through;padding: 10px 15px;color: #888888;font-size: 15px;"
                         *ngIf="product.discount > 0">
-                        {{product.price|number :'1.0-3'}}₫
+                        {{product.price|number :'1.0-3'}} ₫
                     </small>
                 </div>
             </div>
