@@ -64,14 +64,14 @@ export class HeaderComponent implements OnInit {
       expanded: false,
     },
     {
-      text: "Sản phẩm",
+      text: " Sản phẩm",
       items: [
 
       ],
       expanded: false,
     },
     {
-      text: "Liên hệ",
+      text: "Liên hệ & Hỗ trợ",
       path: "contact",
       expanded: false,
     },
