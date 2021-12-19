@@ -110,4 +110,10 @@
     background-color: rgba(255, 255, 255, 0.3) !important;
     color: #ff6757 !important;
 }
+::ng-deep .k-content.k-window-content.k-dialog-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+}
 

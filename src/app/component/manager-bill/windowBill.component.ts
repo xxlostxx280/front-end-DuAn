@@ -16,6 +16,7 @@ export class WindowBillComponent implements OnInit {
     @Input() public dataSource: any;
     @Input() public formGroup !: FormGroup;
     @Input() public status: String | undefined;
+    @Input() public Base: any;
 
     public listOrderDetail: Array<any> = [];
     public listStatus: Array<any> = [];
@@ -27,10 +28,11 @@ export class WindowBillComponent implements OnInit {
     public isToolbar = true;
 
     constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
-        private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, private api: ApiService) { }
+        private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, public api: ApiService) { }
 
     public OrderDetail: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
     public statusShipping: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+
     ngOnInit(): void {
         this.OrderDetail.isManager = true;
         this.OrderDetail.Controller = "OrderDetailManagerController";
@@ -45,17 +47,16 @@ export class WindowBillComponent implements OnInit {
                 this.api.Notification.notificationError('');
             }
         })
-        this.statusShipping.getApi(('Manager/' + this.statusShipping.Controller + '/shiping/' + this.formGroup.value.id))
-            .subscribe((rs) => {
-                this.listStatus = rs.data;
-            }, (error) => {
-                if (error.status == 500) {
-                    let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
-                    window.location.href = "/login/" + id;
-                } else {
-                    this.api.Notification.notificationError('');
-                }
-            })
+        this.statusShipping.getApi(('Manager/' + this.statusShipping.Controller + '/shiping/' + this.formGroup.value.id)).subscribe((rs) => {
+            this.listStatus = rs.data;
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
+        })
         this.formGroup.controls.payment.disable({ emitEvent: true });
         this.changeButton();
     }
@@ -64,10 +65,13 @@ export class WindowBillComponent implements OnInit {
         return value;
     }
     cancel(): void {
+        this.Base.windowRef.close();
+        this.Base.loading = true;
         this.api.getApi('Manager/BillManagerController/cancel/' + this.formGroup.value.id).subscribe((rs) => {
             if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
+                this.Base.loading = false;
             }
         }, (error) => {
             if (error.status == 500) {
@@ -76,13 +80,17 @@ export class WindowBillComponent implements OnInit {
             } else {
                 this.api.Notification.notificationError('');
             }
+            this.Base.loading = false;
         })
     }
     confirm(): void {
+        this.Base.windowRef.close();
+        this.Base.loading = true;
         this.api.getApi('Manager/BillManagerController/confirm/' + this.formGroup.value.id).subscribe((rs) => {
             if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
+                this.Base.loading = false;
             }
         }, (error) => {
             if (error.status == 500) {
@@ -91,13 +99,17 @@ export class WindowBillComponent implements OnInit {
             } else {
                 this.api.Notification.notificationError('');
             }
+            this.Base.loading = false;
         })
     }
     ship(): void {
+        this.Base.windowRef.close();
+        this.Base.loading = true;
         this.api.getApi('Manager/BillManagerController/ship/' + this.formGroup.value.id).subscribe((rs) => {
             if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
+                this.Base.loading = false;
             }
         }, (error) => {
             if (error.status == 500) {
@@ -106,24 +118,17 @@ export class WindowBillComponent implements OnInit {
             } else {
                 this.api.Notification.notificationError('');
             }
+            this.Base.loading = false;
         })
     }
     received(): void {
+        this.Base.windowRef.close();
+        this.Base.loading = true;
         this.api.getApi('Manager/BillManagerController/received/' + this.formGroup.value.id).subscribe((rs) => {
             if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
-            }
-        }, (error) => {
-            alert('Bạn không có quyền dùng chức năng này')
-            window.location.href = "/login"
-        })
-    }
-    refund(): void {
-        this.api.getApi('Manager/BillManagerController/refund/' + this.formGroup.value.id).subscribe((rs) => {
-            if (rs.status) {
-                this.message.SendDataAfterUpdate(rs.data);
-                this.api.Notification.notificationExecute(rs);
+                this.Base.loading = false;
             }
         }, (error) => {
             if (error.status == 500) {
@@ -132,6 +137,26 @@ export class WindowBillComponent implements OnInit {
             } else {
                 this.api.Notification.notificationError('');
             }
+            this.Base.loading = false;
+        })
+    }
+    refund(): void {
+        this.Base.windowRef.close();
+        this.Base.loading = true;
+        this.api.getApi('Manager/BillManagerController/refund/' + this.formGroup.value.id).subscribe((rs) => {
+            if (rs.status) {
+                this.message.SendDataAfterUpdate(rs.data);
+                this.api.Notification.notificationExecute(rs);
+                this.Base.loading = false;
+            }
+        }, (error) => {
+            if (error.status == 500) {
+                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                window.location.href = "/login/" + id;
+            } else {
+                this.api.Notification.notificationError('');
+            }
+            this.Base.loading = false;
         })
     }
     changeButton(): void {
@@ -146,13 +171,13 @@ export class WindowBillComponent implements OnInit {
         if (this.formGroup.value.status == "DA_XAC_NHAN_VA_DONG_GOI") {
             this.isConfirm = false;
             this.isReceived = false;
-            this.isRefund = false;
+            this.isRefund = true;
         }
         if (this.formGroup.value.status == "DA_GIAO_BEN_VAN_CHUYEN") {
             this.isShip = false;
             this.isCancel = false;
             this.isConfirm = false;
-            this.isRefund = false;
+            this.isRefund = true;
         }
         if (this.formGroup.value.status == "KHACH_DA_NHAN_HANG") {
             this.isReceived = false;

@@ -1,7 +1,7 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
-import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
+import { DialogCloseResult, DialogRef, DialogService, WindowService } from '@progress/kendo-angular-dialog';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { MessageService } from './message.service';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -33,6 +33,7 @@ export class ApiService {
     value: "",
   };
   public windowRef: any;
+  public dialogRef!: DialogRef;
   constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder) {
   }
@@ -104,8 +105,26 @@ export class ApiService {
         getInfoWindow.formGroup = this._.formGroup;
         getInfoWindow.status = status;
       }
+      getInfoWindow.Base = this._; 
       this.After(windowRef);
     },
+  }
+  public DialogWindow = {
+    _: this,
+    title: "",
+    content: "",
+    width: 300,
+    height: 125,
+    DialogDelete: function () {
+      const dialog: DialogRef = this._.dialogService.open({
+        title: this.title,
+        content: this.content,
+        actions: [{ text: "No" }, { text: "Yes", primary: true }],
+        width: this.width,
+        height: this.height,
+      })
+      this._.dialogRef = dialog;
+    }
   }
   public Notification = {
     _: this,
@@ -134,7 +153,7 @@ export class ApiService {
         position: { horizontal: 'right', vertical: 'top' }
       })
     },
-    notificationSuccess: function(content: any){
+    notificationSuccess: function (content: any) {
       this._.notificationService.show({
         content: content,
         animation: { type: "fade", duration: 800 },
@@ -142,7 +161,7 @@ export class ApiService {
         position: { horizontal: 'right', vertical: 'top' }
       })
     },
-    notificationError: function(content: any){
+    notificationError: function (content: any) {
       this._.notificationService.show({
         content: content,
         animation: { type: "fade", duration: 800 },
@@ -287,20 +306,20 @@ export class ApiService {
     Execute: function () {
       if (sessionStorage.getItem('ROLE') == 'ADMIN' || this._.isManager == true) {
         let getHeader = this._.getHeader();
-        if (getHeader instanceof HttpHeaders) { 
-          return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAllByIsDeleteFalse',{ headers: getHeader })
-          .pipe(map((res: any) => {
-            return res;
-          }), tap(() => {
-            this._.loading = false
-          }))
-        }else{
+        if (getHeader instanceof HttpHeaders) {
+          return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAllByIsDeleteFalse', { headers: getHeader })
+            .pipe(map((res: any) => {
+              return res;
+            }), tap(() => {
+              this._.loading = false
+            }))
+        } else {
           return this._.http.get('http://localhost:8080/Manager/' + this._.Controller + '/findAllByIsDeleteFalse')
-          .pipe(map((res: any) => {
-            return res;
-          }), tap(() => {
-            this._.loading = false
-          }))
+            .pipe(map((res: any) => {
+              return res;
+            }), tap(() => {
+              this._.loading = false
+            }))
         }
       } else {
         return this._.http.get('http://localhost:8080/Customer/' + this._.Controller + '/findAllByIsDeleteFalse')
@@ -388,7 +407,7 @@ export class ApiService {
       let url = "http://localhost:8080/Manager/" + this._.Controller + "/updateInline";
       let getHeader = this._.getHeader();
       if (getHeader instanceof HttpHeaders) {
-        return this._.http.post(url, formData,{ headers: getHeader }).pipe(map((res: any) => {
+        return this._.http.post(url, formData, { headers: getHeader }).pipe(map((res: any) => {
           if (res.status) {
             this._.Notification.notificationExecute(res);
             this._.message.SendDataAfterUpdate(res);
@@ -400,7 +419,7 @@ export class ApiService {
         }), tap(() => {
           this._.loading = false
         }))
-      }else{
+      } else {
         return this._.http.post(url, formData).pipe(map((res: any) => {
           if (res.status) {
             this._.Notification.notificationExecute(res);
@@ -420,7 +439,7 @@ export class ApiService {
       let url = "http://localhost:8080/Manager/" + this._.Controller + "/saveAndFlush";
       let getHeader = this._.getHeader();
       if (getHeader instanceof HttpHeaders) {
-        return this._.http.post(url, data,{ headers: getHeader }).pipe(map((res: any) => {
+        return this._.http.post(url, data, { headers: getHeader }).pipe(map((res: any) => {
           if (res.status) {
             res.type = this._.status;
             this._.Notification.notificationExecute(res);
@@ -432,7 +451,7 @@ export class ApiService {
         }), tap(() => {
           this._.loading = false
         }))
-      }else{
+      } else {
         return this._.http.post(url, data).pipe(map((res: any) => {
           if (res.status) {
             res.type = this._.status;
@@ -476,17 +495,62 @@ export class ApiService {
   }
   public Destroy = {
     _: this,
-    Execute: function (data: any, url: any) {
-      return this._.http.post('http://localhost:8080/Manager/' + this._.Controller + '/delete', data).pipe(map((res: any) => {
-        if (res.status) {
-          res.type = this._.status;
-          this._.Notification.notificationExecute(res);
-          this._.message.SendDataAfterUpdate(res);
-        } else {
-          this._.Notification.notificationExecute(res);
-        }
-        return res;
-      }))
+    Execute: function (url: any, data: any) {
+      let getHeader = this._.getHeader();
+      this._.DialogWindow.content = "Bạn chắc chắn muốn xóa hàng này ?"
+      this._.DialogWindow.DialogDelete();
+      // this._.dialogRef.result.subscribe((rs: any) => {
+      //   if (!rs.primary) {
+      //     return;
+      //   } else {
+      //     if (getHeader instanceof HttpHeaders) {
+      //       return this._.http.post('http://localhost:8080/Manager/' + this._.Controller + '/delete', data, { headers: getHeader }).pipe(map((res: any) => {
+      //         if (res.status) {
+      //           res.type = this._.status;
+      //           this._.Notification.notificationExecute(res);
+      //           this._.message.SendDataAfterUpdate(res);
+      //         } else {
+      //           this._.Notification.notificationExecute(res);
+      //         }
+      //         this._.loading = false;
+      //       }))
+      //     } else {
+      //       return this._.http.post('http://localhost:8080/Manager/' + this._.Controller + '/delete', data).pipe(map((res: any) => {
+      //         if (res.status) {
+      //           res.type = this._.status;
+      //           this._.Notification.notificationExecute(res);
+      //           this._.message.SendDataAfterUpdate(res);
+      //         } else {
+      //           this._.Notification.notificationExecute(res);
+      //         }
+      //         this._.loading = false;
+      //       }))
+      //     }
+      //   }
+      // })
+      if (getHeader instanceof HttpHeaders) {
+        return this._.http.post('http://localhost:8080/Manager/' + this._.Controller + '/delete', data, { headers: getHeader }).pipe(map((res: any) => {
+          if (res.status) {
+            res.type = this._.status;
+            this._.Notification.notificationExecute(res);
+            this._.message.SendDataAfterUpdate(res);
+          } else {
+            this._.Notification.notificationExecute(res);
+          }
+          this._.loading = false;
+        }))
+      } else {
+        return this._.http.post('http://localhost:8080/Manager/' + this._.Controller + '/delete', data).pipe(map((res: any) => {
+          if (res.status) {
+            res.type = this._.status;
+            this._.Notification.notificationExecute(res);
+            this._.message.SendDataAfterUpdate(res);
+          } else {
+            this._.Notification.notificationExecute(res);
+          }
+          this._.loading = false;
+        }))
+      }
     }
   }
 }

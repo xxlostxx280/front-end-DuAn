@@ -17,7 +17,7 @@ import { WindowBillComponent } from './windowBill.component';
 export class ManagerBillComponent implements OnInit {
   public gridData: Array<any> = [];
 
-  constructor(private ngZone: NgZone, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+  constructor(public api: ApiService,private ngZone: NgZone, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder) { }
 
   public Bill: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
@@ -49,9 +49,21 @@ export class ManagerBillComponent implements OnInit {
   ]
   ngOnInit(): void {
     this.Bill.isManager = true;
-    this.Bill.Controller = "BillManagerController";
+    this.Bill.Controller = "BillManagerController"; 
+    this.Read();
+    this.message.receivedDataAfterUpadte().subscribe((rs)=>{
+      this.Bill.loading = true;
+      this.Read();
+    })
+    this.message.receivedDataBehavior().subscribe((rs) => {
+      this.gridData = rs;
+    })
+  }
+
+  Read(): void{
     this.Bill.Read.Execute().subscribe((rs) => {
       this.gridData = rs.data;
+      this.Bill.loading = false;
     }, (error) => {
       if (error.status == 500) {
         let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
@@ -59,35 +71,20 @@ export class ManagerBillComponent implements OnInit {
       } else {
         this.Bill.Notification.notificationError('');
       }
-    })
-    
-    this.message.receivedDataAfterUpadte().subscribe((rs)=>{
-      this.gridData.map((val,idx)=>{
-        if(val.id == rs.id){
-          this.gridData[idx] = rs; 
-        }
-      })
-    })
-    this.message.receivedDataBehavior().subscribe((rs) => {
-      this.gridData = rs;
-    })
+    })   
   }
-
   Update(grid: any): void {
     this.Bill.Update.Execute(grid);
   }
-  
   onStatusChange(event: any): void{
     this.Bill.formGroup.markAsDirty({onlySelf: true});
     this.Bill.formGroup.controls.status.setValue(this.listStatus.find((x)=> x.id == event)?.name);
   }
-
   editHandler(event: any) {
     this.Bill.OpenWindow.top = -115;
     this.Bill.OpenWindow.left = -60;
     this.Bill.Edit.Execute(WindowBillComponent, event);
   }
-
   cellClickHandler(event: any): void {
     if (!event.isEdit && this.isReadOnly(event.column.field)) {
       this.Bill.Grid.cellClickHandler(event);
@@ -96,7 +93,6 @@ export class ManagerBillComponent implements OnInit {
   cellCloseHandler(event: any): void {
     this.Bill.Grid.cellCloseHandler(event);
   }
-
   private isReadOnly(field: string): boolean {
     const readOnlyColumns = ["statusshipping"];
     return readOnlyColumns.indexOf(field) > -1;
