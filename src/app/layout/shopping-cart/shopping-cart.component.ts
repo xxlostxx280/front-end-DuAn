@@ -34,7 +34,9 @@ export class ShoppingCartComponent implements OnInit {
   public listDistrict: Array<any> = [];
   public listWards: Array<any> = [];
   public oldAddress: Array<any> = [];
-
+  public myWallet: any;
+  public selectedValue = null;
+  public totalShipping = 30000;
   public steps = [
     { label: "Bước 1", index: 0 },
     { label: "Bước 2", index: 1, disabled: true },
@@ -77,10 +79,10 @@ export class ShoppingCartComponent implements OnInit {
     Hamlet: new FormControl('', Validators.required),
   })
   public Payment = new FormGroup({
-    payment: new FormControl(),
+    payment: new FormControl('cash'),
   })
   public defaultVoucher: any = {
-    name: "Choose...",
+    name: "Chọn Voucher...",
     id: null,
   };
 
@@ -114,7 +116,7 @@ export class ShoppingCartComponent implements OnInit {
       }
     })
     this.Voucher.getApi('Customer/' + this.Voucher.Controller + '/findVoucherByAmount').subscribe((rs) => {
-      this.listVoucher = rs.data;
+      this.Voucher.dataSource = rs.data;
     }, (error) => {
       if (error.status == 500) {
         let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
@@ -156,7 +158,16 @@ export class ShoppingCartComponent implements OnInit {
         this.api.Notification.notificationError('');
       }
     })
-
+    this.api.getApi('Customer/MamiPayController/mamipay').subscribe((rs) => {
+      this.myWallet = rs.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
+    })
     this.key.map((x: any) => {
       let data: any = localStorage.getItem(x);
       let value = JSON.parse(data);
@@ -217,7 +228,21 @@ export class ShoppingCartComponent implements OnInit {
       }
     })
   }
-
+  Rules(): boolean{
+    if(this.InfomationCustomer.controls.FullName.errors != null){
+      this.api.Notification.notificationWarning('Thông tin nhận hàng đang sai mời bạn điền lại');
+      return false;
+    }
+    if(this.InfomationCustomer.controls.PhoneNumber.errors != null){
+      this.api.Notification.notificationWarning('Thông tin nhận hàng đang sai mời bạn điền lại');
+      return false;
+    }
+    if(this.InfomationCustomer.value.Address == ""){
+      this.api.Notification.notificationWarning('Không được để trống địa chỉ');
+      return false;
+    }
+    return true;
+  }
   ProvinceChange(event: any) {
     this.InfomationCustomer.value.Address = "";
     this.listDistrict = this.listProvince.find((x) => x.Id == event).Districts;
@@ -261,11 +286,11 @@ export class ShoppingCartComponent implements OnInit {
       });
       const getInfoWindow = this.dialog.content.instance;
       getInfoWindow.dialog = this.dialog;
-    } else if (this.step_1) {
-      if (!this.InfomationCustomer.touched) {
-        alert('Mời bạn nhập đầy đủ thông tin')
-      }
-      if (!this.InfomationCustomer.invalid) {
+    }else if(this.dataSource.length == 0){
+      this.api.Notification.notificationError('Trong giỏ hàng không có sản phẩm')
+    }else if (this.step_1) {
+      if(!this.Rules()){return;}
+      else{
         this.step_1 = false;
         this.step_2 = true;
         this.BillObj.fullname = this.InfomationCustomer.value.FullName;
@@ -282,6 +307,9 @@ export class ShoppingCartComponent implements OnInit {
     } else if (this.step_2) {
       this.BillObj.statusshipping = "Đang xử lý";
       this.BillObj.username = String(sessionStorage.getItem('USERNAME'));
+      if(this.myWallet.surplus < this.toMoney){
+        return this.api.Notification.notificationWarning('Số dư trong ví không đủ để thanh toán đơn')
+      }
       if (this.Payment.value.payment == "cash") {
         this.isPayment = false;
         this.BillObj.payment = false;
@@ -443,10 +471,19 @@ export class ShoppingCartComponent implements OnInit {
   }
   PaymentMethodChange(event: any): void {
     if (event.target.value == "cash") {
-      this.isPayment = false;
+      this.BillObj.voucher_id = '';
+      this.BillObj.discount = '';
       this.toMoney = this.total;
+      this.selectedValue = null;
+      this.isPayment = false;
+      this.totalShipping = 30000;
+      this.toMoney = this.total + this.totalShipping
     } else {
-      this.isPayment = true
+      this.listVoucher = this.Voucher.dataSource.filter((x) => x.minimumValue <= this.total);
+      this.selectedValue = null;
+      this.isPayment = true;
+      this.totalShipping = 0;
+      this.toMoney = this.total + this.totalShipping
     }
   }
 
