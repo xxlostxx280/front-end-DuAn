@@ -21,6 +21,26 @@
             <kendo-grid-column field="statusshipping" title="Mã trạng thái ship" [width]="200" [locked]="true">
             </kendo-grid-column>
             <kendo-grid-column field="status" title="Trạng thái" [width]="250" [locked]="true">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <div *ngIf="dataItem.status == 'HUY'">
+                        Hủy
+                    </div>
+                    <div *ngIf="dataItem.status == 'CHUA_XAC_NHAN'">
+                        Chưa xác nhận
+                    </div>
+                    <div *ngIf="dataItem.status == 'DA_XAC_NHAN_VA_DONG_GOI'">
+                        Đã xác nhận và đóng gói
+                    </div>
+                    <div *ngIf="dataItem.status == 'KHACH_DA_NHAN_HANG'">
+                        Khách đã nhận hàng
+                    </div>
+                    <div *ngIf="dataItem.status == 'HOAN_HANG'">
+                        Hoàn hàng
+                    </div>
+                    <div *ngIf="dataItem.status == 'DA_GIAO_BEN_VAN_CHUYEN'">
+                        Đã giao bên vận chuyển
+                    </div>
+                </ng-template>  
             </kendo-grid-column>
             <kendo-grid-column field="payment" title="Phương thức" [width]="250">
                 <ng-template kendoGridCellTemplate let-dataItem>
