@@ -40,6 +40,8 @@ import { HistoryAndWalletComponent } from "./history-and-wallet/history-and-wall
 import { DateInputsModule } from "@progress/kendo-angular-dateinputs";
 import { WindowHistoryComponent } from "./history-and-wallet/windowHistory.component";
 import { WindowRechargeComponent } from "./history-and-wallet/windowRecharge.component";
+import { IntroduceComponent } from "../component/introduce/introduce.component";
+import { ContactComponent } from "../component/contact/contact.component";
 
 @NgModule({
     declarations:[
@@ -52,7 +54,8 @@ import { WindowRechargeComponent } from "./history-and-wallet/windowRecharge.com
         RegisterComponent,
         ChangePasswordComponent,
         HistoryAndWalletComponent,
-        
+        IntroduceComponent,
+        ContactComponent,
         ///Các popup window /////////
         DialogInfoProductComponent,
         DialogLoginComponent,
