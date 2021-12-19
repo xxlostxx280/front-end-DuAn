@@ -15,6 +15,7 @@ import { WindowUploadComponent } from './windowUpload.component';
 })
 export class ManagerProductComponent implements OnInit {
   public view!: Observable<GridDataResult>;
+  public opened = false;
   public hiddenColumns: string[] = [];
   public gridData: Array<any> = [];
   public method: any;
@@ -76,7 +77,7 @@ export class ManagerProductComponent implements OnInit {
     this.api.Edit.Execute(WindowProductComponent, event);
   }
   removeHandler(event: any) {
-
+    this.api.Destroy.Execute(null,event.dataItem).subscribe();
   }
   dataStateChange(state: DataStateChangeEvent): void {
     this.state = state;

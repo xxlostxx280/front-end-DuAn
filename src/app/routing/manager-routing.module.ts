@@ -5,6 +5,7 @@ import { ManagerAccountComponent } from "../component/manager-account/manager-ac
 import { ManagerBillComponent } from "../component/manager-bill/manager-bill.component";
 import { ManagerCategoryComponent } from "../component/manager-category/manager-category.component";
 import { ManagerEventComponent } from "../component/manager-event/manager-event.component";
+import { ManagerPermiseAccountComponent } from "../component/manager-permise-account/manager-permise-account.component";
 import { ManagerProductComponent } from "../component/manager-product/manager-product.component";
 import { ManagerPropertyComponent } from "../component/manager-property/manager-property.component";
 import { ManagerQuantityComponent } from "../component/manager-quantity/manager-quantity.component";
@@ -70,6 +71,14 @@ const routes: Routes = [
             {
                 path: 'danh-sach-tai-khoan',
                 component: ManagerAccountComponent,
+                canActivate: [AuthGuard],
+                data: {
+                    expectedRole: 'ROLE_ADMIN'
+                }                        
+            },
+            {
+                path: 'phan-quyen-tai-khoan',
+                component: ManagerPermiseAccountComponent,
                 canActivate: [AuthGuard],
                 data: {
                     expectedRole: 'ROLE_ADMIN'
