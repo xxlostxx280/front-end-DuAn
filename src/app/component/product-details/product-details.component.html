@@ -107,7 +107,7 @@
                     </p>
                     <p style="color: #ffc045;margin: 0;padding-top: 10px;font-family: Arial, Helvetica, sans-serif;"
                         *ngIf="product.discount > 0">
-                        {{product.price * product.discount/100|number :'1.0-3'}}₫
+                        {{product.price * (1 - product.discount/100)|number :'1.0-3'}}₫
                         <small
                             style="text-decoration-line: line-through;padding: 0px 15px;color: #ddd;font-family: Arial, Helvetica, sans-serif;">
                             {{product.price | number :'1.0-3'}}₫
