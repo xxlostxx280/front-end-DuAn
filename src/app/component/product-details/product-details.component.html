@@ -39,10 +39,10 @@
                 </p>
                 <p style="color: #ffc045;padding-top: 10px;font-size: 25px;font-weight: 600;font-family: Arial, Helvetica, sans-serif;"
                     *ngIf="isDiscount">
-                    {{newPrice}} ₫
+                    {{newPrice | number :'1.0-3'}} ₫
                     <small
                         style="text-decoration-line: line-through;font-size: 16px;padding: 0px 15px;color: #888888;font-family: Arial, Helvetica, sans-serif;font-size: 22px;">
-                        {{infoProduct.price}} ₫
+                        {{infoProduct.price | number :'1.0-3'}} ₫
                     </small>
                 </p>
                 <div class="row">
@@ -52,7 +52,7 @@
                 </div>
                 <p style="color: #ffc045;padding-top: 10px;font-size: 25px;font-weight: 600;font-family: Arial, Helvetica, sans-serif;
                 " *ngIf="!isDiscount">
-                    {{infoProduct.price}}₫
+                    {{infoProduct.price | number :'1.0-3'}}₫
                 </p>
                 <div class="row" style="margin: 15px 0px;">
                     <label class="col-xl-2 col-lg-3 col-md-3 col-sm-4 col-4" style="padding: 0px;">Màu sắc</label>
@@ -111,7 +111,7 @@
                     </p>
                 </a>
             </div>
-            <div style="padding: 15px 0px; ">
+            <div style="padding: 15px 0px; margin-left: 15px;">
                 <p class="name"
                     style="text-overflow: ellipsis;width: 200px; overflow: hidden;position: relative;white-space: nowrap;">
                     <a href="/list-product/info/{{product.id}}" style="font-weight: bold;font-size: 16px;">
