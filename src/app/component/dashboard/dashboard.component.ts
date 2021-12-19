@@ -8,59 +8,77 @@ import { ApiService } from 'src/app/shared/api.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  public current = 0;
+  public opened = false;
+  public currentChart = 0;
+  public currentTable = 0;
   public chart: any;
   public status: any;
   public date = new Date();
   public series: Array<any> = [];
   public chartDayOfMonth: Array<any> = [];
   public chartMonthOfYear: Array<any> = [];
+  public listBillOfMonth: Array<any> = [];
+  public listQuantityByDay: Array<any> = [];
+  public listQuantityByMonth: Array<any> = [];
   public listStatus: Array<{ id: any, name: string }> = [
     {
-      id: 0,
-      name: "CHUA_XAC_NHAN"
+      id: "CHUA_XAC_NHAN",
+      name: "Chưa xác nhận"
     },
     {
-      id: 1,
-      name: "DA_XAC_NHAN_VA_DONG_GOI"
+      id: "DA_XAC_NHAN_VA_DONG_GOI",
+      name: "Đẫ xác nhận và đóng gói"
     },
     {
-      id: 2,
-      name: "DA_GIAO_BEN_VAN_CHUYEN"
+      id: "DA_GIAO_BEN_VAN_CHUYEN",
+      name: "Đã giao bên vận chuyển"
     },
     {
-      id: 3,
-      name: "KHACH_DA_NHAN_HANG"
+      id: "KHACH_DA_NHAN_HANG",
+      name: "Khách đã nhận hàng"
     },
     {
-      id: 4,
-      name: "HOAN_HANG"
+      id: "HOAN_HANG",
+      name: "Hoàn hàng"
     },
     {
-      id: 5,
-      name: "HUY"
+      id: "HUY",
+      name: "Hủy"
     },
   ]
   constructor(public api: ApiService) { }
   ngOnInit(): void {
     this.api.Controller = "StatisController";
-    this.Read();
+    this.status = this.listStatus.find((x)=> x.id == "CHUA_XAC_NHAN")?.id;
+    this.ReadChart();
+    this.ReadTable();
   }
 
-  Read(): void {
-    if (this.current == 0) {
-      for (let i = 0; i < this.listStatus.length; i++){
-        let status = this.listStatus[i].name;
-        this.getDataDayOfMonth(this.date.getMonth() + 1,this.date.getFullYear(),status);
+  ReadChart(): void {
+    if (this.currentChart == 0) {
+      for (let i = 0; i < this.listStatus.length; i++) {
+        let status = this.listStatus[i].id;
+        this.getDataDayOfMonth(this.date.getMonth() + 1, this.date.getFullYear(), status);
       }
     }
-    if (this.current == 1) {
-      for (let i = 0; i < this.listStatus.length; i++){
-        let status = this.listStatus[i].name;
-        this.getDataMonthOfYear(this.date.getFullYear(),status);
+    if (this.currentChart == 1) {
+      for (let i = 0; i < this.listStatus.length; i++) {
+        let status = this.listStatus[i].id;
+        this.getDataMonthOfYear(this.date.getFullYear(), status);
       }
+    }
+    this.getBillInMonth();
+  }
+  ReadTable(){
+    let day = this.date.getFullYear() + '-' + (this.date.getMonth() + 1) + '-' + this.date.getDate();
+    if(this.currentTable == 0){
+      this.getQuantityByDay(day,this.status);
+    }
+    if(this.currentTable == 1){
+      this.getQuantityByMonth(this.status);
     }
   }
+
   getDataDayOfMonth(month: any, year: any, status: any): void {
     this.api.getApi('Manager/' + this.api.Controller + '/getEveryDayOfTheMonth?month=' + month + '&year=' + year + '&status=' + status)
       .subscribe((rs) => {
@@ -108,31 +126,97 @@ export class DashboardComponent implements OnInit {
         }
       })
   }
+  getBillInMonth() {
+    this.api.getApi('Manager/' + this.api.Controller + '/bill-dashboard').subscribe((rs) => {
+      this.listBillOfMonth = rs.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError(error.error.message);
+      }
+    })
+  }
+  getQuantityByDay(day: any,status: any) {
+    this.api.getApi('Manager/' + this.api.Controller + '/quantityByDay?day=' + day + '&enumStatus=' + status)
+      .subscribe((rs) => {
+        this.listQuantityByDay = rs.data;
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
+      })
+  }
+  getQuantityByMonth(status: any){
+    this.api.getApi('Manager/' + this.api.Controller + '/quantityByMonth?status=' + status)
+    .subscribe((rs) => {
+      this.listQuantityByMonth = rs.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
+    })
+  }
 
-  onSelect(event: any): void {
+  onSelectChart(event: any): void {
     if (event.index == 0) {
       this.series = [];
       this.chartDayOfMonth = [];
-      this.current = event.index;
+      this.currentChart = event.index;
     }
     if (event.index == 1) {
       this.series = [];
       this.chartMonthOfYear = [];
-      this.current = event.index;
+      this.currentChart = event.index;
     }
-    this.Read();
+    this.ReadChart();
   }
-  
-  onChangeDate(event: any): void {
+  onSelectTable(event: any): void {
+    if (event.index == 0) {
+      this.listQuantityByDay = [];
+      this.currentTable = event.index;
+    }
+    if (event.index == 1) {
+      this.listQuantityByMonth = [];
+      this.currentTable = event.index;
+    }
+    this.ReadTable();
+  }
+
+  onChangeStatus(event: any): void{
+    this.status = event.id;
+    this.opened = false;
+    this.ReadTable();
+  }
+  onChangeDateChart(event: any): void {
     this.date = event;
-    if (this.current == 0) {
+    if (this.currentChart == 0) {
       this.series = [];
       this.chartDayOfMonth = [];
     }
-    if (this.current == 1) {
+    if (this.currentChart == 1) {
       this.series = [];
       this.chartMonthOfYear = [];
     }
-    this.Read();
+    this.ReadChart();
+  }
+  onChangeDateTable(event: any): void{
+    let day = event.getFullYear() + '-' + (event.getMonth() + 1) + '-' + event.getDate();
+    this.getQuantityByDay(day,this.status);
+  }
+
+  close(status: any) {
+    console.log(`Dialog result: ${status}`);
+    this.opened = false;
+  }
+  open() {
+    this.opened = true;
   }
 }
