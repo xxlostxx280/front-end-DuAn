@@ -15,8 +15,8 @@
             <form [formGroup]="screen" style="list-style: none;">
                 <li style="padding: 10px 0px;">
                     <input type="radio" id="isInfoAccount" kendoRadioButton value="isInfoAccount"
-                        formControlName="active" (change)="onChangeScreen($event)" checked />
-                    <label class="k-radio-label" for="isInfoAccount" checked>Thông tin tài
+                        formControlName="active" (change)="onChangeScreen($event)" />
+                    <label class="k-radio-label" for="isInfoAccount">Thông tin tài
                         khoản</label>
                 </li>
                 <li style="padding: 10px 0px;">
@@ -102,6 +102,19 @@
                             </small>
                         </div>
                     </div>
+                    <div class="row" style="margin: 10px 0px;">
+                        <label class="col-lg-2 col-md-5 col-sm-4 col-4" style="margin: 10px 0px;">Địa chỉ: </label>
+                        <div class="col-lg-5 col-md-7 col-sm-8 col-8">
+                            <kendo-textbox formControlName="address" type="text" style="width: 100%;"
+                                ([ngModel])="formAccount.value.address"></kendo-textbox>
+                        </div>
+                        <div class="col-lg-5 col-md-12 col-sm-12 col-12"
+                            *ngIf="formAccount.controls['address']!.invalid && (formAccount.controls['address']!.dirty || formAccount.controls['address']!.touched)">
+                            <small class="text-danger" *ngIf="formAccount.get('address')!.hasError('required')">
+                                Không được để trống địa chỉ
+                            </small>
+                        </div>
+                    </div>
                     <button kendoButton icon="save" (click)="changeInfoAccount()">Cập nhật thông tin</button>
                 </form>
             </div>
@@ -143,12 +156,48 @@
                                 containerClass="k-d-flex k-flex-col k-flex-nowrap" style="border: none;">
                                 <ng-template kendoListViewItemTemplate let-dataItem="dataItem" let-index="index">
                                     <div style="margin: 10px;border: 3px solid greenyellow;padding: 10px 15px;border-radius: 5px;
-                                box-shadow: 2px #ddd;">
-                                        <p><strong>Số tiền: </strong>{{dataItem.amounts}}</p>
-                                        <p><strong>Ngày/giờ:</strong>
-                                            <kendo-datetimepicker [value]="getDate(dataItem.time)" [disabled]="true"
-                                                style="margin: 0px 10px;"> </kendo-datetimepicker>
-                                        </p>
+                                box-shadow: 2px #ddd;" class="row" *ngIf="dataItem.content == 'Nap tien vao vi'">
+                                        <div class="col-md-6">
+                                            <p><strong>Số tiền: </strong> +{{dataItem.amounts|number :'1.0-3'}}</p>
+                                            <p><strong>Thời gian giao dịch:</strong>
+                                                <kendo-datetimepicker [value]="getDate(dataItem.time)" [disabled]="true"
+                                                    style="margin: 0px 10px;"> </kendo-datetimepicker>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Ghi chú: </strong>{{dataItem.description}}</p>
+                                            <p><strong>Trạng thái: </strong>{{dataItem.content}}</p>
+                                        </div>
+                                    </div>
+                                    <div style="margin: 10px;border: 3px solid yellow;padding: 10px 15px;border-radius: 5px;
+                                    box-shadow: 2px #ddd;" class="row"
+                                        *ngIf="dataItem.content == 'Thanh toán hóa đơn'">
+                                        <div class="col-md-6">
+                                            <p><strong>Số tiền: </strong> -{{dataItem.amounts|number :'1.0-3'}}</p>
+                                            <p><strong>Thời gian giao dịch:</strong>
+                                                <kendo-datetimepicker [value]="getDate(dataItem.time)" [disabled]="true"
+                                                    style="margin: 0px 10px;"> </kendo-datetimepicker>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Ghi chú: </strong>{{dataItem.description}}</p>
+                                            <p><strong>Trạng thái: </strong>{{dataItem.content}}</p>
+                                        </div>
+                                    </div>
+                                    <div style="margin: 10px;border: 3px solid red;padding: 10px 15px;border-radius: 5px;
+                                        box-shadow: 2px #ddd;" class="row"
+                                        *ngIf="dataItem.content == 'Hoàn tiền hóa đơn'">
+                                        <div class="col-md-6">
+                                            <p><strong>Số tiền: </strong> -{{dataItem.amounts|number :'1.0-3'}}</p>
+                                            <p><strong>Thời gian giao dịch:</strong>
+                                                <kendo-datetimepicker [value]="getDate(dataItem.time)" [disabled]="true"
+                                                    style="margin: 0px 10px;"> </kendo-datetimepicker>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Ghi chú: </strong>{{dataItem.description}}</p>
+                                            <p><strong>Trạng thái: </strong>{{dataItem.content}}</p>
+                                        </div>
                                     </div>
                                 </ng-template>
                             </kendo-listview>

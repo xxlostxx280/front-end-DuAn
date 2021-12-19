@@ -32,7 +32,8 @@ export class HistoryAndWalletComponent implements OnInit {
     fullname: new FormControl('',Validators.required),
     email: new FormControl('',[Validators.email,Validators.required]),
     username: new FormControl('', Validators.required),
-    sdt: new FormControl('',[Validators.required,Validators.minLength(10),Validators.maxLength(10)])
+    sdt: new FormControl('',[Validators.required,Validators.minLength(10),Validators.maxLength(10)]),
+    address: new FormControl('',Validators.required)
   })
   constructor(public api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
     private notificationService: NotificationService, private formBuilder: FormBuilder) { }
@@ -68,6 +69,7 @@ export class HistoryAndWalletComponent implements OnInit {
     this.Customer.getApi('Customer/' + this.Customer.Controller + '/' + sessionStorage.getItem('Account')).subscribe((rs) => {
       this.getCustomer = rs.data;
       this.formAccount.controls.fullname.setValue(rs.data.fullname);
+      this.formAccount.controls.address.setValue(rs.data.address);
       this.api.loading = false;
       this.Bill.getApi('api/bill/' + this.getCustomer.id).subscribe((rs) => {
         this.listBillBought = rs.data.filter((x: any) => x.status == "KHACH_DA_NHAN_HANG" || x.status == "HUY" || x.status == "DA_XAC_NHAN_VA_DONG_GOI");
@@ -174,6 +176,9 @@ export class HistoryAndWalletComponent implements OnInit {
       return;
     }
     if(this.formAccount.controls.username.hasError('required')){
+      return;
+    }
+    if(this.formAccount.controls.address.hasError('required')){
       return;
     }
     if(this.formAccount.controls.sdt.hasError('minlength') || this.formAccount.controls.sdt.hasError('required') || this.formAccount.controls.sdt.hasError('maxlength')){
