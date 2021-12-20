@@ -26,7 +26,12 @@ export class WindowBillComponent implements OnInit {
     public isReceived = true;
     public isRefund = true;
     public isToolbar = true;
-
+    public opened = false;
+    public isDisabled = true;
+    public Reason = new FormGroup({
+        status: new FormControl(),
+        note: new FormControl(''),
+    })
     constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
         private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, public api: ApiService) { }
 
@@ -141,23 +146,7 @@ export class WindowBillComponent implements OnInit {
         })
     }
     refund(): void {
-        this.Base.windowRef.close();
-        this.Base.loading = true;
-        this.api.getApi('Manager/BillManagerController/refund/' + this.formGroup.value.id).subscribe((rs) => {
-            if (rs.status) {
-                this.message.SendDataAfterUpdate(rs.data);
-                this.api.Notification.notificationExecute(rs);
-                this.Base.loading = false;
-            }
-        }, (error) => {
-            if (error.status == 500) {
-                let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
-                window.location.href = "/login/" + id;
-            } else {
-                this.api.Notification.notificationError('');
-            }
-            this.Base.loading = false;
-        })
+        this.opened = true;
     }
     changeButton(): void {
         if (this.formGroup.value.status == "HUY") {
@@ -171,7 +160,7 @@ export class WindowBillComponent implements OnInit {
         if (this.formGroup.value.status == "DA_XAC_NHAN_VA_DONG_GOI") {
             this.isConfirm = false;
             this.isReceived = false;
-            this.isRefund = true;
+            this.isRefund = false;
         }
         if (this.formGroup.value.status == "DA_GIAO_BEN_VAN_CHUYEN") {
             this.isShip = false;
@@ -185,5 +174,11 @@ export class WindowBillComponent implements OnInit {
             this.isCancel = false;
             this.isConfirm = false;
         }
+        if (this.formGroup.value.status == "HOAN_HANG") {
+            this.isToolbar = false;
+        }
+    }
+    close(): void{
+        this.opened = false;
     }
 }

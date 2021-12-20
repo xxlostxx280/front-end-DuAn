@@ -146,7 +146,7 @@
                             [(ngModel)]="InfomationCustomer.value.Address" [readonly]="true"></kendo-textbox>
                     </div>
                     <div class="col-md-3">
-                        <button kendoButton *ngIf="!opened" (click)="open()" style="width: 100%;">Địa chỉ đã
+                        <button kendoButton (click)="open()" style="width: 100%;">Địa chỉ đã
                             dùng</button>
                         <kendo-dialog title="Địa chỉ đã từng đặt" *ngIf="opened" (close)="close('cancel')"
                             [minWidth]="250" [width]="450">

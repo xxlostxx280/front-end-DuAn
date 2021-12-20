@@ -44,7 +44,7 @@
             </kendo-grid-column>
             <kendo-grid-column field="payment" title="Phương thức" [width]="250">
                 <ng-template kendoGridCellTemplate let-dataItem>
-                    {{ dataItem.payment ? "Thanh toán bằng tiền mặt" : "Thanh toán bằng ví" }}
+                    {{ dataItem.payment ? "Thanh toán bằng ví" : "Thanh toán bằng tiền mặt" }}
                 </ng-template>  
             </kendo-grid-column>
             <kendo-grid-column field="fullname" title="Tên người nhận" [width]="200"></kendo-grid-column>

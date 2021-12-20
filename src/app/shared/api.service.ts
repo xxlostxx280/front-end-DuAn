@@ -105,7 +105,7 @@ export class ApiService {
         getInfoWindow.formGroup = this._.formGroup;
         getInfoWindow.status = status;
       }
-      getInfoWindow.Base = this._; 
+      getInfoWindow.Base = this._;
       this.After(windowRef);
     },
   }
@@ -499,35 +499,17 @@ export class ApiService {
       let getHeader = this._.getHeader();
       this._.DialogWindow.content = "Bạn chắc chắn muốn xóa hàng này ?"
       this._.DialogWindow.DialogDelete();
-      // this._.dialogRef.result.subscribe((rs: any) => {
-      //   if (!rs.primary) {
-      //     return;
-      //   } else {
-      //     if (getHeader instanceof HttpHeaders) {
-      //       return this._.http.post('http://localhost:8080/Manager/' + this._.Controller + '/delete', data, { headers: getHeader }).pipe(map((res: any) => {
-      //         if (res.status) {
-      //           res.type = this._.status;
-      //           this._.Notification.notificationExecute(res);
-      //           this._.message.SendDataAfterUpdate(res);
-      //         } else {
-      //           this._.Notification.notificationExecute(res);
-      //         }
-      //         this._.loading = false;
-      //       }))
-      //     } else {
-      //       return this._.http.post('http://localhost:8080/Manager/' + this._.Controller + '/delete', data).pipe(map((res: any) => {
-      //         if (res.status) {
-      //           res.type = this._.status;
-      //           this._.Notification.notificationExecute(res);
-      //           this._.message.SendDataAfterUpdate(res);
-      //         } else {
-      //           this._.Notification.notificationExecute(res);
-      //         }
-      //         this._.loading = false;
-      //       }))
-      //     }
-      //   }
-      // })
+      this._.dialogRef.result.subscribe((rs: any) => {
+        if (!rs.primary) {
+          return;
+        } else {
+          this.Data(url, data).subscribe();
+        }
+      })
+    },
+    Data: function (url: any, data: any) {
+      let getHeader = this._.getHeader();
+      this._.loading = true;
       if (getHeader instanceof HttpHeaders) {
         return this._.http.post('http://localhost:8080/Manager/' + this._.Controller + '/delete', data, { headers: getHeader }).pipe(map((res: any) => {
           if (res.status) {

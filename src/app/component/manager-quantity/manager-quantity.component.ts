@@ -83,7 +83,7 @@ export class ManagerQuantityComponent implements OnInit {
     this.api.Edit.Execute(WindowQuantityComponent, event);
   }
   removeHandler(event: any) {
-
+    this.api.Destroy.Execute(null,event.dataItem);
   }
 
   dataStateChange(state: DataStateChangeEvent): void {

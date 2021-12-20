@@ -77,7 +77,7 @@ export class ManagerProductComponent implements OnInit {
     this.api.Edit.Execute(WindowProductComponent, event);
   }
   removeHandler(event: any) {
-    this.api.Destroy.Execute(null,event.dataItem).subscribe();
+    this.api.Destroy.Execute(null,event.dataItem);
   }
   dataStateChange(state: DataStateChangeEvent): void {
     this.state = state;
