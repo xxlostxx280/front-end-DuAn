@@ -10,6 +10,10 @@
     label {
         display: block;
     }
+
+    .k-content.k-window-content.k-dialog-content {
+        width: 100% !important;
+    }
 </style>
 <form [formGroup]="formGroup">
     <kendo-tabstrip>
@@ -33,7 +37,12 @@
                     <div class="col-md-2">
                         <label>Phương thức thanh toán</label>
                         <div style="text-align: center;">
-                            <input type="checkbox" kendoCheckBox formControlName="payment" />
+                            <p *ngIf="formGroup.controls['payment'].value">
+                                Thanh toán bằng ví
+                            </p>
+                            <p *ngIf="!formGroup.controls['payment'].value">
+                                Thanh toán bằng tiền mặt
+                            </p>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -117,4 +126,19 @@
             </ng-template>
         </kendo-tabstrip-tab>
     </kendo-tabstrip>
+    <kendo-dialog *ngIf="opened" (close)="close()" title="Please confirm" [minWidth]="250" [width]="450">
+        <div style="text-align: center;">
+            <form [formGroup]="Reason">
+                <div class="row">
+                    <label class="col-md-3">Trạng thái: </label>
+                    <div class="col-md-9">
+                        <!-- <kendo-dropdownlist [data]="listItems" textField="text" valueField="value">
+                </kendo-dropdownlist>-->
+                    </div>
+                </div>
+                <kendo-textbox [disabled]="isDisabled" formControlName="note" style="width: 100%;"
+                    [(ngModel)]="Reason.value.note"></kendo-textbox>
+            </form>
+        </div>
+    </kendo-dialog>
 </form>

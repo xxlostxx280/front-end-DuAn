@@ -125,49 +125,23 @@ export class ShoppingCartComponent implements OnInit {
         this.api.Notification.notificationError('');
       }
     })
-    this.Customer.getApi('Customer/' + this.Customer.Controller + '/' + sessionStorage.getItem('Account')).subscribe((rs) => {
-      let getAddress = rs.data.address.split(',');
-      this.InfomationCustomer.controls.FullName.setValue(rs.data.fullname);
-      this.InfomationCustomer.controls.Address.setValue(rs.data.address);
-      this.Address.controls.Province.setValue(rs.data);
-    }, (error) => {
-      if (error.status == 500) {
-        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
-        window.location.href = "/login/" + id;
-      } else {
-        this.api.Notification.notificationError('');
-      }
-    })
-    this.Account.getApi('api/account/' + sessionStorage.getItem('Account')).subscribe((rs) => {
-      this.InfomationCustomer.controls.PhoneNumber.setValue(rs.data.phone);
-    },(error)=>{
-      if (error.status == 500) {
-        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
-        window.location.href = "/login/" + id;
-      } else {
-        this.api.Notification.notificationError('');
-      }
-    })
-    this.api.getApi('api/bill/get-address').subscribe((rs)=>{
-      this.oldAddress = rs.data.slice(0,5);
-    },(error)=>{
-      if (error.status == 500) {
-        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
-        window.location.href = "/login/" + id;
-      } else {
-        this.api.Notification.notificationError('');
-      }
-    })
-    this.api.getApi('Customer/MamiPayController/mamipay').subscribe((rs) => {
-      this.myWallet = rs.data;
-    }, (error) => {
-      if (error.status == 500) {
-        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
-        window.location.href = "/login/" + id;
-      } else {
-        this.api.Notification.notificationError('');
-      }
-    })
+    if(sessionStorage.getItem('Account') != null || sessionStorage.getItem('Account') != undefined){
+      this.Customer.getApi('Customer/' + this.Customer.Controller + '/' + sessionStorage.getItem('Account')).subscribe((rs) => {
+        let getAddress = rs.data.address.split(',');
+        this.InfomationCustomer.controls.FullName.setValue(rs.data.fullname);
+        this.InfomationCustomer.controls.Address.setValue(rs.data.address);
+        this.Address.controls.Province.setValue(rs.data);
+      })
+      this.Account.getApi('api/account/' + sessionStorage.getItem('Account')).subscribe((rs) => {
+        this.InfomationCustomer.controls.PhoneNumber.setValue(rs.data.phone);
+      })
+      this.api.getApi('api/bill/get-address').subscribe((rs)=>{
+        this.oldAddress = rs.data.slice(0,5);
+      })
+      this.api.getApi('Customer/MamiPayController/mamipay').subscribe((rs) => {
+        this.myWallet = rs.data;
+      })
+    }
     this.key.map((x: any) => {
       let data: any = localStorage.getItem(x);
       let value = JSON.parse(data);
