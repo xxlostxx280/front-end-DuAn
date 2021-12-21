@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DialogCloseResult, WindowCloseResult, WindowRef, WindowService } from '@progress/kendo-angular-dialog';
 import { DialogService } from "@progress/kendo-angular-dialog";
@@ -10,6 +10,8 @@ import { DialogLoginComponent } from './loginDialog.component';
 import { NotificationService } from '@progress/kendo-angular-notification';
 import { HttpClient } from '@angular/common/http';
 import { ApiVietNam, BillModel } from './bill.model';
+import { ChangeDetectorRef } from '@angular/core';
+
 @Component({
   selector: 'app-shopping-cart',
   templateUrl: './shopping-cart.component.html',
@@ -57,7 +59,7 @@ export class ShoppingCartComponent implements OnInit {
   public listVoucher: Array<any> = [];
   public QuantityObj: QuanityModel = new QuanityModel();
   public BillObj: BillModel = new BillModel();
-  
+
   public formGroup = new FormGroup({
     property: new FormControl(),
     size: new FormControl(),
@@ -87,7 +89,7 @@ export class ShoppingCartComponent implements OnInit {
   };
 
   constructor(public api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
-    private notificationService: NotificationService, private formBuilder: FormBuilder) { }
+    private notificationService: NotificationService, private formBuilder: FormBuilder, private cdref: ChangeDetectorRef) { }
 
   public Quantity: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
   public Property: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
@@ -125,7 +127,7 @@ export class ShoppingCartComponent implements OnInit {
         this.api.Notification.notificationError('');
       }
     })
-    if(sessionStorage.getItem('Account') != null || sessionStorage.getItem('Account') != undefined){
+    if (sessionStorage.getItem('Account') != null || sessionStorage.getItem('Account') != undefined) {
       this.Customer.getApi('Customer/' + this.Customer.Controller + '/' + sessionStorage.getItem('Account')).subscribe((rs) => {
         let getAddress = rs.data.address.split(',');
         this.InfomationCustomer.controls.FullName.setValue(rs.data.fullname);
@@ -135,8 +137,8 @@ export class ShoppingCartComponent implements OnInit {
       this.Account.getApi('api/account/' + sessionStorage.getItem('Account')).subscribe((rs) => {
         this.InfomationCustomer.controls.PhoneNumber.setValue(rs.data.phone);
       })
-      this.api.getApi('api/bill/get-address').subscribe((rs)=>{
-        this.oldAddress = rs.data.slice(0,5);
+      this.api.getApi('api/bill/get-address').subscribe((rs) => {
+        this.oldAddress = rs.data;
       })
       this.api.getApi('Customer/MamiPayController/mamipay').subscribe((rs) => {
         this.myWallet = rs.data;
@@ -202,16 +204,16 @@ export class ShoppingCartComponent implements OnInit {
       }
     })
   }
-  Rules(): boolean{
-    if(this.InfomationCustomer.controls.FullName.errors != null){
+  Rules(): boolean {
+    if (this.InfomationCustomer.controls.FullName.errors != null) {
       this.api.Notification.notificationWarning('Thông tin nhận hàng đang sai mời bạn điền lại');
       return false;
     }
-    if(this.InfomationCustomer.controls.PhoneNumber.errors != null){
+    if (this.InfomationCustomer.controls.PhoneNumber.errors != null) {
       this.api.Notification.notificationWarning('Thông tin nhận hàng đang sai mời bạn điền lại');
       return false;
     }
-    if(this.InfomationCustomer.value.Address == ""){
+    if (this.InfomationCustomer.value.Address == "") {
       this.api.Notification.notificationWarning('Không được để trống địa chỉ');
       return false;
     }
@@ -260,11 +262,11 @@ export class ShoppingCartComponent implements OnInit {
       });
       const getInfoWindow = this.dialog.content.instance;
       getInfoWindow.dialog = this.dialog;
-    }else if(this.dataSource.length == 0){
+    } else if (this.dataSource.length == 0) {
       this.api.Notification.notificationError('Trong giỏ hàng không có sản phẩm')
-    }else if (this.step_1) {
-      if(!this.Rules()){return;}
-      else{
+    } else if (this.step_1) {
+      if (!this.Rules()) { return; }
+      else {
         this.step_1 = false;
         this.step_2 = true;
         this.BillObj.fullname = this.InfomationCustomer.value.FullName;
@@ -281,7 +283,7 @@ export class ShoppingCartComponent implements OnInit {
     } else if (this.step_2) {
       this.BillObj.statusshipping = "Đang xử lý";
       this.BillObj.username = String(sessionStorage.getItem('USERNAME'));
-      if(this.myWallet.surplus < this.toMoney){
+      if (this.myWallet.surplus < this.toMoney) {
         return this.api.Notification.notificationWarning('Số dư trong ví không đủ để thanh toán đơn')
       }
       if (this.Payment.value.payment == "cash") {
@@ -462,13 +464,12 @@ export class ShoppingCartComponent implements OnInit {
   }
 
   close(status: any) {
-    console.log(`Dialog result: ${status}`);
     this.opened = false;
   }
-  open() {
+  open(): void{
     this.opened = true;
   }
-  onChangeAddress(item: any){
+  valueChange(item: any) {
     this.InfomationCustomer.value.Address = item;
   }
 }

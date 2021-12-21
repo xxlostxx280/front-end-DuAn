@@ -9,6 +9,7 @@ import { ApiService } from 'src/app/shared/api.service';
 })
 export class DashboardComponent implements OnInit {
   public opened = false;
+  public openedListStatus = false;
   public currentChart = 0;
   public currentTable = 0;
   public chart: any;
@@ -20,6 +21,7 @@ export class DashboardComponent implements OnInit {
   public listBillOfMonth: Array<any> = [];
   public listQuantityByDay: Array<any> = [];
   public listQuantityByMonth: Array<any> = [];
+  public listStatusRefund: Array<any> = [];
   public listStatus: Array<{ id: any, name: string }> = [
     {
       id: "CHUA_XAC_NHAN",
@@ -218,5 +220,14 @@ export class DashboardComponent implements OnInit {
   }
   open() {
     this.opened = true;
+  }
+  openRefund(){
+    this.api.getApi('Manager/' + this.api.Controller + '/bill-dashboard-refund').subscribe((rs)=>{
+      this.openedListStatus = true;
+      this.listStatusRefund = rs.data;
+    })
+  }
+  closeRefund(){
+    this.openedListStatus = false;
   }
 }

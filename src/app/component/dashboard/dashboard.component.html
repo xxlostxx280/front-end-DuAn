@@ -8,8 +8,12 @@
     #item_status:hover {
         color: darkorange;
     }
-    i{
+
+    i {
         font-size: 20px;
+    }
+    ::ng-deep .k-content.k-window-content.k-dialog-content{
+        width: 100%;
     }
 </style>
 <div class="row" style="margin: 10px 0px;">
@@ -42,7 +46,12 @@
             style="box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(244 67 54 / 40%);padding: 10px;margin: 10px 0px;border-radius: 5px;border: 1px solid #ff7043;background: #ff7043;">
             <p style="font-weight: 600;font-size: 20px;"><i class="fa fa-retweet" aria-hidden="true"></i>&nbsp;Hoàn hàng
             </p>
-            <p>{{item.total}} đơn</p>
+            <div class="row">
+                <span class="col-md-5">{{item.total}} đơn </span>
+                <div class="col-md-7">
+                    <button kendoButton (click)="openRefund()" style="width: 100%;">Xem chi tiết</button>
+                </div>
+            </div>
         </div>
         <div *ngIf="item.name == 'HUY'"
             style="box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(244 67 54 / 40%);padding: 10px;margin: 10px 0px;border-radius: 5px;border: 1px solid #e53935;background: #e53935;">
@@ -139,5 +148,10 @@
         <div #item *ngFor="let item of listStatus" (click)="onChangeStatus(item)" id="item_status">
             <span>{{item.name}}</span>
         </div>
+    </kendo-dialog>
+    <kendo-dialog title="Đơn chi tiết" *ngIf="openedListStatus" (close)="closeRefund()" [minWidth]="250" [width]="400">
+        <p style="border-bottom: 1px solid #ddd;padding: 10px 0px;" *ngFor="let item of listStatusRefund">
+            Trạng thái: {{item.name}} có {{item.total}} đơn
+        </p>
     </kendo-dialog>
 </div>
