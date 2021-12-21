@@ -71,7 +71,7 @@ export class HeaderComponent implements OnInit {
       expanded: false,
     },
     {
-      text:"Liên hệ & Hỗ trợ",
+      text:"Liên hệ",
       path: "contact",
       expanded: false,
     },
