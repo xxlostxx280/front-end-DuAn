@@ -13,7 +13,7 @@
     }
 </style>
 <div class="row" style="margin: 10px 0px;">
-    <div *ngFor="let item of listBillOfMonth" class="col-md-4">
+    <div *ngFor="let item of listBillOfMonth" class="col-md-3">
         <div *ngIf="item.name == 'CHUA_XAC_NHAN'"
             style="box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(244 67 54 / 40%);padding: 10px;margin: 10px 0px;border-radius: 5px;border: 1px solid #bdbdbd;background: #bdbdbd;">
             <p style="font-weight: 600;font-size: 20px;"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Chưa xác
@@ -49,11 +49,11 @@
             <p style="font-weight: 600;font-size: 20px;"><i class="fa fa-ban" aria-hidden="true"></i>&nbsp;Hủy</p>
             <p>{{item.total}} đơn</p>
         </div>
-        <!-- <div *ngIf="item.name == 'DON_MOI'"
+        <div *ngIf="item.name == 'DON_MOI'"
             style="box-shadow: 0 4px 20px 0 rgb(0 0 0 / 14%), 0 7px 10px -5px rgb(244 67 54 / 40%);padding: 10px;margin: 10px 0px;border-radius: 5px;border: 1px solid #ff7043;background: #ff7043;">
             <p style="font-weight: 600;font-size: 20px;"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;Đơn mới</p>
             <p>{{item.total}} đơn</p>
-        </div> -->
+        </div>
     </div>
 </div>
 <kendo-tabstrip style="background-color: white;" (tabSelect)="onSelectChart($event)">
