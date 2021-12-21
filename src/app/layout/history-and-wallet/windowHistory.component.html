@@ -39,17 +39,17 @@
                             [(ngModel)]="formGroup.value.status" />
                     </div>
                     <div class="col-md-4" style="margin: 10px 0px;">
-                        <label>Giá gốc</label>
+                        <label>Tổng tiền (VND)</label> 
                         <input kendoTextBox readonly formControlName="total" style="width: 100%;"
-                            [(ngModel)]="formGroup.value.total" />
+                            [(ngModel)]="formGroup.value.total" /> 
                     </div>
                     <div class="col-md-4" style="margin: 10px 0px;">
-                        <label>Giá giảm</label>
+                        <label>Thanh toán (VND)</label>
                         <input kendoTextBox readonly formControlName="downtotal" style="width: 100%;"
                             [(ngModel)]="formGroup.value.downtotal" />
                     </div>
                     <div class="col-md-4" style="margin: 10px 0px;">
-                        <label>Giá ship</label>
+                        <label>Giá ship (VND)</label>
                         <input kendoTextBox readonly formControlName="transportFee" style="width: 100%;"
                             [(ngModel)]="formGroup.value.transportFee" />
                     </div>
@@ -70,8 +70,8 @@
                             </kendo-grid-column>
                             <kendo-grid-column field="quantity.size.name" title="Size" [width]="150">
                             </kendo-grid-column>
-                            <kendo-grid-column field="price" title="Giá gốc" [width]="150"></kendo-grid-column>
-                            <kendo-grid-column field="downprice" title="Giá giảm" [width]="150"></kendo-grid-column>
+                            <kendo-grid-column field="price" title="Thành tiền" [width]="150"></kendo-grid-column>
+                            <kendo-grid-column field="downprice" title="Khuyến mại" [width]="150"></kendo-grid-column>
                         </kendo-grid>
                     </div>
                 </div>
