@@ -247,16 +247,16 @@
                             <div *ngIf="card.newPrice != 0">
                                 <span style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;"
                                     *ngIf="card.newPrice != 0">
-                                    {{card.newPrice|number :'1.0-3'}} VNĐ
+                                    {{card.newPrice|number :'1.0-3'}} ₫
                                 </span>
                                 <small
-                                    style="text-decoration-line: line-through;padding: 0px 5px;color: #ddd;">{{card.Product.price}}
-                                    VNĐ</small>
+                                    style="text-decoration-line: line-through;padding: 0px 5px;color: #888888;font-size: 18px;">
+                                    {{card.Product.price}} ₫</small>
                             </div>
                             <div *ngIf="card.newPrice == 0">
                                 <span style="color: #ffc045;padding-top: 10px;font-size: 20px;font-weight: 600;"
                                     *ngIf="card.newPrice == 0">
-                                    {{card.Product.price|number :'1.0-3'}} VNĐ
+                                    {{card.Product.price|number :'1.0-3'}} ₫
                                 </span>
                             </div>
                             <a href=""
@@ -275,7 +275,7 @@
                                 <label class="col-lg-6 col-md-6 col-sm-5">Số lượng</label>
                                 <div class="col-lg-6 col-md-6 col-sm-7">
                                     <kendo-numerictextbox format="0" [min]="0" [max]="100" style="width: 100%;"
-                                        [value]="card.Quantity">
+                                        [value]="card.Quantity" [readonly]="true">
                                     </kendo-numerictextbox>
                                 </div>
                             </div>
@@ -307,7 +307,7 @@
                         <strong style="font-weight: 400;line-height: 1.68;color: #888;">Giá shipping:</strong>
                         <strong
                             style="float: right;font-size: 1.2857em;font-weight: bold;margin-bottom: 0;color: #ffc045;">
-                            {{totalShipping|number :'1.0-3'}}VND
+                            {{totalShipping|number :'1.0-3'}} VND
                         </strong>
                     </div>
                     <div style="padding: 12px 16px;">
