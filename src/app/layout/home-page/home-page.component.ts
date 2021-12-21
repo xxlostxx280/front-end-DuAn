@@ -41,7 +41,7 @@ export class HomePageComponent implements OnInit {
       } else {
         this.api.Notification.notificationError('');
       }
-    });
+    } );
     setTimeout(() => {
       this.Quantity.Read.Execute().subscribe((res) => {
         let arrProductDiscount: any[] = [];
