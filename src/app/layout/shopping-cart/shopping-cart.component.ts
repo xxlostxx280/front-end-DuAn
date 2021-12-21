@@ -144,19 +144,18 @@ export class ShoppingCartComponent implements OnInit {
         this.myWallet = rs.data;
       })
     }
+
     this.key.map((x: any) => {
       let data: any = localStorage.getItem(x);
       let value = JSON.parse(data);
       this.dataSource.push(value);
     })
     this.dataSource.map((x) => {
-      this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
-      if (x.Product.discount != null) {
-        this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity);
-      } else {
-        this.toMoney = this.toMoney + Number(x.Product.price * x.Quantity);
-      }
+      this.total = this.total + Number(x.newPrice * x.Quantity);
+      this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity);
     })
+    this.toMoney = this.toMoney + this.totalShipping;
+
     this.message.receivedStorageCart().subscribe((res) => {
       this.dataSource = [];
       this.key.map((x: any) => {
@@ -194,11 +193,11 @@ export class ShoppingCartComponent implements OnInit {
         this.total = 0;
         this.toMoney = 0;
         this.dataSource.map((x) => {
-          this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
+          this.total = this.total + Number(parseInt(x.NewPrice) * parseInt(x.Quantity));
           if (x.Product.discount != null) {
             this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity)
           } else {
-            this.toMoney = this.toMoney + Number(x.Product.price * x.Quantity)
+            this.toMoney = this.toMoney + Number(x.NewPrice * x.Quantity)
           }
         })
       }
@@ -339,12 +338,8 @@ export class ShoppingCartComponent implements OnInit {
   }
   removeCardItem(e: any, data: any, index: any): void {
     let removeItem = JSON.parse(String(localStorage.getItem(data)));
-    this.total = this.total - Number(parseInt(removeItem.Product.price) * parseInt(removeItem.Quantity));
-    if (removeItem.Product.discount != null) {
-      this.toMoney = this.toMoney - Number(parseInt(removeItem.newPrice) * parseInt(removeItem.Quantity))
-    } else {
-      this.toMoney = this.toMoney - Number(parseInt(removeItem.Product.price) * parseInt(removeItem.Quantity))
-    }
+    this.total = this.total - Number(parseInt(removeItem.newPrice) * parseInt(removeItem.Quantity));
+    this.toMoney = this.toMoney - Number(parseInt(removeItem.newPrice) * parseInt(removeItem.Quantity))
     localStorage.removeItem(data);
     this.badge = localStorage.length;
     this.message.SendBadgeCart(this.badge);
@@ -432,11 +427,11 @@ export class ShoppingCartComponent implements OnInit {
       this.BillObj.voucher_id = '';
       this.BillObj.discount = '';
       this.dataSource.map((x) => {
-        this.total = this.total + Number(parseInt(x.Product.price) * parseInt(x.Quantity));
+        this.total = this.total + Number(parseInt(x.NewPrice) * parseInt(x.Quantity));
         if (x.Product.discount != null) {
           this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity)
         } else {
-          this.toMoney = this.toMoney + Number(x.Product.price * x.Quantity)
+          this.toMoney = this.toMoney + Number(x.NewPrice * x.Quantity)
         }
       })
     } else {
@@ -466,7 +461,7 @@ export class ShoppingCartComponent implements OnInit {
   close(status: any) {
     this.opened = false;
   }
-  open(): void{
+  open(): void {
     this.opened = true;
   }
   valueChange(item: any) {
