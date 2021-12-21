@@ -31,7 +31,29 @@ export class WindowBillComponent implements OnInit {
     public Reason = new FormGroup({
         status: new FormControl(),
         note: new FormControl(''),
-    })
+    });
+    public statusRefund: Array<{ id: any, name: string }> = [
+        {
+            id: 'THAT_BAI',
+            name: 'Thất bại'
+        },
+        {
+            id: 'KHACH_HUY',
+            name: 'Khách hủy'
+        },
+        {
+            id: 'SAI_DIA_CHI',
+            name: 'Sai địa chỉ'
+        },
+        {
+            id: 'SAI_SAN_PHAM',
+            name: 'Sai sản phẩm'
+        },
+        {
+            id: 'KHAC',
+            name: 'Khác'
+        }
+    ]
     constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
         private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, public api: ApiService) { }
 
@@ -70,13 +92,15 @@ export class WindowBillComponent implements OnInit {
         return value;
     }
     cancel(): void {
-        this.Base.windowRef.close();
+        this.api.loading = true;
         this.Base.loading = true;
         this.api.getApi('Manager/BillManagerController/cancel/' + this.formGroup.value.id).subscribe((rs) => {
             if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
+                this.api.loading = false;
                 this.Base.loading = false;
+                this.Base.windowRef.close();
             }
         }, (error) => {
             if (error.status == 500) {
@@ -85,17 +109,20 @@ export class WindowBillComponent implements OnInit {
             } else {
                 this.api.Notification.notificationError('');
             }
+            this.api.loading = false;
             this.Base.loading = false;
         })
     }
     confirm(): void {
-        this.Base.windowRef.close();
+        this.api.loading = true;
         this.Base.loading = true;
         this.api.getApi('Manager/BillManagerController/confirm/' + this.formGroup.value.id).subscribe((rs) => {
             if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
+                this.api.loading = false;
                 this.Base.loading = false;
+                this.Base.windowRef.close();
             }
         }, (error) => {
             if (error.status == 500) {
@@ -104,17 +131,20 @@ export class WindowBillComponent implements OnInit {
             } else {
                 this.api.Notification.notificationError('');
             }
+            this.api.loading = false;
             this.Base.loading = false;
         })
     }
     ship(): void {
-        this.Base.windowRef.close();
+        this.api.loading = true;
         this.Base.loading = true;
         this.api.getApi('Manager/BillManagerController/ship/' + this.formGroup.value.id).subscribe((rs) => {
             if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
+                this.api.loading = false;
                 this.Base.loading = false;
+                this.Base.windowRef.close();
             }
         }, (error) => {
             if (error.status == 500) {
@@ -123,17 +153,20 @@ export class WindowBillComponent implements OnInit {
             } else {
                 this.api.Notification.notificationError('');
             }
+            this.api.loading = false;
             this.Base.loading = false;
         })
     }
     received(): void {
-        this.Base.windowRef.close();
         this.Base.loading = true;
+        this.api.loading = true;
         this.api.getApi('Manager/BillManagerController/received/' + this.formGroup.value.id).subscribe((rs) => {
             if (rs.status) {
                 this.message.SendDataAfterUpdate(rs.data);
                 this.api.Notification.notificationExecute(rs);
                 this.Base.loading = false;
+                this.api.loading = false;
+                this.Base.windowRef.close();
             }
         }, (error) => {
             if (error.status == 500) {
@@ -142,6 +175,7 @@ export class WindowBillComponent implements OnInit {
             } else {
                 this.api.Notification.notificationError('');
             }
+            this.api.loading = false;
             this.Base.loading = false;
         })
     }
@@ -178,7 +212,41 @@ export class WindowBillComponent implements OnInit {
             this.isToolbar = false;
         }
     }
-    close(): void{
-        this.opened = false;
+    changeReasonStatus(event: any) {
+        if (event.id == "KHAC") {
+            this.isDisabled = false;
+            this.Reason.value.status = event.id;
+        } else {
+            this.isDisabled = true;
+            this.Reason.value.note = "";
+            this.Reason.value.status = event.id;
+        }
+    }
+    close(event: any): void {
+        if (event == 'no') {
+            this.opened = false;
+        } else {
+            this.opened = false;
+            this.api.loading = true;
+            this.api.getApi('Manager/BillManagerController/refund/' + this.formGroup.value.id + '?status=' + this.Reason.value.status + '&note=' + this.Reason.value.note)
+                .subscribe((rs) => {
+                    if (rs.status) {
+                        this.message.SendDataAfterUpdate(rs.data);
+                        this.api.Notification.notificationExecute(rs);
+                        this.Base.loading = false;
+                        this.api.loading = false;
+                        this.Base.windowRef.close();
+                    }
+                }, (error) => {
+                    if (error.status == 500) {
+                        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+                        window.location.href = "/login/" + id;
+                    } else {
+                        this.api.Notification.notificationError('');
+                    }
+                    this.api.loading = false;
+                    this.Base.loading = false;
+                })
+        }
     }
 }

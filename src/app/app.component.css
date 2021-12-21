@@ -116,4 +116,7 @@
     justify-content: center;
     align-self: center;
 }
+::ng-deep .k-window-titlebar.k-dialog-titlebar{
+    padding: 0px 15px;
+}
 

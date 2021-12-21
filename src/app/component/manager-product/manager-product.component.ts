@@ -35,11 +35,11 @@ export class ManagerProductComponent implements OnInit {
     this.api.Controller = "ProductManagerController";
     this.api.OpenWindow.Width = 1200;
     this.api.typeData = "popup";
-    this.loading = this.api.loading
+    this.api.loading = true;
     this.api.Read.Execute().subscribe((rs) => {
       this.api.dataSource = rs.data;
       this.gridData = rs.data;
-      this.loading = this.api.loading
+      this.api.loading = false
     }, (error) => {
       if (error.status == 500) {
         let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
@@ -47,6 +47,7 @@ export class ManagerProductComponent implements OnInit {
       } else {
         this.api.Notification.notificationError('');
       }
+      this.api.loading = false
     })
     this.message.receivedDataAfterUpadte().subscribe((res) => {
       if (res.status) {

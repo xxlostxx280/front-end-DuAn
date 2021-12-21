@@ -29,7 +29,7 @@ export class WindowProductComponent implements OnInit {
     public disabled = false;
     public imagePreview: any[] = [];
     constructor(public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
-        private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, private api: ApiService) { }
+        private notificationService: NotificationService, private message: MessageService, private formBuilder: FormBuilder, public api: ApiService) { }
 
     public Category: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
     public CategoryDetail: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
