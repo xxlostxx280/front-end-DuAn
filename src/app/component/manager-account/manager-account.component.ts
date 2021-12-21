@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from 'src/app/shared/api.service';
 import { MessageService } from 'src/app/shared/message.service';
 
@@ -10,6 +10,13 @@ import { MessageService } from 'src/app/shared/message.service';
 })
 export class ManagerAccountComponent implements OnInit {
   public gridData: Array<any> = [];
+  public isAdmin = new FormGroup({
+    username: new FormControl(''),
+    email: new FormControl(''),
+    password: new FormControl(''),
+    phone: new FormControl(''),
+    role: new FormControl(false)
+  })
   constructor(public api: ApiService, private message: MessageService) { }
 
   ngOnInit(): void {
@@ -69,7 +76,9 @@ export class ManagerAccountComponent implements OnInit {
   }
   Update(grid: any): void {
     if(!this.Rules()){return;}
-    this.api.Update.Execute(grid);
+    this.api.postApi('',this.isAdmin.value).subscribe((rs)=>{
+      
+    })
   }
 
   addHandler(event: any): void {
@@ -81,7 +90,6 @@ export class ManagerAccountComponent implements OnInit {
     this.api.Grid.saveHandler(event);
     event.sender.closeRow(event.rowIndex);
   }
-
   cellClickHandler(event: any): void {
     this.api.Grid.cellClickHandler(event);
   }
@@ -89,17 +97,17 @@ export class ManagerAccountComponent implements OnInit {
     if(!this.Rules()){return;}
     this.api.Grid.cellCloseHandler(event);
   }
-
   removeHandler(event: any): void {
     this.api.Grid.removeHandler(event);
     event.sender.cancelCell();
   }
-
   cancelChanges(grid: any): void {
     grid.cancelCell();
   }
-
   cancelHandler(event: any): void {
     event.sender.closeRow(event.rowIndex);
+  }
+  changeIsAdmin(event: any): void{
+    let e = event;
   }
 }

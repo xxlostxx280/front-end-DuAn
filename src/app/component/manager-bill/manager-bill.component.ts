@@ -61,6 +61,7 @@ export class ManagerBillComponent implements OnInit {
   }
 
   Read(): void{
+    this.Bill.loading = true;
     this.Bill.Read.Execute().subscribe((rs) => {
       this.gridData = rs.data;
       this.Bill.loading = false;
