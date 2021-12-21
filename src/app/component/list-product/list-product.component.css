@@ -36,3 +36,18 @@
 .thu-nghiem-zoom img{display:block;transition: all .3s ease;}
 .thu-nghiem-zoom img:hover{transform: scale(1.5);}
 .thu-nghiem-zoom p{display:block;overflow: hidden;}
+.status-product {
+    font-size: 13px;
+    color: #fefefe;
+    display: block;
+    width: 48 px;
+    height: 50 px;
+    position: absolute;
+    top: 10 px;
+    right:10 px;
+    text-align: center;
+    line-height: 48px;
+    z-index: 2;
+    border-radius: 100%;
+    background-color: #cc4148;
+}

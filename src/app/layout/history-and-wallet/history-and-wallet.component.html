@@ -207,7 +207,7 @@
             </div>
             <div *ngIf="isHistory">
                 <kendo-tabstrip>
-                    <kendo-tabstrip-tab title="Đơn hàng đã mua" [selected]="true">
+                    <kendo-tabstrip-tab title=" Đơn hàng đã mua" [selected]="true">
                         <ng-template kendoTabContent style="padding: 0px;">
                             <kendo-grid #grid [kendoGridBinding]="listBillBought" style="height: 450px;" [pageSize]="20"
                                 [sortable]="true" [pageable]="true" [sortable]="true" [navigable]="true"
@@ -233,8 +233,8 @@
                                 <kendo-grid-column field="sdt" title="SĐT" [width]="150"></kendo-grid-column>
                                 <kendo-grid-column field="address" title="Địa chỉ" [width]="300">
                                 </kendo-grid-column>
-                                <kendo-grid-column field="total" title="Giá gốc" [width]="150"></kendo-grid-column>
-                                <kendo-grid-column field="downtotal" title="Giá giảm" [width]="150">
+                                <kendo-grid-column field="total" title="Tổng tiền" [width]="150"></kendo-grid-column>
+                                <kendo-grid-column field="downtotal" title="Thanh toán" [width]="150">
                                 </kendo-grid-column>
                                 <kendo-grid-column field="transportFee" title="Giá ship" [width]="150">
                                 </kendo-grid-column>
@@ -267,8 +267,8 @@
                                 <kendo-grid-column field="sdt" title="SĐT" [width]="150"></kendo-grid-column>
                                 <kendo-grid-column field="address" title="Địa chỉ" [width]="300">
                                 </kendo-grid-column>
-                                <kendo-grid-column field="total" title="Giá gốc" [width]="150"></kendo-grid-column>
-                                <kendo-grid-column field="downtotal" title="Giá giảm" [width]="150">
+                                <kendo-grid-column field="total" title="Tổng tiền" [width]="150"></kendo-grid-column>
+                                <kendo-grid-column field="downtotal" title="Thanh toán" [width]="150">
                                 </kendo-grid-column>
                                 <kendo-grid-column field="transportFee" title="Giá ship" [width]="150">
                                 </kendo-grid-column>
