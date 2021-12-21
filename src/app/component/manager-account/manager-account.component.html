@@ -4,40 +4,31 @@
         <!-- <p class="card-category"> Here is a subtitle for this table</p> -->
     </div>
     <div class="card-body">
-        <kendo-grid #grid [kendoGridBinding]="gridData" [pageSize]="20" [sortable]="true" [pageable]="true"
-            [sortable]="true" (cellClose)="cellCloseHandler($event)" (cellClick)="cellClickHandler($event)"
-            (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
-            (add)="addHandler($event)" [navigable]="true" style="height: 500px; width: 1150px;">
+        <kendo-grid [kendoGridBinding]="gridData" kendoGridSelectBy="id" [pageSize]="state.take!" [skip]="state.skip!"
+            [sort]="state.sort!" [group]="state.group!" [pageable]="true" [sortable]="true"
+            style="height: 500px; width: 1150px;" [columnMenu]="{ filter: true }" (edit)="editHandler($event)"
+            (add)="addHanler($event)" (remove)="removeHandler($event)" (dataStateChange)="dataStateChange($event)">
             <ng-template kendoGridToolbarTemplate>
-                <button iconClass="fa fa-plus" kendoGridAddCommand>THÊM MỚI</button>
-                <button kendoButton iconClass="fa fa-floppy-o" (click)="Update(grid)">
-                    LƯU
-                </button>
+                <button kendoGridAddCommand>Thêm mới</button>
             </ng-template>
-            <kendo-grid-column field="email" title="Email" [width]="250"></kendo-grid-column>
-            <kendo-grid-column field="username" title="Tên đăng nhập" [width]="200"></kendo-grid-column>
-            <kendo-grid-column field="password" title="Mật khẩu" [width]="200">
+            <kendo-grid-command-column title="Command" [width]="250" [locked]="true">
                 <ng-template kendoGridCellTemplate let-dataItem>
-                    <div
-                        style="text-overflow: ellipsis;width: 200px; overflow: hidden;position: relative;white-space: nowrap;">
-                        {{dataItem.password}}
-                    </div>
-                </ng-template>
-            </kendo-grid-column>
-            <kendo-grid-column field="phone" title="SĐT" [width]="150"></kendo-grid-column>
-            <kendo-grid-command-column title="Phân quyền Admin" [width]="220">
-                <ng-template kendoGridCellTemplate let-dataItem>
-                    <input type="checkbox" kendoCheckBox (change)="changeIsAdmin($event)" />
+                    <button kendoGridEditCommand [primary]="true">Chỉnh sửa</button>
+                    <button kendoGridRemoveCommand>Xóa</button>
                 </ng-template>
             </kendo-grid-command-column>
-            <kendo-grid-command-column title="Tùy chỉnh" [width]="220">
-                <ng-template kendoGridCellTemplate let-isNew="isNew">
-                    <button kendoGridRemoveCommand>Xóa</button>
-                    <button kendoGridSaveCommand>Thêm</button>
-                    <button kendoGridCancelCommand>Hủy</button>
+            <kendo-grid-column field="account.email" title="Email" [width]="250">
+            </kendo-grid-column>
+            <kendo-grid-column field="account.username" title="Username" [width]="200"></kendo-grid-column>
+            <kendo-grid-column field="account.phone" title="SDT" [width]="200"></kendo-grid-column>
+            <kendo-grid-command-column field="role.name" title="Phân quyền Admin" [width]="220">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    {{ Role(dataItem.role.id)?.name }}
                 </ng-template>
             </kendo-grid-command-column>
         </kendo-grid>
         <div *ngIf="api.loading" class="k-i-loading"></div>
+        <div kendoWindowContainer></div>
+        <div kendoDialogContainer></div>
     </div>
 </div>

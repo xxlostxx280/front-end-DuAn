@@ -119,7 +119,7 @@ export class ApiService {
       const dialog: DialogRef = this._.dialogService.open({
         title: this.title,
         content: this.content,
-        actions: [{ text: "No" }, { text: "Yes", primary: true }],
+        actions: [{ text: "Không" }, { text: "Đồng ý", primary: true }],
         width: this.width,
         height: this.height,
       })
