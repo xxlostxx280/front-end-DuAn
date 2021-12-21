@@ -14,7 +14,7 @@ import { WindowRechargeComponent } from './windowRecharge.component';
   styleUrls: ['./history-and-wallet.component.css']
 })
 export class HistoryAndWalletComponent implements OnInit {
-
+  public opened = false;
   public listBillBought: Array<any> = [];
   public listBillBuying: Array<any> = [];
   public myWallet: any;
@@ -125,17 +125,27 @@ export class HistoryAndWalletComponent implements OnInit {
   }
   /////Phần ví điện tử/////////////
   createWallet(): void {
-    this.MamiPay.postApi('Customer/' + this.MamiPay.Controller + '/create', '').subscribe((rs) => {
-      this.myWallet = rs.data;
-      this.MamiPay.Notification.notificationExecute(rs.message);
-    }, (error) => {
-      if (error.status == 500) {
-        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
-        window.location.href = "/login/" + id;
-      } else {
-        this.api.Notification.notificationError('');
-      }
-    })
+    this.opened = true;
+  }
+  close(event: any): void{
+    if(event == 'no'){
+      this.opened = false;
+    }else{
+      this.opened = false;
+      this.api.loading = true;
+      this.MamiPay.postApi('Customer/' + this.MamiPay.Controller + '/create', '').subscribe((rs) => {
+        this.myWallet = rs.data;
+        this.MamiPay.Notification.notificationExecute(rs.message);
+        this.Read();
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
+      })
+    }
   }
   recharge(): void {
     this.MamiPay.OpenWindow.Width = 500;

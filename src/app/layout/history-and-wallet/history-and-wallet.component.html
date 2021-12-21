@@ -6,6 +6,9 @@
     h4 {
         margin: 0px;
     }
+    ::ng-deep .k-content.k-window-content.k-dialog-content{
+        width: 100%;
+    }
 </style>
 <app-header></app-header>
 <div kendoWindowContainer></div>
@@ -141,7 +144,7 @@
                             </div>
                             <div class="row" style="border-bottom: 1px solid #ddd;margin: 15px 0px;" *ngIf="isWallet">
                                 <label class="col-md-5">Số dư trong tài khoản:</label>
-                                <label class="col-md-7">{{myWallet.surplus}} VND</label>
+                                <label class="col-md-7">{{myWallet.surplus|number :'1.0-3'}} VND</label>
                             </div>
                             <div class="row" *ngIf="isWallet">
                                 <div class="col-md-12">
@@ -280,5 +283,14 @@
             <div *ngIf="api.loading" class="k-i-loading" style="z-index: 99999;"></div>
         </div>
     </div>
+    <kendo-dialog title="Please confirm" *ngIf="opened" (close)="close('no')" [minWidth]="250" [width]="450">
+        <p style="margin: 30px; text-align: center;">
+            Chú ý: Ví chỉ có thể thực hiện để mua hàng không thể rút . Xin cảm ơn quý khách đã tin tưởng mua hàng tại Mami Love
+        </p>
+        <kendo-dialog-actions>
+            <button kendoButton (click)="close('no')">No</button>
+            <button kendoButton (click)="close('yes')" [primary]="true">Yes</button>
+        </kendo-dialog-actions>
+    </kendo-dialog>
 </div>
 <app-footer></app-footer>
