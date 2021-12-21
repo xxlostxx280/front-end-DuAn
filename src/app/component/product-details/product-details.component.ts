@@ -306,7 +306,6 @@ export class ProductDetailsComponent implements OnInit {
       } else {
         same_cart[0].Quantity = this.QuantityObj.Quantity + same_cart[0].Quantity;
         localStorage.setItem(same_cart[0].Id,JSON.stringify(same_cart[0]));
-        this.api.Notification.notificationWarning('Đã có sản phẩm này trong giỏ hàng của bạn')
       }
     }
   }

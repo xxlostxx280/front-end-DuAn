@@ -31,6 +31,7 @@ import { UploadsModule } from "@progress/kendo-angular-upload";
 import { CarouselModule } from "ngx-owl-carousel-o";
 import { DashboardComponent } from "src/app/component/dashboard/dashboard.component";
 import { ManagerAccountComponent } from "src/app/component/manager-account/manager-account.component";
+import { WindowAccountComponent } from "src/app/component/manager-account/windowAccount.component";
 import { ManagerBillComponent } from "src/app/component/manager-bill/manager-bill.component";
 import { WindowBillComponent } from "src/app/component/manager-bill/windowBill.component";
 import { ManagerCategoryComponent } from "src/app/component/manager-category/manager-category.component";
@@ -65,6 +66,7 @@ import { DefaultManagerComponent } from "./default-manager.component";
         WindowQuantityComponent,
         WindowBillComponent,
         WindowUploadComponent,
+        WindowAccountComponent,
     ],
     imports:[
         NgbModule,
@@ -103,7 +105,8 @@ import { DefaultManagerComponent } from "./default-manager.component";
         WindowProductComponent,
         WindowQuantityComponent,
         WindowBillComponent,
-        WindowUploadComponent
+        WindowUploadComponent,
+        WindowAccountComponent
     ],
     bootstrap: [DefaultManagerComponent]
 })

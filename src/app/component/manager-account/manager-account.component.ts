@@ -1,7 +1,13 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { DialogService, WindowService } from '@progress/kendo-angular-dialog';
+import { DataStateChangeEvent } from '@progress/kendo-angular-grid';
+import { NotificationService } from '@progress/kendo-angular-notification';
+import { State } from '@progress/kendo-data-query';
 import { ApiService } from 'src/app/shared/api.service';
 import { MessageService } from 'src/app/shared/message.service';
+import { WindowAccountComponent } from './windowAccount.component';
 
 @Component({
   selector: 'app-manager-account',
@@ -17,13 +23,34 @@ export class ManagerAccountComponent implements OnInit {
     phone: new FormControl(''),
     role: new FormControl(false)
   })
-  constructor(public api: ApiService, private message: MessageService) { }
-
+  public state: State = {
+    filter: undefined,
+    skip: 0,
+    take: 10,
+    group: [],
+    sort: [],
+  };
+  constructor(public api: ApiService, private message: MessageService, public http: HttpClient, private windowService: WindowService, private dialogService: DialogService,
+    private notificationService: NotificationService, private formBuilder: FormBuilder) {
+  }
+  public Authority: ApiService = new ApiService(this.http, this.windowService, this.dialogService, this.notificationService, this.message, this.formBuilder);
+  
   ngOnInit(): void {
     this.api.Controller = "AccountManagerController";
     this.api.isManager = true;
+    this.api.typeData = "popup"
+    this.Read();
+    this.message.receivedDataAfterUpadte().subscribe((rs) => {
+      this.Read();
+    })
+  }
+  Role(id: number): any {
+    let role = this.Authority.dataSource.find(x => x.id === id);
+    return role;
+  }
+  Read(): void{
     this.api.Read.Execute().subscribe((rs) => {
-      this.gridData = rs.data;
+      this.gridData = rs.data.filter((x:any) => x.role.id == "admin" || x.role.id == "staff");
       this.api.dataSource = rs.data
     }, (error) => {
       if (error.status == 500) {
@@ -33,81 +60,29 @@ export class ManagerAccountComponent implements OnInit {
         this.api.Notification.notificationError('');
       }
     })
-    this.message.receivedDataBehavior().subscribe((rs) => {
-      this.gridData = rs;
-    })
-    this.message.receivedDataAfterUpadte().subscribe((rs) => {
-      this.gridData = rs.data;
-      this.api.dataSource = rs.data;
+    this.Authority.getApi('Manager/' + this.api.Controller +'/findAll').subscribe((rs)=>{
+      this.Authority.dataSource = rs.data;
     })
   }
-  Rules(): boolean{
-    this.api.formGroup.controls.email.setValidators([Validators.email]);
-    this.api.formGroup.controls.password.setValidators([Validators.minLength(6)]);
-    if(this.api.formGroup.value.email == ""){
-      this.api.Notification.notificationWarning('Không được để trống email');
-      return false;
-    }
-    if(this.api.formGroup.controls.email.errors){
-      this.api.Notification.notificationWarning('Sai định dạng email');
-      return false;
-    }
-    if(this.api.formGroup.value.username == ""){
-      this.api.Notification.notificationWarning('Không được để trống username');
-      return false;
-    }
-    if(this.api.formGroup.value.password == ""){
-      this.api.Notification.notificationWarning('Không được để trống password')
-      return false;
-    }
-    if(this.api.formGroup.controls.password.hasError('minlength')){
-      this.api.Notification.notificationWarning('Mật khẩu phải hơn 6 ký tự')
-      return false;
-    }
-    if(this.api.formGroup.value.phone == ""){
-      this.api.Notification.notificationWarning('Không được để trống SDT');
-      return false;
-    }
-    if(this.api.formGroup.controls.phone.hasError('maxlength') || this.api.formGroup.controls.phone.hasError('minlength')){
-      this.api.Notification.notificationWarning('SDT phải có đủ 10 ký tự');
-      return false;
-    }
-    return true;
+  addHanler(event: any) {
+    this.api.OpenWindow.top = -115;
+    this.api.OpenWindow.left = 200;
+    this.api.OpenWindow.Width = 550;
+    this.api.OpenWindow.Height = 600;
+    this.api.Create.Execute(WindowAccountComponent, this.gridData[0]);
   }
-  Update(grid: any): void {
-    if(!this.Rules()){return;}
-    this.api.postApi('',this.isAdmin.value).subscribe((rs)=>{
-      
-    })
+  editHandler(event: any) {
+    this.api.OpenWindow.top = -115;
+    this.api.OpenWindow.left = 200;
+    this.api.OpenWindow.Width = 550;
+    this.api.OpenWindow.Height = 600;
+    this.api.Edit.Execute(WindowAccountComponent, event);
+  }
+  removeHandler(event: any) {
+    this.api.Destroy.Execute(null,event.dataItem);
+  }
+  dataStateChange(state: DataStateChangeEvent): void {
+    this.state = state;
   }
 
-  addHandler(event: any): void {
-    this.api.Create.Execute(null, event.sender.data.data);
-    event.sender.addRow(this.api.formGroup);
-  }
-  saveHandler(event: any) {
-    if(!this.Rules()){return;}
-    this.api.Grid.saveHandler(event);
-    event.sender.closeRow(event.rowIndex);
-  }
-  cellClickHandler(event: any): void {
-    this.api.Grid.cellClickHandler(event);
-  }
-  cellCloseHandler(event: any): void {
-    if(!this.Rules()){return;}
-    this.api.Grid.cellCloseHandler(event);
-  }
-  removeHandler(event: any): void {
-    this.api.Grid.removeHandler(event);
-    event.sender.cancelCell();
-  }
-  cancelChanges(grid: any): void {
-    grid.cancelCell();
-  }
-  cancelHandler(event: any): void {
-    event.sender.closeRow(event.rowIndex);
-  }
-  changeIsAdmin(event: any): void{
-    let e = event;
-  }
 }
