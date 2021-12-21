@@ -35,33 +35,35 @@ export class HomePageComponent implements OnInit {
     this.Product.getApi('Customer/ProductController/home').subscribe((res) => {
       this.Product.dataSource = res.data;
     }, (error) => {
-      if(error.status == 500){
-        let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
-        window.location.href = "/login/" +  id;
-      }else{
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
         this.api.Notification.notificationError('');
       }
     });
     setTimeout(() => {
       this.Quantity.Read.Execute().subscribe((res) => {
+        let arrProductDiscount: any[] = [];
+        let arrProductNew: any[] = [];
         this.Quantity.dataSource = res.data;
         this.Product.dataSource.map((x) => {
           let arr = this.Quantity.dataSource.filter((val) => val.product.id == x.id && val.quantity > 0);
           let arr_2 = this.Quantity.dataSource.filter((val) => val.product.id == x.id && val.product.discount > 0 && val.quantity > 0)
           if (arr.length > 0) {
-            this.listProduct.push(x);
+            arrProductNew.push(x);
           }
           if (arr_2.length > 0) {
-            this.listProductDiscount.push(x);
+            arrProductDiscount.push(x);
           }
         })
-        this.listProduct.slice(0, 8);
-        this.listProductDiscount.slice(0, 8);
+        this.listProduct = arrProductNew.slice(0, 8);
+        this.listProductDiscount = arrProductDiscount.slice(0, 8);
       }, (error) => {
-        if(error.status == 500){
-          let id =  encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g,"%27").replace(/"/g,"%22")
-          window.location.href = "/login/" +  id;
-        }else{
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
           this.api.Notification.notificationError('');
         }
       })
