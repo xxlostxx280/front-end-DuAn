@@ -185,6 +185,17 @@ export class ShoppingCartComponent implements OnInit {
     this.toMoney = this.toMoney + this.totalShipping;
 
     this.message.receivedStorageCart().subscribe((res) => {
+      this.Voucher.getApi('Customer/' + this.Voucher.Controller + '/findVoucherByAmount').subscribe((rs) => {
+        this.Voucher.dataSource = rs.data;
+        this.listVoucher = this.Voucher.dataSource.filter((x) => x.minimumValue <= this.total);
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
+      })
       this.dataSource = [];
       this.BillObj.voucher_id = '';
       this.BillObj.discount = '';
@@ -364,6 +375,7 @@ export class ShoppingCartComponent implements OnInit {
   removeCardItem(e: any, data: any, index: any): void {
     this.Voucher.getApi('Customer/' + this.Voucher.Controller + '/findVoucherByAmount').subscribe((rs) => {
       this.Voucher.dataSource = rs.data;
+      this.listVoucher = this.Voucher.dataSource.filter((x) => x.minimumValue <= this.total);
     }, (error) => {
       if (error.status == 500) {
         let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
