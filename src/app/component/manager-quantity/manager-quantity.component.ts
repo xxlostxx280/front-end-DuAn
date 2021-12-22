@@ -53,9 +53,16 @@ export class ManagerQuantityComponent implements OnInit {
       }
     })
     this.message.receivedDataAfterUpadte().subscribe((rs) => {
-      if (rs.status) {
+      this.api.Read.Execute().subscribe((rs) => {
         this.gridData = rs.data;
-      }
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
+      })
     });
   }
 
