@@ -20,7 +20,7 @@
                     <div class="col-md-2" style="margin: 10px 0px;">
                         <label>Phương thức thanh toán</label>
                         <div style="text-align: center;">
-                            <input type="checkbox" kendoCheckBox formControlName="payment" />
+                            {{ formGroup.value.payment ? "Thanh toán bằng ví" : "Thanh toán bằng tiền mặt" }}
                         </div>
                     </div>
                     <div class="col-md-4" style="margin: 10px 0px;">

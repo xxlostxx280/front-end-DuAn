@@ -89,8 +89,8 @@ export class DialogInfoProductComponent implements OnInit {
         this.QuantityObj.Quantity = value;
     }
     changeShoppingCard(value: any): void {
-        if(this.QuantityObj.Quantity < 0){
-            return this.api.Notification.notificationWarning('Không được nhập số lượng âm')
+        if(this.QuantityObj.Quantity <= 0){
+            return this.api.Notification.notificationWarning('Số lượng phải lớn hơn 0')
         }
         let data = JSON.parse(String(localStorage.getItem(this.infoProduct.Id)));
         data.Quantity = this.QuantityObj.Quantity;

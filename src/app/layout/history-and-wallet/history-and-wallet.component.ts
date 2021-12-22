@@ -17,6 +17,7 @@ export class HistoryAndWalletComponent implements OnInit {
   public opened = false;
   public listBillBought: Array<any> = [];
   public listBillBuying: Array<any> = [];
+  public listBillRefund: Array<any> = [];
   public myWallet: any;
   public isWallet = false;
   public getCustomer: any;
@@ -72,8 +73,9 @@ export class HistoryAndWalletComponent implements OnInit {
       this.formAccount.controls.address.setValue(rs.data.address);
       this.api.loading = false;
       this.Bill.getApi('api/bill/' + this.getCustomer.id).subscribe((rs) => {
-        this.listBillBought = rs.data.filter((x: any) => x.status == "KHACH_DA_NHAN_HANG" || x.status == "HUY" || x.status == "DA_XAC_NHAN_VA_DONG_GOI");
-        this.listBillBuying = rs.data.filter((x: any) => x.status != "KHACH_DA_NHAN_HANG" && x.status != "HUY" && x.status != "DA_XAC_NHAN_VA_DONG_GOI");
+        this.listBillBought = rs.data.filter((x: any) => x.status == "KHACH_DA_NHAN_HANG").sort((a:any,b:any) => Date.parse(b.createAt) - Date.parse(a.createAt));
+        this.listBillBuying = rs.data.filter((x: any) => x.status != "KHACH_DA_NHAN_HANG" && x.status != "HUY" && x.status != "DA_XAC_NHAN_VA_DONG_GOI").sort((a:any,b:any) => Date.parse(b.createAt) - Date.parse(a.createAt));
+        this.listBillRefund = rs.data.filter((x: any) => x.status == "HUY"  || x.status == "HOAN_HANG" ).sort((a:any,b:any) => Date.parse(b.createAt) - Date.parse(a.createAt));
       })
     }, (error) => {
       if (error.status == 500) {
