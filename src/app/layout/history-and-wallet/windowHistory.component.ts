@@ -68,6 +68,9 @@ export class WindowHistoryComponent implements OnInit {
         } else {
             this.isCancel = true;
         }
+        if(this.formGroup.value.status == "DA_GIAO_BEN_VAN_CHUYEN" || this.formGroup.value.status == "HOAN_HANG"){
+            this.showToolBar = false;
+        }
         if (this.formGroup.value.status == "KHACH_DA_NHAN_HANG") {
             this.isRefund = true;
         }
@@ -85,7 +88,7 @@ export class WindowHistoryComponent implements OnInit {
                 let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
                 window.location.href = "/login/" + id;
             } else {
-                this.api.Notification.notificationError(error.message);
+                this.api.Notification.notificationError(error.error.message);
             }
             this.api.loading = false;
         })

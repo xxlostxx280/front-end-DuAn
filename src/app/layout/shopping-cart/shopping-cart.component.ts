@@ -133,15 +133,43 @@ export class ShoppingCartComponent implements OnInit {
         this.InfomationCustomer.controls.FullName.setValue(rs.data.fullname);
         this.InfomationCustomer.controls.Address.setValue(rs.data.address);
         this.Address.controls.Province.setValue(rs.data);
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
       })
       this.Account.getApi('api/account/' + sessionStorage.getItem('Account')).subscribe((rs) => {
         this.InfomationCustomer.controls.PhoneNumber.setValue(rs.data.phone);
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
       })
       this.api.getApi('api/bill/get-address').subscribe((rs) => {
         this.oldAddress = rs.data;
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
       })
       this.api.getApi('Customer/MamiPayController/mamipay').subscribe((rs) => {
         this.myWallet = rs.data;
+      }, (error) => {
+        if (error.status == 500) {
+          let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+          window.location.href = "/login/" + id;
+        } else {
+          this.api.Notification.notificationError('');
+        }
       })
     }
 
@@ -158,6 +186,9 @@ export class ShoppingCartComponent implements OnInit {
 
     this.message.receivedStorageCart().subscribe((res) => {
       this.dataSource = [];
+      this.BillObj.voucher_id = '';
+      this.BillObj.discount = '';
+      this.selectedValue = null;
       this.key.map((x: any) => {
         let data: any = localStorage.getItem(x);
         let value = JSON.parse(data);
@@ -173,12 +204,8 @@ export class ShoppingCartComponent implements OnInit {
         }
       });
       if (same_cart.length == 2) {
-        this.total = this.total - Number(parseInt(same_cart[0].Product.price) * parseInt(same_cart[0].Quantity));
-        if (same_cart[0].Product.discount != null) {
-          this.toMoney = this.toMoney - Number(parseInt(same_cart[0].newPrice) * parseInt(same_cart[0].Quantity));
-        } else {
-          this.toMoney = this.toMoney - Number(parseInt(same_cart[0].Product.price) * parseInt(same_cart[0].Quantity));
-        }
+        this.total = this.total - Number(parseInt(same_cart[0].newPrice) * parseInt(same_cart[0].Quantity));
+        this.toMoney = this.toMoney - Number(parseInt(same_cart[0].newPrice) * parseInt(same_cart[0].Quantity)) + this.totalShipping;
         localStorage.removeItem(this.dataSource[0].Id);
         this.message.SendBadgeCart(localStorage.length);
         this.dataSource.splice(this.dataSource.indexOf(this.dataSource[0]), 1);
@@ -193,13 +220,10 @@ export class ShoppingCartComponent implements OnInit {
         this.total = 0;
         this.toMoney = 0;
         this.dataSource.map((x) => {
-          this.total = this.total + Number(parseInt(x.NewPrice) * parseInt(x.Quantity));
-          if (x.Product.discount != null) {
-            this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity)
-          } else {
-            this.toMoney = this.toMoney + Number(x.NewPrice * x.Quantity)
-          }
+          this.total = this.total + Number(parseInt(x.newPrice) * parseInt(x.Quantity));
+          this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity)
         })
+        this.toMoney =  this.toMoney + this.totalShipping;
       }
     })
   }
@@ -282,7 +306,7 @@ export class ShoppingCartComponent implements OnInit {
     } else if (this.step_2) {
       this.BillObj.statusshipping = "Đang xử lý";
       this.BillObj.username = String(sessionStorage.getItem('USERNAME'));
-      if (this.myWallet.surplus < this.toMoney) {
+      if (this.isPayment == true && this.myWallet.surplus < this.toMoney) {
         return this.api.Notification.notificationWarning('Số dư trong ví không đủ để thanh toán đơn')
       }
       if (this.Payment.value.payment == "cash") {
@@ -320,6 +344,7 @@ export class ShoppingCartComponent implements OnInit {
           this.dataSource = [];
           this.total = 0;
           this.toMoney = 0;
+          this.totalShipping = 0;
           this.step_2 = false;
           this.step_3 = true;
           this.current += 1;
@@ -337,9 +362,20 @@ export class ShoppingCartComponent implements OnInit {
     }
   }
   removeCardItem(e: any, data: any, index: any): void {
+    this.Voucher.getApi('Customer/' + this.Voucher.Controller + '/findVoucherByAmount').subscribe((rs) => {
+      this.Voucher.dataSource = rs.data;
+    }, (error) => {
+      if (error.status == 500) {
+        let id = encodeURIComponent('Bạn không có quyền vào trang đó').replace(/'/g, "%27").replace(/"/g, "%22")
+        window.location.href = "/login/" + id;
+      } else {
+        this.api.Notification.notificationError('');
+      }
+    })
     let removeItem = JSON.parse(String(localStorage.getItem(data)));
+    this.BillObj.list_quantity = [];
     this.total = this.total - Number(parseInt(removeItem.newPrice) * parseInt(removeItem.Quantity));
-    this.toMoney = this.toMoney - Number(parseInt(removeItem.newPrice) * parseInt(removeItem.Quantity))
+    this.toMoney = this.toMoney - Number(parseInt(removeItem.newPrice) * parseInt(removeItem.Quantity));
     localStorage.removeItem(data);
     this.badge = localStorage.length;
     this.message.SendBadgeCart(this.badge);
@@ -421,24 +457,24 @@ export class ShoppingCartComponent implements OnInit {
     this.QuantityObj.Quantity = value;
   }
   selectVoucher(event: any): void {
+    this.toMoney = 0;
+    this.total = 0;
     if (event.discount == undefined) {
-      this.toMoney = 0;
-      this.total = 0;
       this.BillObj.voucher_id = '';
       this.BillObj.discount = '';
       this.dataSource.map((x) => {
-        this.total = this.total + Number(parseInt(x.NewPrice) * parseInt(x.Quantity));
-        if (x.Product.discount != null) {
-          this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity)
-        } else {
-          this.toMoney = this.toMoney + Number(x.NewPrice * x.Quantity)
-        }
+        this.total = this.total + Number(parseInt(x.newPrice) * parseInt(x.Quantity));
+        this.toMoney = this.toMoney + Number(x.newPrice * x.Quantity);
       })
     } else {
       this.BillObj.voucher_id = event.id;
       this.BillObj.discount = event.discount;
-      this.toMoney = Number(this.toMoney * (100 - event.discount)) / 100;
+      this.dataSource.map((x) => {
+        this.total = this.total + Number(parseInt(x.newPrice) * parseInt(x.Quantity));
+        this.toMoney = (this.toMoney + Number(x.newPrice * x.Quantity))*(1 - event.discount/100) ;
+      })
     }
+    this.toMoney = this.toMoney + this.totalShipping;
   }
   PaymentMethodChange(event: any): void {
     if (event.target.value == "cash") {
